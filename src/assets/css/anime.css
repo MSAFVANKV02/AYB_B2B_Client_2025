@@ -1,0 +1,61 @@
+/* Blinking/Glowing Effect */
+@keyframes blinkEffect {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 0.8;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 1);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+    }
+  }
+  
+  .blink-effect {
+    animation: blinkEffect 1s ease-out forwards;
+  }
+
+  /* ================== */
+  /* Style for WebKit browsers (Chrome, Safari, Edge) */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px; /* Adjust the size of the thumb */
+    height: 16px;
+    background-color: white; /* Change color to white */
+    border-radius: 50%; /* Make it circular */
+    cursor: pointer;
+    border: 2px solid #ccc; /* Optional: add a border */
+  }
+  
+  /* Style for Firefox */
+  input[type="range"]::-moz-range-thumb {
+    width: 16px; /* Adjust the size of the thumb */
+    height: 16px;
+    background-color: white; /* Change color to white */
+    border-radius: 50%; /* Make it circular */
+    cursor: pointer;
+    border: 2px solid #ccc; /* Optional: add a border */
+  }
+  
+  /* General range styling to remove default appearance */
+  input[type="range"] {
+    -webkit-appearance: none; /* Remove default WebKit styling */
+    /* width: 100%; */
+    /* Track height */
+    background: #ccc; /* Track color */
+    outline: none;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+  
+  input[type="range"]:hover {
+    opacity: 1;
+  }
+  

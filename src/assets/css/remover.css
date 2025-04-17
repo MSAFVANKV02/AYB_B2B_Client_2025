@@ -1,0 +1,16 @@
+.css-18ltxn-MuiStepConnector-line{
+    display: none !important;
+}
+
+/* modal behind scroll preventing */
+.no-scroll {
+    overflow: hidden;
+  }
+  
+
+  /* remove margin of li */
+  .li-custom li {
+    margin: 0px 0px 0px 0px;
+    padding: 0;
+    list-style: disc !important;
+  }

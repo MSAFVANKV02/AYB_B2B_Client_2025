@@ -1,0 +1,25 @@
+
+
+1. useQuery 
+ - useQuery used for get search params in url 
+ - in src/utils/QueryParams.ts
+
+ 2. hooks
+
+    - In this web code using hooks page for handle hooks neatly/clearly
+    - example: usePageTitle is used for change tab title with pages just add : usePageTitle("your--page--name--here)
+    - and more ................
+    - example: usePageTitle
+    - example: useClick : navigate page   handleClick("/register")
+
+3. Redux
+
+    - used redux for handle states
+    - also for helping stay state data in refresh time , using redux persist
+    - using persist the web page will keep the data in the browser without using
+        localStorage.
+    - check store in redux folder
+
+
+
+    

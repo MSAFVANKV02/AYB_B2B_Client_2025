@@ -1,0 +1,31 @@
+
+# ================================== User Authentication Routes =========================================
+1 - /user
+    a) /sendOtp
+    b) /verifyOtp
+    c) /resendOtp
+    d) /registerUser
+    e) /verifyOtpForLogin
+    f) /sendOtpForLogin
+
+# --------------------------------- User Authentication Routes Ends -------------------------------
+
+
+
+# ================================== Kyc Routes Starts =========================================
+
+2 - /user
+    a) /submitKyc
+
+# --------------------------------- Kyc Routes Ends ---------------------------------
+
+# ================================== Notification User Routes Starts =========================================
+
+3 - /user
+    b) /getNotifications/:userId
+    c) /markAsRead
+
+# --------------------------------- Notification User Routes Ends ---------------------------------
+
+
+

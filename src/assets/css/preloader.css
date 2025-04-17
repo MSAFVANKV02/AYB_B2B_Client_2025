@@ -1,0 +1,59 @@
+@keyframes slideImage {
+    0% {
+      transform: translateX(0%);
+    }
+    50% {
+      transform: translateX(-150%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+  
+  @keyframes slideIcon {
+    0% {
+      transform: translateX(150%);
+    }
+    50% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(150%);
+    }
+  }
+  
+  .animate-slideImage {
+    animation: slideImage 1s ease-in-out infinite;
+  }
+  
+  .animate-slideIcon {
+    animation: slideIcon 1s ease-in-out infinite;
+  }
+  
+/* countinues */
+  /* @keyframes slideImage {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-150%);
+    }
+  }
+  
+  @keyframes slideIcon {
+    0% {
+      transform: translateX(150%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+  
+  .animate-slideImage {
+    animation: slideImage 3s linear infinite;
+  }
+  
+  .animate-slideIcon {
+    animation: slideIcon 3s linear infinite;
+  }
+   */

@@ -1,0 +1,7 @@
+.text-container h2:nth-child(odd) {
+  color: black; /* First, third, fifth, etc. */
+}
+
+.text-container h2:nth-child(even) {
+  color: var(--mainColor); /* Second, fourth, sixth, etc. */
+}

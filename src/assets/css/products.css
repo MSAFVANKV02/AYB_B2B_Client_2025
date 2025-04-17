@@ -1,0 +1,62 @@
+
+
+
+/* ============ category page starts ============== */
+.product-container{
+    @apply  grid 2xl:grid-cols-4 md:grid-cols-3 grid-cols-2 
+}
+
+@media screen and (max-width: 320px) {
+    .product-container {
+        @apply grid-cols-1
+    }
+  }
+
+/* ============ category page Ends ============== */
+/* Remove background color for Tab */
+/* .custom-tablist .MuiTab-root {
+    background-color: transparent !important;
+    color: inherit;
+  }
+  
+  .custom-tablist .MuiTab-root:hover {
+    background-color: transparent !important;
+  }
+  
+  .custom-tablist .Mui-selected {
+    background-color: transparent !important;
+  } */
+  .custom-tablist {
+    background-color: transparent !important;
+    box-shadow: none !important; /* Remove any potential box shadow */
+  }
+  
+  /* Remove the background color for the individual tabs */
+  .custom-tablist .MuiTab-root {
+    background-color: transparent !important;
+    color: inherit; /* Keep text color */
+    box-shadow: none !important; /* Ensure no shadow is present */
+  }
+  
+  /* Remove hover background for the tabs */
+  .custom-tablist .MuiTab-root:hover {
+    background-color: transparent !important;
+  }
+  
+  /* Remove the background color when the tab is selected */
+  .custom-tablist .Mui-selected {
+    background-color: transparent !important;
+  }
+  
+  /* If there are borders around the tab or TabList, remove them */
+  .custom-tablist .MuiTabs-indicator {
+    background-color: transparent !important; /* Remove indicator line */
+  }
+
+/* CSS to round the stars */
+.rounded-stars svg {
+  clip-path: inset(5%); /* Adjust the percentage for desired roundness */
+  border-radius: 40px;   /* Controls the corner radius */
+  background-color: black;
+    overflow: hidden;
+}

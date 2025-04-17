@@ -1,0 +1,338 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* @import url("https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"); */
+
+/* html {
+  font-family: "Jost", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+} */
+* {
+  /* font-family: "Jost", serif;
+  font-optical-sizing: auto; */
+  font-family: "Nunito", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+ol {
+  list-style-type: decimal;
+  margin-left: 20px; /* Optional: Adjust for indentation */
+}
+
+/* ul {
+  list-style-type: disc; 
+  margin-left: 20px; 
+} */
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+.custom-input {
+  width: 40px; /* Set a fixed width for the input */
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+:root {
+  --mainColor: #5f08b1;
+  --mainColor2: #8817EC;
+  --mainText: #5f08b1;
+  --softColor: #7741a9;
+  --hardSoftColor: #fdf7ff;
+  --primaryVariant: #8817ec;
+  --secColor: #60c6c4;
+  --colorSoft: #f8e5ff;
+  --gray: #898989;
+  --green: #69bf35;
+
+  --graySoft: #f7f7f7;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+p {
+  font-size: clamp(0.9rem, 2.5vw, 1rem); /* Scales from 16px to 20px */
+}
+h1 {
+  font-size: clamp(2rem, 5vw, 3rem); /* Scales from 32px to 56px */
+}
+h2 {
+  font-size: clamp(1.75rem, 4vw, 2.5rem); /* Scales from 28px to 48px */
+}
+h3 {
+  font-size: clamp(1.5rem, 3vw, 2rem); /* Scales from 24px to 40px */
+}
+h4 {
+  font-size: clamp(1.15rem, 2.5vw, 1.5rem); /* Scales from 20px to 32px */
+}
+span {
+  font-size: 14px;
+  color: gray;
+}
+
+small {
+  @apply xl:text-sm;
+}
+
+label {
+  margin: 0px 0px 0px 0px !important;
+}
+
+/* ********   **********  **************/
+/* ****     Slick Css Starts    **** */
+/* ********   **********  **************/
+/* ********   **********  **************/
+/* ****     Slick Css Ends    **** */
+/* ********   **********  **************/
+
+/* ********   **********  **************/
+/* ****     Material ui Slider Css Starts    **** */
+/* ********   **********  **************/
+
+.slick-prev,
+.slick-next {
+  display: none !important;
+  /* ********   **********  **************/
+  /* ****     Material ui Slider Css Ends    **** */
+  /* ********   **********  **************/
+}
+
+.css-hayzob-JoySlider-thumb::before {
+  border: none !important;
+}
+
+/* ********   **********  **************/
+/* ****     Basic Css Starts    **** */
+/* ********   **********  **************/
+
+.section_container_dash {
+  @apply 2xl:px-0 xl:px-20 md:px-14 sm:px-10 px-5 mx-auto;
+}
+
+.section_container_cards {
+  @apply 2xl:px-0 xl:px-20 md:px-14 sm:px-10 px-2  mx-auto;
+}
+
+.section_container {
+  @apply max-w-screen-2xl 2xl:px-0 xl:px-20 md:px-14 sm:px-10 px-5 mx-auto;
+}
+.section_spacing {
+  @apply 2xl:py-20 xl:py-16 md:py-12 sm:py-8 py-4 2xl:px-0 xl:px-20 md:px-14 sm:px-10 px-5;
+}
+.section_container2 {
+  @apply 2xl:px-0 xl:px-20 md:px-14 sm:px-10 px-2 mx-auto;
+}
+
+.page-container {
+  @apply w-full max-w-screen-2xl mx-auto;
+}
+
+.page-outer {
+  @apply bg-white sm:p-5 rounded-md shadow-sm min-h-[80vh] w-full;
+}
+
+.bg-combined-gradients {
+  background: linear-gradient(220.66deg, #f0dfff -11.2%, #ffffff 100.09%),
+    linear-gradient(219.36deg, #f5d9ff 16.58%, #ffffff 100.08%);
+}
+.bg-combined-gradients2 {
+  background: rgb(171, 94, 239);
+  background: linear-gradient(
+    90deg,
+    rgba(171, 94, 239, 1) 0%,
+    rgba(241, 225, 255, 1) 96%
+  );
+}
+
+.bg-combined-gradients3 {
+  background: rgb(95, 8, 177);
+  background: linear-gradient(
+    90deg,
+    rgba(95, 8, 177, 1) 0%,
+    rgba(96, 136, 190, 1) 83%,
+    rgba(96, 154, 192, 1) 100%,
+    rgba(96, 198, 196, 1) 100%
+  );
+}
+
+/* admin */
+.radio-button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* .radio-button:hover {
+    transform: translateY(-2px);
+  } */
+
+.radio-button input[type="radio"] {
+  display: none;
+}
+
+.radio-checkmark {
+  display: inline-block;
+  position: relative;
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+  border: 2px solid #4e4e4e;
+  border-radius: 50%;
+}
+
+.radio-checkmark:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #af61cc;
+  transition: all 0.2s ease-in-out;
+}
+
+.radio-button input[type="radio"]:checked ~ .radio-checkmark:before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.radio-label {
+  font-weight: 600;
+}
+
+/* ============   ordersummary accordion =========== */
+.css-15v22id-MuiAccordionDetails-root {
+  padding: 0;
+}
+
+/* table radius==== */
+
+.table-style table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table-style th {
+  /* border: 1px solid black !important; */
+  border-bottom: 1px solid #d9d9d9 !important;
+  border-right: 1px solid #d9d9d9 !important;
+  border-left: 1px solid #d9d9d9 !important;
+  text-align: start;
+  padding: 5px;
+  font-size: 0.7rem;
+  color: #5d5a5a;
+}
+
+.table-style tr:first-child th:first-child {
+  border-top-left-radius: 10px;
+  border-top: 1px solid #d9d9d9 !important;
+  border-left: 1px solid #d9d9d9 !important;
+}
+
+.table-style tr:first-child th:last-child {
+  border-top-right-radius: 10px;
+  border-top: 1px solid #d9d9d9 !important;
+}
+
+.table-style tr:last-child th:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+.table-style tr:last-child th:last-child {
+  border-bottom-right-radius: 10px;
+}
+
+
+.text-outline {
+  -webkit-text-stroke: 2px white; /* White border */
+  color: transparent; /* Makes the inside transparent */
+  font-weight: bold; /* Ensures the stroke looks clean */
+}
+
+
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+
