@@ -14,7 +14,7 @@ type Props = {
   fallbackSrc?: string; // Optional fallback image
 };
 
-const Image = ({ src, alt, className, fallbackSrc, error }: Props) => {
+const Image = ({ src, alt, className, fallbackSrc, error, onClick }: Props) => {
   const [imgSrc, setImgSrc] = useState(src);
   const [hasError, setHasError] = useState(false);
 
@@ -26,6 +26,7 @@ const Image = ({ src, alt, className, fallbackSrc, error }: Props) => {
           alt={alt}
           draggable={false}
           className="w-full h-full object-cover"
+          onClick={onClick}
           onError={() => {
             if (fallbackSrc) {
               setImgSrc(fallbackSrc);

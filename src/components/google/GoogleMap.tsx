@@ -5,7 +5,7 @@ import { GoogleMap, Libraries, Marker, useJsApiLoader } from "@react-google-maps
 import AyButton from "../myUi/AyButton";
 import CircularProgress from "@mui/material/CircularProgress";
 import { makeToast, makeToastError } from "@/utils/toaster";
-import { useContextPage } from "@/providers/context/context";
+import { UseContextPage } from "@/providers/context/context";
 import TaskModal, { TaskModalContent, TaskModalFooter, TaskModalHeader } from "../myUi/TaskModal";
 import MyCloseIcon from "../icons/My_CloseIcon";
 // import axios from "axios";
@@ -20,7 +20,7 @@ type Props = {
 const libraries: Libraries = ["geometry"];
 
 function GoogleMapModal({ setFieldValue }: Props) {
-  const { setIsOpenModal } = useContextPage();
+  const { setIsOpenModal } = UseContextPage();
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyBpUCwzl4G9L6vrFOElEawM86H2QIQ6tdM", // Replace with your API key
     // libraries: ["places"], // Include 'places' if you want autocomplete functionality

@@ -120,6 +120,7 @@ export type IProducts = {
 // ====== type ends =================
 
 export type IVariants = {
+  _id?: string;
   variant_name?: string;
   image: string;
   colorCode: string;

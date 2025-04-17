@@ -49,12 +49,12 @@ export default function ProductsPage() {
           {/* <NavbarCheck/> */}
           <div className="flex flex-col lg:flex-row gap-6 w-full   h-full">
             {/* Product Image Section */}
-            <div className="lg:w-[45%] lg:sticky lg:top-0 rounded-lg border min-h-[50vh] lg:h-[80vh] bg-white/10 filter backdrop-blur-lg">
+            <div className="lg:w-[50%] lg:sticky lg:top-0 rounded-lg border min-h-[50vh] lg:h-[80vh] bg-white/10 filter backdrop-blur-lg">
               <ProductImages images={product.gallery_image} />
             </div>
 
             {/* Product Details Section */}
-            <div className="lg:flex-grow min-h-[50vh] lg:min-h-[75vh]">
+            <div className="lg:w-[50%] min-h-[50vh] lg:min-h-[75vh]">
               <ProductDetail product={product} stockData={products} />
             </div>
           </div>

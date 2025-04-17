@@ -2,7 +2,7 @@ import GstDropDown from "@/components/myUi/GstDropDown";
 import MyBackBtn from "@/components/myUi/myBackBtn";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useContextPage } from "@/providers/context/context";
+import { UseContextPage } from "@/providers/context/context";
 import { useEffect } from "react";
 
 import { FaEye } from "react-icons/fa";
@@ -11,7 +11,7 @@ import RefundModalForm from "./RefundModalForm";
 Modal.setAppElement("#root");
 
 export default function RefundModal() {
-  const { isOpenModal, handleOpenModal, handleCloseModal } = useContextPage();
+  const { isOpenModal, handleOpenModal, handleCloseModal } = UseContextPage();
 
   // ========  Preventing Scroll Behind Modal ======
   useEffect(() => {

@@ -14,8 +14,11 @@
 //     updatedAt?: Date;
 //   }
 
+import { IAddressType } from "./address-types";
+
 export interface IUserProps {
   _id: string;
+  addresses:IAddressType[];
   mobile: string;
   isVerified: boolean;
   isDeleted: boolean;

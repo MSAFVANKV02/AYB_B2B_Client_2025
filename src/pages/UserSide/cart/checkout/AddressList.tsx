@@ -1,10 +1,13 @@
 import { Button, IconButton, Checkbox } from "@mui/material";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { Divider } from "@mui/joy";
-import { useState } from "react";
 import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { AddressType, FormDataType, FormDataValue } from "./page";
+import { FormDataType, FormDataValue } from "./page";
+import { dispatch, useAppSelector } from "@/redux/hook";
+import { IAddressType } from "@/types/address-types";
+import { deleteAddressRedux } from "@/redux/userSide/UserAuthSlice";
+import { UseContextPage } from "@/providers/context/context";
 
 type Props = {
   setIsModalOpen: (isOpen: boolean) => void;
@@ -22,51 +25,19 @@ export default function AddressList({
   setAddAddress,
   handleFormDataChange,
   // formData,
-  isRemoveThings
+  isRemoveThings,
 }: Props) {
-  const [selectedAddress, setSelectedAddress] = useState<AddressType | null>(
-    null
-  ); // Track a single selected address ID
+  // const [selectedAddress, setSelectedAddress] = useState<IAddressType | null>(
+  //   null
+  // ); // Track a single selected address ID
+  const { address } = useAppSelector((state) => state.auth);
 
-  const addresses: AddressType[] = [
-    {
-      id: 1,
-      street: "Mavoor, Phed, Calicut",
-      city: "Kolkata",
-      country: "India",
-      postalCode: "700001",
-      isDefault: true,
-      state: "Kerala",
-    },
-    {
-      id: 2,
-      street: "Edavannapara, Malappuram",
-      city: "Kolkata",
-      country: "India",
-      postalCode: "700001",
-      isDefault: true,
-      state: "Kerala",
-    },
-    {
-      id: 3,
-      street: "Edavannapara, Malappuram",
-      city: "Kolkata",
-      country: "India",
-      postalCode: "700001",
-      isDefault: true,
-      state: "Kerala",
-    },
-  ];
+  const {
+    setSelectedAddress,
+    selectedAddress
+  } = UseContextPage();
 
-  // const handleAddressSelect = (id: number) => {
-  //     setSelectedAddresses((prevSelected) =>
-  //         prevSelected.includes(id)
-  //             ? prevSelected.filter((addressId) => addressId !== id)
-  //             : [...prevSelected, id]
-  //     );
-  // };
-
-  const handleAddressSelect = (address: AddressType| null) => {
+  const handleAddressSelect = (address: IAddressType | null) => {
     console.log(address);
 
     if (handleFormDataChange) {
@@ -112,84 +83,93 @@ export default function AddressList({
         {/* ==================  starting listing address =============== */}
 
         <div className="md:w-3/4 w-full sm:p-3 space-y-3 overflow-y-auto h-full  max-h-[550px]">
-          {addresses.map((address) => (
-            <div
-              key={address.id}
-              className={`flex items-start sm:p-3 border rounded-lg ${
-                selectedAddress?.id === address.id
-                  ? "border-purple-600"
-                  : "border-gray-300"
-              }`}
-            >
-              <Checkbox
-                checked={selectedAddress?.id === address.id}
-                onChange={() => setSelectedAddress(address)}
-                sx={{
-                  color: "purple",
-                  "&.Mui-checked": { color: "purple" },
-                  marginRight: "8px",
-                }}
-              />
-              <div className="flex-1 text-sm">
-                <div className="flex flex-col">
-                  <span>{address.street}</span>
-                  <span>{address.postalCode}</span>
-                 
-                 <div className="flex gap-1">
-                 <span>{address.city},</span>
-                 <span>{address.state},</span>
-                 <span>{address.country}</span>
-                 </div>
-                </div>
-
-                {address.isDefault ? (
-                  <span className="text-purple-600 text-sm">
-                    Default shipping address
-                  </span>
-                ) : (
-                  <button
-                   
-                    className="text-gray-500 text-sm underline hover:text-gray-700"
-                  >
-                    Set as default shipping address
-                  </button>
-                )}
-              </div>
-              <div className="flex items-center space-x-2 my-auto">
-                <IconButton
-                  size="small"
+          {address &&
+            address.map((address) => (
+              <div
+                key={address._id}
+                className={`flex items-start sm:p-3 border rounded-lg ${
+                  selectedAddress?._id === address._id
+                    ? "border-purple-600"
+                    : "border-gray-300"
+                }`}
+              >
+                <Checkbox
+                  checked={selectedAddress?._id === address._id}
+                  onChange={() => setSelectedAddress(address)}
                   sx={{
-                    bgcolor: "#878787",
-                    borderRadius: "5px",
-                    padding: "2px",
-                    color: "white",
-                    "&:hover": {
-                      bgcolor: "#5b5757",
-                      color: "white",
-                    },
+                    color: "purple",
+                    "&.Mui-checked": { color: "purple" },
+                    marginRight: "8px",
                   }}
-                >
-                  <CreateIcon
+                />
+                <div className="flex-1 text-sm">
+                  <div className="flex flex-col">
+                    <span>{address.street}</span>
+                    <span>{address.zip}</span>
+
+                    <div className="flex gap-1">
+                      <span>{address.city},</span>
+                      <span>{address.state},</span>
+                      <span>{address.country}</span>
+                    </div>
+                  </div>
+
+                  {address.isDefault ? (
+                    <span className="text-purple-600 text-sm">
+                      Default shipping address
+                    </span>
+                  ) : (
+                    <button className="text-gray-500 text-sm underline hover:text-gray-700">
+                      Set as default shipping address
+                    </button>
+                  )}
+                </div>
+                <div className="flex items-center space-x-2 my-auto">
+                  <IconButton
+                    size="small"
                     sx={{
-                      fontSize: "1rem",
+                      bgcolor: "#878787",
+                      borderRadius: "5px",
+                      padding: "2px",
+                      color: "white",
+                      "&:hover": {
+                        bgcolor: "#5b5757",
+                        color: "white",
+                      },
                     }}
-                  />
-                </IconButton>
-                <IconButton size="small">
-                  <DeleteIcon fontSize="medium" />
-                </IconButton>
+                    onClick={()=>{
+                      if (setAddAddress) {
+                        setAddAddress(true);
+                      }
+                      setIsModalOpen(true);
+                      setSelectedAddress(address);
+                    }}
+                  >
+                    <CreateIcon
+                      sx={{
+                        fontSize: "1rem",
+                      }}
+                    />
+                  </IconButton>
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      dispatch(deleteAddressRedux(address._id));
+                    }}
+                  >
+                    <DeleteIcon fontSize="medium" />
+                  </IconButton>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
 
       {/* button staring ======= */}
-      {
-        !isRemoveThings && (
-            <div className="flex justify-end border-t pt-5 w-full">
-        <div className="flex w-3/4 gap-4  justify-end">
-          {/* <Button
+      {!isRemoveThings && (
+        <div className="flex justify-end border-t pt-5 w-full">
+          <div className="flex w-3/4 gap-4  justify-end">
+            {/* <Button
             variant="outlined"
             className="w-1/2 "
             sx={{
@@ -201,26 +181,24 @@ export default function AddressList({
           >
             cancel
           </Button> */}
-          <Button
-            variant="contained"
-            className="w- mt-4 h-11"
-            sx={{
-              fontSize: "0.8rem",
-              backgroundColor: "var(--primaryVariant)",
-              color: "white",
-              border: "none",
-              textTransform: "capitalize",
-              borderRadius: "10px",
-            }}
-            onClick={() => handleAddressSelect(selectedAddress)}
-          >
-            Ship to this address
-          </Button>
+            <Button
+              variant="contained"
+              className="w- mt-4 h-11"
+              sx={{
+                fontSize: "0.8rem",
+                backgroundColor: "var(--primaryVariant)",
+                color: "white",
+                border: "none",
+                textTransform: "capitalize",
+                borderRadius: "10px",
+              }}
+              onClick={() => handleAddressSelect(selectedAddress)}
+            >
+              Ship to this address
+            </Button>
+          </div>
         </div>
-      </div>
-        )
-      }
-    
+      )}
     </div>
   );
 }

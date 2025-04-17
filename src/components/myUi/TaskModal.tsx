@@ -3,7 +3,7 @@ import React from "react";
 import Modal from "react-modal";
 // import MyBackBtn from "../myUi/myBackBtn";
 import { cn } from "@/lib/utils";
-import { useContextPage } from "@/providers/context/context";
+import { UseContextPage } from "@/providers/context/context";
 Modal.setAppElement("#root");
 
 type ModalComponent = {
@@ -13,7 +13,7 @@ type ModalComponent = {
 };
 
 export default function TaskModal({ children,className, onClick }: ModalComponent) {
-  const { isOpenModal, closeModal } = useContextPage();
+  const { isOpenModal, closeModal } = UseContextPage();
 
 
   const handleCloseModal = () =>{

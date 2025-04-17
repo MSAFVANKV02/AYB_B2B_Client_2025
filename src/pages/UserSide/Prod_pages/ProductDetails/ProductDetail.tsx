@@ -66,6 +66,18 @@ function ProductDetail({ product, stockData }: Props) {
             </span>
           </div>
 
+          {/* bundle tag === */}
+          <div className="">
+            {product.selectWise === "bundle" && (
+              <span className="text-xs bg-bg text-white px-2 py-1 rounded-md">
+                Bundle{" "}
+                {product.bundle_details
+                  .map((item) => `${item.size}-${item.quantity}`)
+                  .join(", ")}
+              </span>
+            )}
+          </div>
+
           <div className="flex flex-col absolute top-0 right-0">
             <IconButton
               onClick={() =>
@@ -126,7 +138,7 @@ function ProductDetail({ product, stockData }: Props) {
               </p>
 
               <span className="text-xl text-black font-semibold">
-                ₹{variant.purchase_Amount.toFixed(2)}
+                ₹{variant?.purchase_Amount?.toFixed(2)}
               </span>
             </div>
           ))}
@@ -152,6 +164,7 @@ function ProductDetail({ product, stockData }: Props) {
         {/* Color images */}
         <div className="flex gap-3 flex-wrap">
           <ProductDrawer
+            stockData={stockData}
             open={drawerOpen}
             setBuyOpen={setDrawerOpen}
             product={product}
@@ -213,6 +226,7 @@ function ProductDetail({ product, stockData }: Props) {
         </Button>
 
         <ProductDrawer
+        stockData={stockData}
           buyNow={true}
           setBuyOpen={setDrawerOpen}
           open={drawerOpen}

@@ -14,6 +14,10 @@ export interface IFinalProductTypes {
     __v: number
   }
   
+type IBundle = {
+  size:string;
+  quantity:number
+}
   export interface Product {
     _id: string
     product_owner: string
@@ -40,7 +44,7 @@ export interface IFinalProductTypes {
     product_weight: number
     product_dimensions: ProductDimensions
     selectWise: string
-    bundle_details: any[]
+    bundle_details: IBundle[]
     is_free_shipping: boolean
     is_featured_product: boolean
     is_todays_deal: boolean
@@ -48,7 +52,7 @@ export interface IFinalProductTypes {
     is_published: boolean
     is_cod: boolean
     price_per_pieces: PricePerPiece[]
-    variations: Variation[]
+    variations: IFinalVariation[]
     status: IProductStatus
     isDeleted: boolean
     non_published_stores: IToggleOptions[]
@@ -109,7 +113,8 @@ export interface IFinalProductTypes {
     _id: string
   }
   
-  export interface Variation {
+  export interface IFinalVariation {
+    _id: string
     image: string
     colorCode: string
     variant_name: string

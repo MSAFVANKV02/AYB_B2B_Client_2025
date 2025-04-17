@@ -74,7 +74,7 @@ import { motion } from "framer-motion";
 
 type Props = {
   onClick?: () => void; // Function to call when the button is clicked
-  title: string; // The title of the button
+  title?: string; // The title of the button
   sx?: SxProps<Theme>; // Allow overriding styles
   variant?: "contained" | "outlined" | "cancel" |"delete"; // Add variants
   outLineColor?: string;

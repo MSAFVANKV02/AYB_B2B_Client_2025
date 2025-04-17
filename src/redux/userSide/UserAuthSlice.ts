@@ -2,6 +2,9 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store"; // Assuming your store is in ../store
 import { IKycProps, IUserProps } from "@/types/userTypes";
 import { Current_User_Api } from "@/services/user_side_api/auth/route_url";
+import { IAddressType } from "@/types/address-types";
+import { delete_Address_Api } from "@/services/user_side_api/address/route";
+import { makeToastError } from "@/utils/toaster";
 
 // Define the shape of your state
 interface AuthState {
@@ -12,7 +15,7 @@ interface AuthState {
   error: string | null;
   isUserLogged: boolean;
   isUserLoggedKyc: boolean;
-
+  address:IAddressType[] | null;
 }
 
 // Define the User type
@@ -30,30 +33,9 @@ const initialState: AuthState = {
   isUserLogged: false,
   isUserLoggedKyc: false,
   error: null,
+  address: [],
 };
-// 4 last of cookie
-// Async thunk for login
-// export const fetchAyabooUserDetails = createAsyncThunk(
-//   "user/fetchAyabooUserDetails",
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const response = await Current_User_Api();
-//       // console.log(response);
 
-//       if (response.status == 200 || response.data.success === true) {
-//         return response.data;
-//       } else {
-//         return rejectWithValue("Failed to fetch admin details");
-//       }
-//     } catch (error: any) {
-//       console.log(error);
-
-//       return rejectWithValue(
-//         error.response?.data || { message: "Network error" }
-//       );
-//     }
-//   }
-// );
 export const fetchAyabooUserDetails = createAsyncThunk<
   { user: IUserProps; kyc: IKycProps; token: string }, // Fulfilled return type
   void, // Thunk argument type
@@ -63,7 +45,6 @@ export const fetchAyabooUserDetails = createAsyncThunk<
     const response = await Current_User_Api();
     // console.log(response,'response');
     
-
     if (response.status === 200 || response.data.success === true) {
       return response.data;
     } else {
@@ -85,6 +66,27 @@ export const fetchAyabooUserDetails = createAsyncThunk<
   }
 });
 
+// delete address
+
+export const deleteAddressRedux = createAsyncThunk(
+  "wishlist/addWishlistRedux",
+  async (id: string, { rejectWithValue }) => {
+    // console.log(id,'id');
+
+    try {
+      const response = await delete_Address_Api(id);
+      console.log(response);
+      if (response.status === 200) {
+        return id;
+      }
+    } catch (error: any) {
+      // console.log(error);
+
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -98,6 +100,20 @@ const authSlice = createSlice({
       state.user = action.payload;
       state.isUserLogged = true;
     },
+    // setAddressReducers: (state, action: PayloadAction<IAddressType>)=> {
+    //   const newAddress = action.payload;
+    //   // console.log(newAddress,'newAddress');
+      
+    //   if (state.address) {
+    //     state.address = [...state.address, newAddress];
+    //   } else {
+    //     state.address = [newAddress];
+    //   }
+    // } ,
+    setAddressReducers: (state, action: PayloadAction<IAddressType[]>) => {
+      state.address = action.payload;
+    },
+    
     setLoginKycUser: (state, action: PayloadAction<boolean>) => {
       state.isUserLoggedKyc = action.payload;
       // state.isUserLogged = true;
@@ -124,6 +140,7 @@ const authSlice = createSlice({
           state.user = action.payload.user;
           state.userKyc = action.payload.kyc;
           state.token = action.payload.token;
+          state.address = action.payload.user?.addresses
         }
       )
       .addCase(
@@ -135,11 +152,36 @@ const authSlice = createSlice({
           state.userKyc = null;
           state.error = action.payload?.message || "Unknown error";
         }
-      );
+      )
+      // address delete
+      .addCase(deleteAddressRedux.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(deleteAddressRedux.fulfilled, (state, action) => {
+        const addressId = action.payload;
+
+        // console.log(addressId,'addressId');
+        // console.log(state.address,'state.address');
+        
+
+        state.isLoading = false;
+        state.address = state.address ? state.address.filter(
+          (address) => address._id !== addressId
+        ) : null;
+        
+      })
+      .addCase(deleteAddressRedux.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        makeToastError(
+          action.payload as string || "Failed to delete address"
+        )
+      });
   },
 });
 
-export const { logoutUser, setUserData, setLoginKycUser } = authSlice.actions;
+export const { logoutUser, setUserData, setLoginKycUser, setAddressReducers } = authSlice.actions;
 
 export default authSlice.reducer;
 

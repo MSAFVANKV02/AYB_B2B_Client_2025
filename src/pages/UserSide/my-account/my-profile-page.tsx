@@ -2,15 +2,16 @@ import { Separator } from "@/components/ui/separator";
 import SettingsLayout from "./layout";
 import PersonalInformationForm from "./Profile-form";
 import ProfileKycDetails from "./Profile-Kyc-Details";
-import { useContextPage } from "@/providers/context/context";
+import { UseContextPage } from "@/providers/context/context";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 
 import AddressList from "../cart/checkout/AddressList";
-import AddressForm from "../cart/checkout/AddAddress";
-import {  IconButton } from "@mui/material";
+// import AddressForm from "../cart/checkout/AddAddress";
+import { IconButton } from "@mui/material";
 import AyButton from "@/components/myUi/AyButton";
 
 import Modal from "react-modal";
+import CreateAddressForm from "./user-address/create_Address_Form";
 Modal.setAppElement("#root");
 
 export default function SettingsProfilePage() {
@@ -21,14 +22,13 @@ export default function SettingsProfilePage() {
     addAddress,
     setAddAddress,
     handleCloseModal,
-  } = useContextPage();
+  } = UseContextPage();
   return (
     <SettingsLayout>
-        <div>
-          <p className="text-sm text-muted-foreground">Personal Information.</p>
-        </div>
+      <div>
+        <p className="text-sm text-muted-foreground">Personal Information.</p>
+      </div>
       <div className="space-y-5 flex flex-col justify-between   h-full lg:p-0 max-w-screen-xl">
-      
         {/* <Separator /> */}
         <div className="h- w-full flex  lg:flex-row flex-col-reverse justify-between gap-4 ">
           <div className="lg:w-1/2">
@@ -39,10 +39,10 @@ export default function SettingsProfilePage() {
           </div>
         </div>
         {/* ===   Address Details Starts here === */}
-     
+
         {/* =========== */}
         <div className="">
-             <Separator className="my-5" />
+          <Separator className="my-5" />
           <Modal
             isOpen={isOpenModal}
             onRequestClose={handleCloseModal}
@@ -57,7 +57,10 @@ export default function SettingsProfilePage() {
               <CloseOutlinedIcon />
             </IconButton>
             {addAddress ? (
-              <AddressForm addAddress={addAddress} />
+              <>
+                {/* <AddressForm addAddress={addAddress} /> */}
+                <CreateAddressForm addAddress={addAddress} />
+              </>
             ) : (
               <AddressList
                 setIsModalOpen={setIsOpenModal}
@@ -74,14 +77,16 @@ export default function SettingsProfilePage() {
               <span className="text-sm text-gray-600">
                 Malayamma, NIT Campus, +919846012078, support@ayaboo.in
               </span>
-              <span className="text-sm text-gray-600">Phone Number: 0000 000 00</span>
+              <span className="text-sm text-gray-600">
+                Phone Number: 0000 000 00
+              </span>
             </div>
-         
+
             <AyButton
-            onClick={handleOpenModal}
-            title="change"
-           variant="outlined"
-           outLineColor="black"
+              onClick={handleOpenModal}
+              title="change"
+              variant="outlined"
+              outLineColor="black"
             />
           </div>
         </div>

@@ -29,7 +29,7 @@ import {
   userDetailsFields,
 } from "./store_input_filds";
 
-import { useContextPage } from "@/providers/context/context";
+import { UseContextPage } from "@/providers/context/context";
 import { FormField } from "@/components/myUi/FormField";
 import { IRegistrationTypes, StoreTypes } from "@/types/storeTypes";
 import { Create_Store_Api } from "@/services/user_side_api/store/route";
@@ -47,7 +47,7 @@ export default function StoreCreationPage() {
   const [googleAddress, setGoogleAddress] = useState<string>("");
   // const location = useLocation();
 
-  const { setIsOpenModal } = useContextPage();
+  const { setIsOpenModal } = UseContextPage();
 
   const handleSetGoogleLocation = useCallback(() => {
     setIsOpenModal(true);

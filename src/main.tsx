@@ -24,11 +24,10 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 // axios.defaults.baseURL = "https://gateway.ayaboo.com";
 axios.defaults.withCredentials = true;
 
-
 createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
-    <ReactQueyProvider>
-      <ContextProvider>
+    <ContextProvider>
+      <ReactQueyProvider>
         <AuthProvider>
           <PersistGate persistor={persister}>
             <RouterProvider router={rootRouter} />
@@ -46,7 +45,7 @@ createRoot(document.getElementById("root")!).render(
             />
           </PersistGate>
         </AuthProvider>
-      </ContextProvider>
-    </ReactQueyProvider>
+      </ReactQueyProvider>
+    </ContextProvider>
   </Provider>
 );

@@ -18,7 +18,8 @@ import OfflinePay from "@/components/paymentCell/OfflinePay";
 import { useNavigate } from "react-router-dom";
 
 import Modal from "react-modal";
-import { useContextPage } from "@/providers/context/context";
+import { UseContextPage } from "@/providers/context/context";
+import { IAddressType } from "@/types/address-types";
 Modal.setAppElement("#root"); // Add this line to avoid screen-reader issues with modal
 
 type IShipMethod = {
@@ -58,7 +59,7 @@ export type TransactionDetails = {
 };
 
 export type FormDataType = {
-  address: AddressType | null;
+  address: IAddressType | null;
   shippingMethod: string;
   parcelOptions: ParcelOptionsType | null;
   parcelMethod: string;
@@ -82,7 +83,7 @@ export type FormDataValue =
 
 export default function CheckoutPage() {
   // const { handleClick } = useNavigateClicks();
-  const { addAddress,setAddAddress } = useContextPage();
+  const { addAddress,setAddAddress } = UseContextPage();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openShipModal, setOpenShipModal] = useState(false);
