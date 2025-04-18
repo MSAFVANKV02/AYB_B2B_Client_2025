@@ -29,6 +29,7 @@ import {
 import { useSetSearchParams } from "@/hooks/use-set-searchParams";
 import Image from "@/components/global/image";
 import { useAppSelector } from "@/redux/hook";
+import { useAddNewCart } from "@/hooks/use-Cart";
 
 type IDrawerTypes = {
   product?: Product;
@@ -45,7 +46,7 @@ export default function ProductDrawer({
   setBuyOpen,
 }: IDrawerTypes) {
   const { products: stockData } = useAppSelector((state) => state.products);
-
+  const { onAddNewCart, data } = useAddNewCart();
   const [open, setOpen] = useState(false);
   const [selectedVariant, setSelectedVariant] =
     useState<IFinalVariation | null>(product?.variations?.[0] ?? null);
@@ -53,6 +54,8 @@ export default function ProductDrawer({
     [variantId: string]: { [size: string]: number };
   }>({});
   // console.log(product?.price_per_pieces);
+  // console.log(product);
+
   // console.log(selectedVariant, "selectedVariant");
   // console.log(products, "stockData");
   // console.log(quantities, "quantities");
@@ -72,17 +75,46 @@ export default function ProductDrawer({
 
   // makeToastWarning(`${currentImageIndex}`)
 
+  // const handleClick = useCallback(() => {
+  //   const hasQuantities = Object.values(quantities).some((sizeMap) =>
+  //     Object.values(sizeMap).some((qty) => qty > 0)
+  //   );
+  //   if (!hasQuantities) return;
+
+  //   onAddNewCart(cartItems);
+
+  //   setClicked(true);
+  //   setTimeout(() => {
+  //     setClicked(false);
+  //   }, 3000);
+  // }, [quantities]);
   const handleClick = useCallback(() => {
     const hasQuantities = Object.values(quantities).some((sizeMap) =>
       Object.values(sizeMap).some((qty) => qty > 0)
     );
     if (!hasQuantities) return;
+    setClicked(true); // Moved here directly instead of inside setTimeout
+    // console.log(data);
 
-    setClicked(true);
-    setTimeout(() => {
-      setClicked(false);
-    }, 3000);
-  }, [quantities]);
+    // makeToast(data)
+    if (data.status === 200 || data.status === 201) {
+      setTimeout(() => {
+        setClicked(false);
+        setOpen(false);
+        setBuyOpen(false);
+        setQuantities({});
+        setCartItems([]);
+        setSelectedVariant(product?.variations?.[0] ?? null);
+      }, 3000);
+    }
+
+    onAddNewCart({
+      items: cartItems.map((item) => ({
+        ...item,
+        purchaseType: product?.selectWise === "bundle" ? "bundle" : "normal", // or "NORMAL" based on your backend expectation
+      })),
+    });
+  }, [quantities, cartItems, onAddNewCart]);
 
   // 1. Increase Cart Qty =============
   const handleIncrease = useCallback(
@@ -324,30 +356,6 @@ export default function ProductDrawer({
   // });
 
   // cart price
-  // const getPriceForSize = React.useCallback(() => {
-  //   if (!product?.price_per_pieces?.length || !cartItems?.length) return null;
-
-  //   let matchedPrice: number | null = null;
-
-  //   for (const item of cartItems) {
-  //     for (const pref of item.preferred_size) {
-  //       const matchingTier = product.price_per_pieces.find(
-  //         (tier) =>
-  //           pref.quantity >= tier.minPiece && pref.quantity <= tier.maxPiece
-  //       );
-
-  //       if (matchingTier) {
-  //         matchedPrice = matchingTier.purchase_Amount;
-  //         break; // Stop on the first match
-  //       }
-  //     }
-
-  //     if (matchedPrice !== null) break;
-  //   }
-
-  //   // Fallback to the first tier if nothing matched
-  //   return matchedPrice ?? product.price_per_pieces[0]?.purchase_Amount ?? null;
-  // }, [cartItems, product]);
 
   const getPriceForSize = useCallback(() => {
     if (!product?.price_per_pieces?.length || !cartItems?.length) return null;
@@ -379,6 +387,104 @@ export default function ProductDrawer({
       matchedTier?.purchase_Amount ?? priceTiers[0]?.purchase_Amount ?? null
     );
   }, [cartItems, product]);
+  const getPriceForSizeAfterDiscount = useCallback(() => {
+    if (!product?.price_per_pieces?.length || !cartItems?.length) return null;
+
+    // Step 1: Calculate total quantity in cart
+    let totalQuantity = 0;
+
+    for (const item of cartItems) {
+      for (const pref of item.preferred_size) {
+        totalQuantity += pref.quantity;
+      }
+    }
+
+    const priceTiers = product.price_per_pieces;
+    const lastTier = priceTiers[priceTiers.length - 1];
+
+    // Step 2: If quantity is >= last tier's minPiece, always return last tier
+    let basePrice =
+      totalQuantity >= lastTier.minPiece
+        ? lastTier.purchase_Amount
+        : (priceTiers.find(
+            (tier) =>
+              totalQuantity >= tier.minPiece && totalQuantity <= tier.maxPiece
+          )?.purchase_Amount ?? priceTiers[0]?.purchase_Amount);
+
+    // Step 3: Check for variant-specific discount on the selected variant
+    if (selectedVariant && selectedVariant.details?.length) {
+      // Apply the discount from the first detail that has it
+      const detailWithDiscount = selectedVariant.details.find(
+        (d) => d.discount && d.discount > 0
+      );
+
+      if (detailWithDiscount?.discount) {
+        const discountValue = detailWithDiscount.discount;
+
+        if (product?.discount_type === "percentage") {
+          basePrice = basePrice - (basePrice * discountValue) / 100;
+        } else if (product?.discount_type === "flat") {
+          basePrice = basePrice - discountValue;
+        }
+
+        // Prevent negative price
+        if (basePrice < 0) basePrice = 0;
+      }
+    }
+
+    return basePrice;
+  }, [cartItems, product, selectedVariant]);
+
+  // Calculate the subtotals based on the price and quantities
+  //  const getSubtotal = useMemo(() => {
+  //   return cartItems.map((item) => {
+  //     const totalQty = item.preferred_size.reduce((sum:any, s:any) => sum + s.quantity, 0);
+  //     const price = getPriceForSizeAfterDiscount();
+  //     const subtotalAfterDiscount = price ? price * totalQty : 0;
+
+  //     const priceWithoutDiscount = getPriceForSize();
+  //     const subtotalWithoutDiscount = priceWithoutDiscount ? priceWithoutDiscount * totalQty : 0;
+  //     const discount = subtotalAfterDiscount - subtotalWithoutDiscount
+
+  //     return { subtotalAfterDiscount, subtotalWithoutDiscount, totalQty, discount };
+  //   });
+  // }, [cartItems, getPriceForSize, getPriceForSizeAfterDiscount]);
+  const getSubtotal = useMemo(() => {
+    let totalQuantity = 0;
+    let subtotalAfterDiscount = 0;
+    let subtotalWithoutDiscount = 0;
+    let totalDiscount = 0;
+
+    cartItems.forEach((item) => {
+      const totalQty = item.preferred_size.reduce(
+        (sum: any, s: any) => sum + s.quantity,
+        0
+      );
+      const priceAfterDiscount = getPriceForSizeAfterDiscount();
+      const priceWithoutDiscount = getPriceForSize();
+
+      const subtotalAfter = priceAfterDiscount
+        ? priceAfterDiscount * totalQty
+        : 0;
+      const subtotalBefore = priceWithoutDiscount
+        ? priceWithoutDiscount * totalQty
+        : 0;
+      const discount = subtotalAfter - subtotalBefore;
+
+      // Accumulate the totals for the entire cart
+      totalQuantity += totalQty;
+      subtotalAfterDiscount += subtotalAfter;
+      subtotalWithoutDiscount += subtotalBefore;
+      totalDiscount += discount;
+    });
+
+    return {
+      totalQuantity,
+      subtotalAfterDiscount,
+      subtotalWithoutDiscount,
+      totalDiscount,
+    };
+  }, [cartItems, getPriceForSize, getPriceForSizeAfterDiscount]);
 
   return (
     <React.Fragment>
@@ -611,11 +717,33 @@ export default function ProductDrawer({
                 >
                   <Typography sx={{ flex: "1 1 0" }}>{size.size}</Typography>
                   {/* ====== purchase Price goes here */}
-                  <Typography sx={{ flex: "1 1 0", textAlign: "left" }}>
-                    ₹
-                    {getPriceForSize()?.toFixed(2) ??
-                      product?.price_per_pieces[0].purchase_Amount}
-                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: "4px",
+                      flex: "1 1 0",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography sx={{ textAlign: "left" }}>
+                      ₹
+                      {getPriceForSizeAfterDiscount()?.toFixed(2) ??
+                        product?.price_per_pieces[0].purchase_Amount}
+                    </Typography>
+                    {cartItems.length > 0 && size.discount > 0 && (
+                      <Typography
+                        sx={{
+                          textAlign: "left",
+                          color: "gray",
+                          textDecoration: "line-through",
+                        }}
+                      >
+                        ₹
+                        {getPriceForSize()?.toFixed(0) ??
+                          product?.price_per_pieces[0].purchase_Amount}
+                      </Typography>
+                    )}
+                  </Box>
 
                   {/* Qty buttons */}
                   <Stack
@@ -680,27 +808,42 @@ export default function ProductDrawer({
                 borderRadius: "8px",
                 padding: "16px",
               }}
-              className=""
             >
+              {/* Display Item Subtotal */}
               <Stack direction="row" justifyContent="space-between">
-                <Typography level="body-sm">Item subtotal (0 items)</Typography>
-                <Typography level="body-sm">₹0.00</Typography>
+                <Typography level="body-sm">
+                  Item subtotal ({getSubtotal.totalQuantity} items)
+                </Typography>
+                <Typography
+                  level="body-sm"
+                  sx={{ textDecoration: "line-through" }}
+                >
+                  ₹{getSubtotal.subtotalWithoutDiscount.toFixed(2)}
+                </Typography>
               </Stack>
+
+              {/* Display Discount */}
               <Stack
                 direction="row"
                 justifyContent="space-between"
-                sx={{ my: 1 }}
+                fontWeight="bold"
               >
-                <Typography level="body-sm">Shipping total</Typography>
-                <Typography level="body-sm">₹0.00</Typography>
+                <Typography level="body-sm">You saved</Typography>
+                <Typography level="body-sm">
+                  ₹{getSubtotal.totalDiscount.toFixed(2)}
+                </Typography>
               </Stack>
+
+              {/* Display Subtotal After Discount */}
               <Stack
                 direction="row"
                 justifyContent="space-between"
                 fontWeight="bold"
               >
                 <Typography>Subtotal</Typography>
-                <Typography>₹0.00</Typography>
+                <Typography>
+                  ₹{getSubtotal.subtotalAfterDiscount.toFixed(2)}
+                </Typography>
               </Stack>
 
               <Stack direction="row" spacing={2} sx={{ mt: 2 }}>

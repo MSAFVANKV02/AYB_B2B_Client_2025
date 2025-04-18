@@ -20,11 +20,11 @@ export const useMutationData = (
   // console.log("useMutationData");
   // const { toast } = useToast();
   const client = useQueryClient();
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, data, status } = useMutation({
     mutationKey,
     mutationFn,
     onSuccess(data) {
-      console.log(data, "data mutation");
+      // console.log(data, "data mutation");
 
       if (onSuccess) onSuccess(data); // Reset form only if success
 
@@ -80,7 +80,7 @@ export const useMutationData = (
     },
   });
 
-  return { mutate, isPending };
+  return { mutate, isPending , data, status};
 };
 
 export const useMutationDataState = (mutationKey: MutationKey) => {
