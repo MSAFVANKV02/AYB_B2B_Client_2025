@@ -1,0 +1,24 @@
+# Create and switch to a fresh build-branch
+git checkout -b build-branch
+
+# Remove all tracked files from Git
+git rm -rf --cached .
+
+# Re-add only the dist folder
+git add -f dist
+
+# Commit only the dist folder
+git commit -m "Build files for deployment"
+
+# Push the new build-branch with only dist
+git push origin build-branch --force
+
+
+# delete branch
+git push origin --delete build-branch
+
+# delete locally
+git branch -D build-branch
+
+3—
+git rm -r --cached dist

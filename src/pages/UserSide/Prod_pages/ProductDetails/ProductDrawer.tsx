@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import * as React from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Box,
   Drawer,
@@ -45,13 +46,13 @@ export default function ProductDrawer({
 }: IDrawerTypes) {
   const { products: stockData } = useAppSelector((state) => state.products);
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [selectedVariant, setSelectedVariant] =
-    React.useState<IFinalVariation | null>(product?.variations?.[0] ?? null);
-  const [quantities, setQuantities] = React.useState<{
+    useState<IFinalVariation | null>(product?.variations?.[0] ?? null);
+  const [quantities, setQuantities] = useState<{
     [variantId: string]: { [size: string]: number };
   }>({});
-  console.log(product);
+  // console.log(product?.price_per_pieces);
   // console.log(selectedVariant, "selectedVariant");
   // console.log(products, "stockData");
   // console.log(quantities, "quantities");
@@ -62,179 +63,180 @@ export default function ProductDrawer({
   //   const tabletsWidth = onlyWidth < 900;
   //   const xlScreen = onlyWidth < 1440;
   const mobileWidth = onlyWidth < 768;
-  const [clicked, setClicked] = React.useState(false);
-  const [cartItems, setCartItems] = React.useState<any[]>([]);
+  const [clicked, setClicked] = useState(false);
+  const [cartItems, setCartItems] = useState<any[]>([]);
 
-  console.log(cartItems, "cartItems");
+  // console.log(cartItems, "cartItems");
 
-  const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // makeToastWarning(`${currentImageIndex}`)
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     const hasQuantities = Object.values(quantities).some((sizeMap) =>
       Object.values(sizeMap).some((qty) => qty > 0)
     );
     if (!hasQuantities) return;
-    // Add the clicked state to trigger animations
-    setClicked(true);
-    // generateCartItems();
 
-    // Reset the state after 3 seconds (3000 ms)
+    setClicked(true);
     setTimeout(() => {
       setClicked(false);
     }, 3000);
-  };
+  }, [quantities]);
 
-  const handleIncrease = (
-    variantId: string,
-    size: string,
-    bundleQuantity: number
-  ) => {
-    setQuantities((prev) => {
-      const currentQty = prev[variantId]?.[size] || 0;
-  
-      const sizeDetail = selectedVariant?.details.find(
-        (detail) => detail.size === size
-      );
-      const stockAvailable = sizeDetail?.stock || 0;
-  
-      // Check if we are already at max stock
-      if (currentQty >= stockAvailable) {
-        return prev; // No changes
-      }
-  
-      let updatedQuantities = { ...prev };
-  
-      if (product?.selectWise === "bundle") {
-        const newQty =
-          Math.min(
+  // 1. Increase Cart Qty =============
+  const handleIncrease = useCallback(
+    (variantId: string, size: string, bundleQuantity: number) => {
+      setQuantities((prev) => {
+        const currentQty = prev[variantId]?.[size] || 0;
+
+        const sizeDetail = selectedVariant?.details.find(
+          (detail) => detail.size === size
+        );
+        const stockAvailable = sizeDetail?.stock || 0;
+
+        // Check if we are already at max stock
+        if (currentQty >= stockAvailable) {
+          return prev; // No changes
+        }
+
+        let updatedQuantities = { ...prev };
+
+        if (product?.selectWise === "bundle") {
+          const newQty = Math.min(
             (Math.floor(currentQty / bundleQuantity) + 1) * bundleQuantity,
             stockAvailable
           );
-  
-        const updatedSizes: { [size: string]: number } = {};
-        selectedVariant?.details.forEach((detail) => {
-          updatedSizes[detail.size] = newQty;
-        });
-  
-        updatedQuantities = {
-          ...prev,
-          [variantId]: updatedSizes,
-        };
-      } else {
-        const newQty = currentQty + 1;
-        updatedQuantities = {
-          ...prev,
-          [variantId]: {
-            ...prev[variantId],
-            [size]: newQty,
-          },
-        };
-      }
-  
-      updateCartItems(updatedQuantities);
-      return updatedQuantities;
-    });
-  };
-  
 
+          const updatedSizes: { [size: string]: number } = {};
+          selectedVariant?.details.forEach((detail) => {
+            updatedSizes[detail.size] = newQty;
+          });
+
+          updatedQuantities = {
+            ...prev,
+            [variantId]: updatedSizes,
+          };
+        } else {
+          const newQty = currentQty + 1;
+          updatedQuantities = {
+            ...prev,
+            [variantId]: {
+              ...prev[variantId],
+              [size]: newQty,
+            },
+          };
+        }
+
+        updateCartItems(updatedQuantities);
+        return updatedQuantities;
+      });
+    },
+    [product?.selectWise, selectedVariant]
+  );
+
+  // 2. Decrease Cart Qty =============
   //
-  const handleDecrease = (
-    variantId: string,
-    size: string,
-    bundleQuantity: number
-  ) => {
-    setQuantities((prev) => {
-      const currentQty = prev[variantId]?.[size] || 0;
-      let updatedQuantities = { ...prev };
+  const handleDecrease = useCallback(
+    (variantId: string, size: string, bundleQuantity: number) => {
+      setQuantities((prev) => {
+        const currentQty = prev[variantId]?.[size] || 0;
+        let updatedQuantities = { ...prev };
 
-      if (product?.selectWise === "bundle") {
-        const updatedQty = Math.max(currentQty - bundleQuantity, 0);
-        const updatedSizes: { [size: string]: number } = {};
+        if (product?.selectWise === "bundle") {
+          const updatedQty = Math.max(currentQty - bundleQuantity, 0);
+          const updatedSizes: { [size: string]: number } = {};
 
-        selectedVariant?.details.forEach((detail) => {
-          if (updatedQty > 0) {
-            updatedSizes[detail.size] = updatedQty;
-          }
-        });
+          selectedVariant?.details.forEach((detail) => {
+            if (updatedQty > 0) {
+              updatedSizes[detail.size] = updatedQty;
+            }
+          });
 
-        updatedQuantities = {
-          ...prev,
-          [variantId]: updatedSizes,
-        };
-      } else {
-        const newQty = Math.max(currentQty - 1, 0);
-        updatedQuantities = {
-          ...prev,
-          [variantId]: {
-            ...prev[variantId],
-            [size]: newQty,
-          },
-        };
-        if (newQty === 0) delete updatedQuantities[variantId][size];
-        if (Object.keys(updatedQuantities[variantId]).length === 0)
-          delete updatedQuantities[variantId];
-      }
+          updatedQuantities = {
+            ...prev,
+            [variantId]: updatedSizes,
+          };
+        } else {
+          const newQty = Math.max(currentQty - 1, 0);
+          updatedQuantities = {
+            ...prev,
+            [variantId]: {
+              ...prev[variantId],
+              [size]: newQty,
+            },
+          };
+          if (newQty === 0) delete updatedQuantities[variantId][size];
+          if (Object.keys(updatedQuantities[variantId]).length === 0)
+            delete updatedQuantities[variantId];
+        }
 
-      updateCartItems(updatedQuantities);
-      return updatedQuantities;
-    });
-  };
+        updateCartItems(updatedQuantities);
+        return updatedQuantities;
+      });
+    },
+    [product?.selectWise, selectedVariant]
+  );
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    variantId: string,
-    size: string
-  ) => {
-    const rawValue = parseInt(e.target.value, 10) || 0;
-    const value = Math.max(rawValue, 0);
-    const variant = selectedVariant;
-    const detail = variant?.details.find((d) => d.size === size);
-    const stock = detail?.stock ?? Infinity;
-    const bundleQuantity = detail?.bundleQuantity ?? 1;
+  // 3. update qty using input ========
+  const handleInputChange = useCallback(
+    (
+      e: React.ChangeEvent<HTMLInputElement>,
+      variantId: string,
+      size: string
+    ) => {
+      const rawValue = parseInt(e.target.value, 10) || 0;
+      const value = Math.max(rawValue, 0);
+      const variant = selectedVariant;
+      const detail = variant?.details.find((d) => d.size === size);
+      const stock = detail?.stock ?? Infinity;
+      const bundleQuantity = detail?.bundleQuantity ?? 1;
 
-    setQuantities((prev) => {
-      let updatedQuantities = { ...prev };
+      setQuantities((prev) => {
+        let updatedQuantities = { ...prev };
 
-      if (product?.selectWise === "bundle") {
-        const newQty = Math.min(
-          Math.floor(value / bundleQuantity) * bundleQuantity,
-          stock
-        );
+        if (product?.selectWise === "bundle") {
+          const newQty = Math.min(
+            Math.floor(value / bundleQuantity) * bundleQuantity,
+            stock
+          );
 
-        const updatedSizes: { [size: string]: number } = {};
-        variant?.details.forEach((detail) => {
-          updatedSizes[detail.size] = newQty;
-        });
+          const updatedSizes: { [size: string]: number } = {};
+          variant?.details.forEach((detail) => {
+            updatedSizes[detail.size] = newQty;
+          });
 
-        updatedQuantities = {
-          ...prev,
-          [variantId]: updatedSizes,
-        };
-      } else {
-        const newQty = Math.min(value, stock);
-        updatedQuantities = {
-          ...prev,
-          [variantId]: {
-            ...prev[variantId],
-            [size]: newQty,
-          },
-        };
-      }
+          updatedQuantities = {
+            ...prev,
+            [variantId]: updatedSizes,
+          };
+        } else {
+          const newQty = Math.min(value, stock);
+          updatedQuantities = {
+            ...prev,
+            [variantId]: {
+              ...prev[variantId],
+              [size]: newQty,
+            },
+          };
+        }
 
-      updateCartItems(updatedQuantities);
-      return updatedQuantities;
-    });
-  };
+        updateCartItems(updatedQuantities);
+        return updatedQuantities;
+      });
+    },
+    [product?.selectWise, selectedVariant]
+  );
 
-  const handleSelectVariant = (variant: IFinalVariation) => {
+  // 4. Select Variant ================
+
+  const handleSelectVariant = useCallback((variant: IFinalVariation) => {
     setSelectedVariant(variant);
     setQuantities((prev) => {
       if (!prev[variant._id]) {
         const defaultSizes: { [size: string]: number } = {};
         variant.details.forEach((d) => {
-          defaultSizes[d.size] = 1;
+          defaultSizes[d.size] = 0;
         });
         return {
           ...prev,
@@ -243,83 +245,139 @@ export default function ProductDrawer({
       }
       return prev;
     });
-  };
+  }, []);
 
-  const updateCartItems = (quantitiesToUse: typeof quantities) => {
-    if (!product) return;
+  const updateCartItems = useCallback(
+    (quantitiesToUse: typeof quantities) => {
+      if (!product) return;
 
-    const items = Object.entries(quantitiesToUse).map(
-      ([variantId, sizeMap]) => {
-        const variant = product.variations.find((v) => v._id === variantId);
-        if (!variant) return null;
+      const items = Object.entries(quantitiesToUse).map(
+        ([variantId, sizeMap]) => {
+          const variant = product.variations.find((v) => v._id === variantId);
+          if (!variant) return null;
 
-        const preferred_size = Object.entries(sizeMap)
-          .filter(([_, qty]) => qty > 0)
-          .map(([size, qty]) => ({ size, quantity: qty }));
+          const preferred_size = Object.entries(sizeMap)
+            .filter(([_, qty]) => qty > 0)
+            .map(([size, qty]) => ({ size, quantity: qty }));
 
-        // If preferred_size is empty, skip adding this item
-        if (preferred_size.length === 0) return null;
+          // If preferred_size is empty, skip adding this item
+          if (preferred_size.length === 0) return null;
 
-        return {
-          product: stockData[0]._id,
-          store: stockData?.[0]?.store?._id ?? "",
-          stock_variant: variant._id,
-          purchaseType: "NORMAL",
-          preferred_size,
-        };
+          return {
+            product: stockData[0]._id,
+            store: stockData?.[0]?.store?._id ?? "",
+            stock_variant: variant._id,
+            purchaseType: "NORMAL",
+            preferred_size,
+          };
+        }
+      );
+
+      // Filter out nulls and items with empty preferred_size
+      setCartItems(
+        items.filter((item) => item && item.preferred_size.length > 0)
+      );
+    },
+    [product, stockData]
+  );
+
+  // const isVariantInCart = (variantId: string) => {
+  //   const isInCart = cartItems.some((item) => item.stock_variant === variantId);
+  //   return isInCart ? true : false;
+  // };
+  const isVariantInCart = useCallback(
+    (variantId: string) => {
+      return cartItems.some((item) => item.stock_variant === variantId);
+    },
+    [cartItems]
+  );
+
+  const variantQuantityMap = useMemo(() => {
+    const map: { [variantId: string]: number } = {};
+    cartItems.forEach((item) => {
+      const totalQty = item.preferred_size.reduce(
+        (sum: number, s: any) => sum + s.quantity,
+        0
+      );
+      if (map[item.stock_variant]) {
+        map[item.stock_variant] += totalQty;
+      } else {
+        map[item.stock_variant] = totalQty;
       }
-    );
+    });
+    return map;
+  }, [cartItems]);
 
-    // Filter out nulls and items with empty preferred_size
-    setCartItems(
-      items.filter((item) => item && item.preferred_size.length > 0)
-    );
-  };
+  // const variantQuantityMap: { [variantId: string]: number } = {};
 
-  const isVariantInCart = (variantId: string) => {
-    const isInCart = cartItems.some((item) => item.stock_variant === variantId);
-    return isInCart ? true : false;
-  };
+  // cartItems.forEach((item) => {
+  //   const totalQty = item.preferred_size.reduce(
+  //     (sum: number, s: any) => sum + s.quantity,
+  //     0
+  //   );
 
-  const variantQuantityMap: { [variantId: string]: number } = {};
-
-  cartItems.forEach((item) => {
-    const totalQty = item.preferred_size.reduce(
-      (sum: number, s: any) => sum + s.quantity,
-      0
-    );
-
-    if (variantQuantityMap[item.stock_variant]) {
-      variantQuantityMap[item.stock_variant] += totalQty;
-    } else {
-      variantQuantityMap[item.stock_variant] = totalQty;
-    }
-  });
+  //   if (variantQuantityMap[item.stock_variant]) {
+  //     variantQuantityMap[item.stock_variant] += totalQty;
+  //   } else {
+  //     variantQuantityMap[item.stock_variant] = totalQty;
+  //   }
+  // });
 
   // cart price
-  const getPriceForSize = React.useCallback(() => {
+  // const getPriceForSize = React.useCallback(() => {
+  //   if (!product?.price_per_pieces?.length || !cartItems?.length) return null;
+
+  //   let matchedPrice: number | null = null;
+
+  //   for (const item of cartItems) {
+  //     for (const pref of item.preferred_size) {
+  //       const matchingTier = product.price_per_pieces.find(
+  //         (tier) =>
+  //           pref.quantity >= tier.minPiece && pref.quantity <= tier.maxPiece
+  //       );
+
+  //       if (matchingTier) {
+  //         matchedPrice = matchingTier.purchase_Amount;
+  //         break; // Stop on the first match
+  //       }
+  //     }
+
+  //     if (matchedPrice !== null) break;
+  //   }
+
+  //   // Fallback to the first tier if nothing matched
+  //   return matchedPrice ?? product.price_per_pieces[0]?.purchase_Amount ?? null;
+  // }, [cartItems, product]);
+
+  const getPriceForSize = useCallback(() => {
     if (!product?.price_per_pieces?.length || !cartItems?.length) return null;
 
-    let matchedPrice: number | null = null;
+    // Step 1: Calculate total quantity in cart
+    let totalQuantity = 0;
 
     for (const item of cartItems) {
       for (const pref of item.preferred_size) {
-        const matchingTier = product.price_per_pieces.find(
-          (tier) =>
-            pref.quantity >= tier.minPiece && pref.quantity <= tier.maxPiece
-        );
-
-        if (matchingTier) {
-          matchedPrice = matchingTier.purchase_Amount;
-          break; // Stop on the first match
-        }
+        totalQuantity += pref.quantity;
       }
-
-      if (matchedPrice !== null) break;
     }
 
-    // Fallback to the first tier if nothing matched
-    return matchedPrice ?? product.price_per_pieces[0]?.purchase_Amount ?? null;
+    const priceTiers = product.price_per_pieces;
+    const lastTier = priceTiers[priceTiers.length - 1];
+
+    // Step 2: If quantity is >= last tier's minPiece, always return last tier
+    if (totalQuantity >= lastTier.minPiece) {
+      return lastTier.purchase_Amount;
+    }
+
+    // Step 3: Otherwise, find the matching tier
+    const matchedTier = priceTiers.find(
+      (tier) => totalQuantity >= tier.minPiece && totalQuantity <= tier.maxPiece
+    );
+
+    // Step 4: Return matched price or fallback to first tier
+    return (
+      matchedTier?.purchase_Amount ?? priceTiers[0]?.purchase_Amount ?? null
+    );
   }, [cartItems, product]);
 
   return (
@@ -468,11 +526,35 @@ export default function ProductDrawer({
                       sx={{ my: 1 }}
                       key={index}
                     >
-                      <Box>
-                        <Typography level="body-sm">
+                      <Box
+                        sx={{
+                          color:
+                            getPriceForSize() === price.purchase_Amount
+                              ? "#5f08b1"
+                              : "",
+                        }}
+                      >
+                        <Typography
+                          level="body-sm"
+                          sx={{
+                            color:
+                              getPriceForSize() === price.purchase_Amount
+                                ? "#5f08b1"
+                                : "",
+                          }}
+                        >
                           {price.minPiece}-{price.maxPiece} pieces
                         </Typography>
-                        <Typography level="h4" fontWeight="00">
+                        <Typography
+                          level="h4"
+                          fontWeight="00"
+                          sx={{
+                            color:
+                              getPriceForSize() === price.purchase_Amount
+                                ? "#5f08b1"
+                                : "",
+                          }}
+                        >
                           ₹{price.purchase_Amount}
                         </Typography>
                       </Box>
@@ -530,7 +612,9 @@ export default function ProductDrawer({
                   <Typography sx={{ flex: "1 1 0" }}>{size.size}</Typography>
                   {/* ====== purchase Price goes here */}
                   <Typography sx={{ flex: "1 1 0", textAlign: "left" }}>
-                    ₹{getPriceForSize()?.toFixed(2) ?? product?.price_per_pieces[0].purchase_Amount}
+                    ₹
+                    {getPriceForSize()?.toFixed(2) ??
+                      product?.price_per_pieces[0].purchase_Amount}
                   </Typography>
 
                   {/* Qty buttons */}
@@ -588,6 +672,7 @@ export default function ProductDrawer({
             {/* <Divider sx={{ my: 2 }} /> */}
 
             {/* Subtotal and Actions */}
+            {/* total calculation section */}
             <Box
               sx={{
                 mt: "auto",
