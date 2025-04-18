@@ -225,11 +225,13 @@ function MainHome() {
           JSON.stringify(recentViewProducts,null,4)
         }
       </pre> */}
-      {recentViewProducts.length > 0 && (
+      {recentViewProducts && recentViewProducts.length > 0 && (
         <div className="section_container_cards space-y-2">
           <h4>Recently Viewed</h4>
           <div className="grid sm:gap-2 xl:grid-cols-5 md:grid-cols-4 sm:grid-cols-3  grid-cols-2 w-full ">
             {recentViewProducts.map((product, index) => {
+            if (!product.product || product.product.basePrice === 0 || !product.product.basePrice) return null;
+
               const isFavorite =
                 wishlist && wishlist.some((item) => item._id === product._id);
               // console.log(products,'products');
@@ -239,7 +241,7 @@ function MainHome() {
               return (
                 <div key={index}>
                   <ProdCard
-                    basePrice={product.product.basePrice}
+                    basePrice={product.product?.basePrice}
                     featured={product.product.is_featured_product}
                     imageContainer="md:h-[310px] h-[260px]"
                     imgClass=""

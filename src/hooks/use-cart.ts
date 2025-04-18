@@ -1,5 +1,7 @@
+import { dispatch } from "@/redux/hook";
 import { useMutationData } from "./useMutationData";
 import { addToCartAction } from "@/action/cart/cartAction";
+import { getCartRedux } from "@/redux/userSide/product_Slice";
 
 export const useAddNewCart = () => {
 //   const client = useQueryClient();
@@ -7,11 +9,11 @@ export const useAddNewCart = () => {
     ["add-cart"], // Ensure unique mutation key per product
     ( items :any) => addToCartAction(items), // Pass newStatus
     "cart-status",
-    () => {
-    //   if (data.status === 200 || data.status === 201) {
-    //     client.invalidateQueries({ queryKey: ["all-notifications"] });
-    //   }
-      //
+    (data) => {
+      if (data.status === 200 || data.status === 201) {
+        dispatch(getCartRedux());
+      }
+      
     }
   );
 

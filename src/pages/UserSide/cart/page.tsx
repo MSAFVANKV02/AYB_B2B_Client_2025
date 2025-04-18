@@ -1,20 +1,94 @@
-
 import OrderSummary from "@/components/checkout/OrderSummary";
 import useNavigateClicks from "@/hooks/useClicks";
 import CartDetails from "@/components/cart/CartDetails";
-import { cartDetailsData } from "@/data/dummyData/carData";
+// import { cartDetailsData } from "@/data/dummyData/carData";
 import CartLayout from "./layout";
-
-
-
+import { useAppSelector } from "@/redux/hook";
 
 const ShoppingCart = () => {
   // const onlyWidth = useWindowWidth();
   const { handleClick } = useNavigateClicks();
- 
+  const { cart } = useAppSelector((state) => state.products);
+
+  const getPurchaseDetails = () => {
+    let totalGST = 0;
+    let totalCess = 0;
+    let totalPrice = 0;
+    let totalItems = 0;
+    let totalDiscountAmount = 0;
+    let subTotal = 0;
+
+    cart?.items?.forEach((item) => {
+      item.products.forEach((product) => {
+        const { price_per_pieces, tax_details, discount, discount_type } =
+          product;
+        const variation = product.variations?.[0];
+        const sizes = variation?.details ?? [];
+
+        sizes.forEach((variantDetail) => {
+          const qty = variantDetail.quantity || 0;
+
+          const priceTier = price_per_pieces.find(
+            (tier) =>
+              qty >= tier.minPiece &&
+              (tier.maxPiece === 0 || qty <= tier.maxPiece)
+          );
+
+          const basePrice = priceTier?.purchase_Amount ?? 0;
+          let discountedPrice = basePrice;
+
+          if (discount_type === "percentage") {
+            discountedPrice = basePrice - (basePrice * discount) / 100;
+          } else if (discount_type === "flat") {
+            discountedPrice = basePrice - discount;
+          }
+
+          const productTotal = qty * discountedPrice;
+          const originalTotal = qty * basePrice;
+
+          // === GST Calculation ===
+          const gstRate =
+            typeof tax_details?.igst === "number"
+              ? tax_details.igst
+              : (tax_details?.state_tax ?? 0) + (tax_details?.central_tax ?? 0);
+
+          const gstAmount = (productTotal * gstRate) / 100;
+
+          // === Cess Calculation ===
+          let cessRate = 0;
+
+          if (Array.isArray(tax_details?.on_items_rate_details)) {
+            const cessTier = tax_details.on_items_rate_details.find(
+              (tier) =>
+                originalTotal >= tier.greaterThan && originalTotal <= tier.upto
+            );
+            cessRate = cessTier?.cess ?? 0;
+          }
+
+          const cessAmount = (productTotal * cessRate) / 100;
+
+          totalPrice += productTotal + gstAmount + cessAmount;
+          subTotal += productTotal;
+          totalDiscountAmount += originalTotal - productTotal;
+          totalGST += gstAmount;
+          totalCess += cessAmount;
+          totalItems += qty;
+        });
+      });
+    });
+
+    return {
+      totalPrice,
+      totalGST,
+      totalCess,
+      totalItems,
+      totalDiscountAmount,
+      subTotal,
+    };
+  };
 
   return (
-    <CartLayout >
+    <CartLayout>
       {/* Shopping Cart Section */}
       <div className="md:w-3/4 w-full">
         <h1 className="text-2xl font-semibold mb-4">Shopping cart</h1>
@@ -31,25 +105,25 @@ const ShoppingCart = () => {
         </div> */}
 
         {/* Product Section */}
-          <CartDetails
-          details={cartDetailsData}
-          title={'items'}
+        <CartDetails
+          // details={cartDetailsData}
+          title={"items"}
           isCollapsible
           isAllSelect
-          />
+        />
       </div>
 
       {/* Order Summary Section ======== = == = ====== ======= = ===*/}
       <OrderSummary
-        gst={18}
-        discount={20}
-        cess={2}
-        itemSubTotal={500}
-        shippingCharge={20}
-        subTotal={550}
-        totalPrice={600}
-        totalItems={3}
-       btnLabel="Checkout"
+        gst={cart?.gst.cgst ?? 0}
+        discount={getPurchaseDetails().totalDiscountAmount}
+        cess={cart?.gst.cgst}
+        itemSubTotal={cart?.subTotalExclTax}
+        shippingCharge={cart?.shippingCharge}
+        subTotal={cart?.subTotalExclTax}
+        totalPrice={cart?.cartValue}
+        totalItems={cart?.totalItems}
+        btnLabel="Checkout"
         handleClick={() => handleClick("/cart/checkout")}
       />
     </CartLayout>

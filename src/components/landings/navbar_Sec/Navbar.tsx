@@ -13,7 +13,7 @@ import {
   isAuthenticated,
   isAuthenticated_4_Kyc,
 } from "@/middlewares/IsAuthenticated";
-import { getWishlistRedux } from "@/redux/userSide/product_Slice";
+import { getCartRedux, getWishlistRedux } from "@/redux/userSide/product_Slice";
 
 export type INavbarItems = {
   href: string;
@@ -46,6 +46,7 @@ function Navbar({ navItems }: NavbarProps) {
     if (isLoggedInKyc || isLogged) {
       dispatch(fetchAyabooUserDetails());
       dispatch(getWishlistRedux());
+      dispatch(getCartRedux());
     }
 
     if (isLoggedInKyc && user?.kycStatus === "approved") {

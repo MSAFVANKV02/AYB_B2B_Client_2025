@@ -26,6 +26,7 @@ export default function AccountMenu() {
   const dispatch = useAppDispatch();
   // const { handleLogout } = useAuth();
   const { user } = useAppSelector((state) => state.auth);
+  const { cart } = useAppSelector((state) => state.products);
   const isKycUser = React.useMemo(() => isAuthenticated_4_Kyc(), []);
 
   const handleClick = React.useCallback(
@@ -34,6 +35,7 @@ export default function AccountMenu() {
     },
     []
   );
+  // console.log(cart, "cart length");
 
   const handleClose = React.useCallback(() => {
     setAnchorEl(null);
@@ -60,10 +62,9 @@ export default function AccountMenu() {
       const response = await Logout_User_Api();
 
       if (response.status === 200) {
-        
         makeToast(response.data.message);
         dispatch(clearKycDetails());
-        navigate('/')
+        navigate("/");
         dispatch(logoutUser());
         window.location.reload();
       }
@@ -109,7 +110,9 @@ export default function AccountMenu() {
           <>
             <Tooltip title="My Notifications">
               <IconButton
-                onClick={() => handleCloseAndNavigate("/my-account/notifications")}
+                onClick={() =>
+                  handleCloseAndNavigate("/my-account/notifications")
+                }
                 size="small"
                 sx={{ ml: 0 }}
               >
@@ -131,7 +134,7 @@ export default function AccountMenu() {
               <IconButton
                 onClick={() => handleCloseAndNavigate("/cart")}
                 size="small"
-                sx={{ ml: 0 }}
+                sx={{ ml: 0, position: "relative" }}
               >
                 <Avatar
                   sx={{ width: 32, height: 32, backgroundColor: "transparent" }}
@@ -143,6 +146,11 @@ export default function AccountMenu() {
                     className="text-black"
                   />
                 </Avatar>
+                {cart && cart?.items.length > 0 && (
+                  <span className="absolute top-1 right-1 text-xs bg-[#6A0DAD] text-white rounded-full px-1">
+                    {cart?.items.length}
+                  </span>
+                )}
               </IconButton>
             </Tooltip>
           </>

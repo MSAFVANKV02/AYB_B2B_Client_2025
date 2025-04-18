@@ -30,6 +30,7 @@ import { useSetSearchParams } from "@/hooks/use-set-searchParams";
 import Image from "@/components/global/image";
 import { useAppSelector } from "@/redux/hook";
 import { useAddNewCart } from "@/hooks/use-Cart";
+import { makeToast } from "@/utils/toaster";
 
 type IDrawerTypes = {
   product?: Product;
@@ -54,9 +55,9 @@ export default function ProductDrawer({
     [variantId: string]: { [size: string]: number };
   }>({});
   // console.log(product?.price_per_pieces);
-  // console.log(product);
+  console.log(product?.bundle_details);
 
-  // console.log(selectedVariant, "selectedVariant");
+  console.log(selectedVariant, "selectedVariant");
   // console.log(products, "stockData");
   // console.log(quantities, "quantities");
 
@@ -93,20 +94,35 @@ export default function ProductDrawer({
       Object.values(sizeMap).some((qty) => qty > 0)
     );
     if (!hasQuantities) return;
-    setClicked(true); // Moved here directly instead of inside setTimeout
+    // Moved here directly instead of inside setTimeout
     // console.log(data);
 
+    // if (
+    //   !product ||
+    //   !product.price_per_pieces ||
+    //   product.price_per_pieces.length === 0
+    // ) {
+    //   return makeToast("Product pricing information is missing.");
+    // }
+
+    // if (getSubtotal.totalQuantity < product.price_per_pieces[0].minPiece) {
+    //   return makeToast(
+    //     `Please add at least ${product.price_per_pieces[0].minPiece} items`
+    //   );
+    // }
+
+    setClicked(true);
     // makeToast(data)
-    if (data.status === 200 || data.status === 201) {
-      setTimeout(() => {
-        setClicked(false);
-        setOpen(false);
-        setBuyOpen(false);
-        setQuantities({});
-        setCartItems([]);
-        setSelectedVariant(product?.variations?.[0] ?? null);
-      }, 3000);
-    }
+    // if ((data && data.status === 200) || data.status === 201) {
+    //   setTimeout(() => {
+    //     setClicked(false);
+    //     setOpen(false);
+    //     setBuyOpen(false);
+    //     setQuantities({});
+    //     setCartItems([]);
+    //     setSelectedVariant(product?.variations?.[0] ?? null);
+    //   }, 3000);
+    // }
 
     onAddNewCart({
       items: cartItems.map((item) => ({
@@ -117,47 +133,108 @@ export default function ProductDrawer({
   }, [quantities, cartItems, onAddNewCart]);
 
   // 1. Increase Cart Qty =============
+  // const handleIncrease = useCallback(
+  //   (variantId: string, size: string, bundleQuantity: number) => {
+  //     setQuantities((prev) => {
+  //       const currentQty = prev[variantId]?.[size] || 0;
+
+  //       const sizeDetail = selectedVariant?.details.find(
+  //         (detail) => detail.size === size
+  //       );
+  //       const stockAvailable = sizeDetail?.stock || 0;
+
+  //       // Check if we are already at max stock
+  //       if (currentQty >= stockAvailable) {
+  //         return prev; // No changes
+  //       }
+
+  //       let updatedQuantities = { ...prev };
+
+  //       if (product?.selectWise === "bundle") {
+  //         const newQty = Math.min(
+  //           (Math.floor(currentQty / bundleQuantity) + 1) * bundleQuantity,
+  //           stockAvailable
+  //         );
+
+  //         const updatedSizes: { [size: string]: number } = {};
+  //         selectedVariant?.details.forEach((detail) => {
+  //           updatedSizes[detail.size] = newQty;
+  //         });
+
+  //         updatedQuantities = {
+  //           ...prev,
+  //           [variantId]: updatedSizes,
+  //         };
+  //       } else {
+  //         const newQty = currentQty + 1;
+  //         updatedQuantities = {
+  //           ...prev,
+  //           [variantId]: {
+  //             ...prev[variantId],
+  //             [size]: newQty,
+  //           },
+  //         };
+  //       }
+
+  //       updateCartItems(updatedQuantities);
+  //       return updatedQuantities;
+  //     });
+  //   },
+  //   [product?.selectWise, selectedVariant]
+  // );
   const handleIncrease = useCallback(
     (variantId: string, size: string, bundleQuantity: number) => {
       setQuantities((prev) => {
-        const currentQty = prev[variantId]?.[size] || 0;
-
-        const sizeDetail = selectedVariant?.details.find(
-          (detail) => detail.size === size
-        );
-        const stockAvailable = sizeDetail?.stock || 0;
-
-        // Check if we are already at max stock
-        if (currentQty >= stockAvailable) {
-          return prev; // No changes
-        }
-
-        let updatedQuantities = { ...prev };
+        const updatedQuantities = { ...prev };
+        const variantQuantities = { ...prev[variantId] };
 
         if (product?.selectWise === "bundle") {
-          const newQty = Math.min(
-            (Math.floor(currentQty / bundleQuantity) + 1) * bundleQuantity,
-            stockAvailable
-          );
+          // Check all bundle sizes for stock and increment
+          let canIncrease = true;
 
-          const updatedSizes: { [size: string]: number } = {};
-          selectedVariant?.details.forEach((detail) => {
-            updatedSizes[detail.size] = newQty;
+          product.bundle_details.forEach((bundleItem) => {
+            const size = bundleItem.size;
+            const qtyToAdd = bundleItem.quantity;
+
+            const sizeDetail = selectedVariant?.details.find(
+              (detail) => detail.size === size
+            );
+            const stockAvailable = sizeDetail?.stock || 0;
+
+            const currentQty = variantQuantities?.[size] || 0;
+
+            if (currentQty + qtyToAdd > stockAvailable) {
+              canIncrease = false;
+            }
           });
 
-          updatedQuantities = {
-            ...prev,
-            [variantId]: updatedSizes,
-          };
+          if (!canIncrease) {
+            return prev; // Don't change if any size exceeds stock
+          }
+
+          // Safe to increase all
+          product.bundle_details.forEach((bundleItem) => {
+            const size = bundleItem.size;
+            const qtyToAdd = bundleItem.quantity;
+
+            const currentQty = variantQuantities?.[size] || 0;
+            variantQuantities[size] = currentQty + qtyToAdd;
+          });
+
+          updatedQuantities[variantId] = variantQuantities;
         } else {
-          const newQty = currentQty + 1;
-          updatedQuantities = {
-            ...prev,
-            [variantId]: {
-              ...prev[variantId],
-              [size]: newQty,
-            },
-          };
+          const sizeDetail = selectedVariant?.details.find(
+            (detail) => detail.size === size
+          );
+          const stockAvailable = sizeDetail?.stock || 0;
+          const currentQty = variantQuantities?.[size] || 0;
+
+          if (currentQty >= stockAvailable) {
+            return prev; // No changes
+          }
+
+          variantQuantities[size] = currentQty + 1;
+          updatedQuantities[variantId] = variantQuantities;
         }
 
         updateCartItems(updatedQuantities);
@@ -172,35 +249,52 @@ export default function ProductDrawer({
   const handleDecrease = useCallback(
     (variantId: string, size: string, bundleQuantity: number) => {
       setQuantities((prev) => {
-        const currentQty = prev[variantId]?.[size] || 0;
-        let updatedQuantities = { ...prev };
+        const updatedQuantities = { ...prev };
+        const variantQuantities = { ...prev[variantId] };
 
         if (product?.selectWise === "bundle") {
-          const updatedQty = Math.max(currentQty - bundleQuantity, 0);
-          const updatedSizes: { [size: string]: number } = {};
+          let canDecrease = true;
 
-          selectedVariant?.details.forEach((detail) => {
-            if (updatedQty > 0) {
-              updatedSizes[detail.size] = updatedQty;
+          product.bundle_details.forEach((bundleItem) => {
+            const currentQty = variantQuantities?.[bundleItem.size] || 0;
+            if (currentQty < bundleItem.quantity) {
+              canDecrease = false;
             }
           });
 
-          updatedQuantities = {
-            ...prev,
-            [variantId]: updatedSizes,
-          };
-        } else {
-          const newQty = Math.max(currentQty - 1, 0);
-          updatedQuantities = {
-            ...prev,
-            [variantId]: {
-              ...prev[variantId],
-              [size]: newQty,
-            },
-          };
-          if (newQty === 0) delete updatedQuantities[variantId][size];
-          if (Object.keys(updatedQuantities[variantId]).length === 0)
+          if (!canDecrease) return prev;
+
+          product.bundle_details.forEach((bundleItem) => {
+            const size = bundleItem.size;
+            const currentQty = variantQuantities?.[size] || 0;
+            const newQty = currentQty - bundleItem.quantity;
+            if (newQty > 0) {
+              variantQuantities[size] = newQty;
+            } else {
+              delete variantQuantities[size];
+            }
+          });
+
+          if (Object.keys(variantQuantities).length > 0) {
+            updatedQuantities[variantId] = variantQuantities;
+          } else {
             delete updatedQuantities[variantId];
+          }
+        } else {
+          const currentQty = variantQuantities?.[size] || 0;
+          const newQty = Math.max(currentQty - 1, 0);
+
+          if (newQty > 0) {
+            variantQuantities[size] = newQty;
+            updatedQuantities[variantId] = variantQuantities;
+          } else {
+            delete variantQuantities[size];
+            if (Object.keys(variantQuantities).length > 0) {
+              updatedQuantities[variantId] = variantQuantities;
+            } else {
+              delete updatedQuantities[variantId];
+            }
+          }
         }
 
         updateCartItems(updatedQuantities);
@@ -222,26 +316,36 @@ export default function ProductDrawer({
       const variant = selectedVariant;
       const detail = variant?.details.find((d) => d.size === size);
       const stock = detail?.stock ?? Infinity;
-      const bundleQuantity = detail?.bundleQuantity ?? 1;
 
       setQuantities((prev) => {
         let updatedQuantities = { ...prev };
 
         if (product?.selectWise === "bundle") {
-          const newQty = Math.min(
-            Math.floor(value / bundleQuantity) * bundleQuantity,
-            stock
+          const clickedBundle = product.bundle_details.find(
+            (b) => b.size === size
           );
+          if (!clickedBundle) return prev;
 
-          const updatedSizes: { [size: string]: number } = {};
-          variant?.details.forEach((detail) => {
-            updatedSizes[detail.size] = newQty;
+          const bundleUnits = Math.floor(value / clickedBundle.quantity);
+
+          // Verify if enough stock exists for all sizes
+          let canSet = true;
+          product.bundle_details.forEach((b) => {
+            const sizeDetail = variant?.details.find((d) => d.size === b.size);
+            const stockAvailable = sizeDetail?.stock ?? Infinity;
+            if (bundleUnits * b.quantity > stockAvailable) {
+              canSet = false;
+            }
           });
 
-          updatedQuantities = {
-            ...prev,
-            [variantId]: updatedSizes,
-          };
+          if (!canSet) return prev;
+
+          const updatedSizes: { [size: string]: number } = {};
+          product.bundle_details.forEach((b) => {
+            updatedSizes[b.size] = bundleUnits * b.quantity;
+          });
+
+          updatedQuantities[variantId] = updatedSizes;
         } else {
           const newQty = Math.min(value, stock);
           updatedQuantities = {
@@ -773,6 +877,7 @@ export default function ProductDrawer({
                     </Button>
                     <Input
                       type="number"
+                      min={product?.price_per_pieces[0].minPiece}
                       className="w-20   text-center text-black border-b"
                       value={quantities[selectedVariant._id]?.[size.size] || 0}
                       onChange={(e) =>

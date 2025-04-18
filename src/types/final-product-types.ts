@@ -131,6 +131,7 @@ type IBundle = {
     bundleQuantity: number
     stock: number
     stock_threshold: number
+    quantity:number
   }
   
   export interface RequestedStore {
