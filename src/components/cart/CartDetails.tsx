@@ -1,7 +1,6 @@
 import { ICart } from "@/types/cartTypes";
 import { useTheme } from "@mui/material/styles";
 import { Checkbox, Collapse, IconButton, Stack } from "@mui/material";
-import { useWindowWidth } from "@react-hook/window-size";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -10,9 +9,10 @@ import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDown
 import { useState } from "react";
 import { dispatch, useAppSelector } from "@/redux/hook";
 import Image from "../global/image";
-import { deleteCartRedux } from "@/redux/userSide/product_Slice";
-import { useAddNewCart } from "@/hooks/use-Cart";
-import { Product } from "@/types/final-product-types";
+import { deleteCartRedux, getCartRedux } from "@/redux/userSide/product_Slice";
+import { useAddNewCart } from "@/hooks/use-cart";
+import { IFinalVariation, Product } from "@/types/final-product-types";
+import { makeToastError } from "@/utils/toaster";
 
 type Props = {
   details?: ICart[];
@@ -26,13 +26,14 @@ export default function CartDetails({
   isCollapsible = false,
   isAllSelect = false,
 }: Props) {
-  const onlyWidth = useWindowWidth();
-  const mobileWidth = onlyWidth <= 768;
+  // const onlyWidth = useWindowWidth();
+  // const mobileWidth = onlyWidth <= 768;
   const { onAddNewCart } = useAddNewCart();
-  const [quantity, setQuantity] = useState(1);
+  // const [quantity, setQuantity] = useState(1);
 
   const theme = useTheme();
   const { cart } = useAppSelector((state) => state.products);
+
 
   // console.log(cart, "cart");
 
@@ -53,13 +54,14 @@ export default function CartDetails({
 
   const handleAddClick = ({
     product,
+    variant,
     productId,
     storeId,
-    size,
-
     variantId,
+    size,
   }: {
     product: Product;
+    variant: IFinalVariation;
     productId: string;
     storeId: string;
     variantId: string;
@@ -67,7 +69,30 @@ export default function CartDetails({
   }) => {
     const userInput = prompt("Enter the quantity to add:");
     if (userInput !== null) {
-      setQuantity(parseInt(userInput));
+      const inputQuantity = parseInt(userInput);
+      if (isNaN(inputQuantity) || inputQuantity <= 0) {
+        makeToastError("Please enter a valid positive number");
+        return;
+      }
+
+      const preferredSize =
+        product.selectWise === "bundle"
+          ? variant.details.map((d) => {
+              const bundleDetail = product.bundle_details.find(
+                (bd) => bd.size === d.size
+              );
+              return {
+                size: d.size,
+                quantity: (bundleDetail?.quantity ?? 1) * inputQuantity,
+              };
+            })
+          : [
+              {
+                size,
+                quantity: inputQuantity,
+              },
+            ];
+
       onAddNewCart({
         items: [
           {
@@ -75,12 +100,7 @@ export default function CartDetails({
             store: storeId,
             stock_variant: variantId,
             purchaseType: product.selectWise === "bundle" ? "bundle" : "normal",
-            preferred_size: [
-              {
-                size: size,
-                quantity: quantity,
-              },
-            ],
+            preferred_size: preferredSize,
           },
         ],
       });
@@ -123,8 +143,17 @@ export default function CartDetails({
                     </div>
                   </div>
                   <IconButton
-                    onClick={() => {
-                      dispatch(deleteCartRedux(product._id));
+                    onClick={async() => {
+                     const res = await dispatch(deleteCartRedux({
+                      productId:product._id,
+                      type:"variant"
+                     }));
+                     if(res.meta.requestStatus === 'fulfilled'){
+                      dispatch(getCartRedux());
+                     }
+
+                    //  console.log(res);
+                     
                     }}
                   >
                     <DeleteIcon />
@@ -177,7 +206,7 @@ export default function CartDetails({
                         >
                           <div className="flex items-center md:space-x-4">
                             <img
-                              src={product.thumbnails[0]}
+                              src={variant.image}
                               alt="Variant"
                               className="sm:w-12 sm:h-12 w-9 h-9 object-cover"
                             />
@@ -217,6 +246,27 @@ export default function CartDetails({
                                 padding: 5,
                               }}
                               onClick={() => {
+                                const preferredSize =
+                                  product.selectWise === "bundle"
+                                    ? variant.details.map((d) => {
+                                        const bundleDetail =
+                                          product.bundle_details.find(
+                                            (bd) => bd.size === d.size
+                                          );
+                                        return {
+                                          size: d.size,
+                                          quantity: -(
+                                            bundleDetail?.quantity ?? 1
+                                          ),
+                                        };
+                                      })
+                                    : [
+                                        {
+                                          size: details.size,
+                                          quantity: -1,
+                                        },
+                                      ];
+
                                 onAddNewCart({
                                   items: [
                                     {
@@ -227,12 +277,7 @@ export default function CartDetails({
                                         product.selectWise === "bundle"
                                           ? "bundle"
                                           : "normal",
-                                      preferred_size: [
-                                        {
-                                          size: details.size,
-                                          quantity: -1,
-                                        },
-                                      ],
+                                      preferred_size: preferredSize,
                                     },
                                   ],
                                 });
@@ -249,6 +294,7 @@ export default function CartDetails({
                               onClick={() => {
                                 handleAddClick({
                                   product,
+                                  variant,
                                   productId: product._id,
                                   storeId: item.store._id,
                                   variantId: variant._id,
@@ -267,11 +313,25 @@ export default function CartDetails({
                                 padding: 5,
                               }}
                               onClick={() => {
-                                const bundleQuantity =
+                                const preferredSize =
                                   product.selectWise === "bundle"
-                                    ? details.bundleQuantity +
-                                      details.bundleQuantity
-                                    : 1;
+                                    ? variant.details.map((d) => {
+                                        const bundleDetail =
+                                          product.bundle_details.find(
+                                            (bd) => bd.size === d.size
+                                          );
+                                        return {
+                                          size: d.size,
+                                          quantity: bundleDetail?.quantity ?? 1,
+                                        };
+                                      })
+                                    : [
+                                        {
+                                          size: details.size,
+                                          quantity: 1,
+                                        },
+                                      ];
+
                                 onAddNewCart({
                                   items: [
                                     {
@@ -282,12 +342,7 @@ export default function CartDetails({
                                         product.selectWise === "bundle"
                                           ? "bundle"
                                           : "normal",
-                                      preferred_size: [
-                                        {
-                                          size: details.size,
-                                          quantity: bundleQuantity,
-                                        },
-                                      ],
+                                      preferred_size: preferredSize,
                                     },
                                   ],
                                 });
@@ -303,9 +358,28 @@ export default function CartDetails({
                           </Stack>
 
                           {/* Price and Delete */}
-                          <p className="text-gray-800 font-semibold">$4.69</p>
+                          <p className="text-gray-800 font-semibold">
+                            ₹{details.selling_price}
+                          </p>
                           <IconButton>
-                            <DeleteIcon />
+                            <DeleteIcon 
+                             onClick={async() => {
+                              const res = await dispatch(deleteCartRedux({
+                               productId:product._id,
+                               type:"size",
+                               store:item.store._id,
+                               stock_variant:variant._id,
+                                size:details.size,
+                                purchaseType:product.selectWise === "bundle" ? "bundle" : "normal"
+                              }));
+                              if(res.meta.requestStatus === 'fulfilled'){
+                               dispatch(getCartRedux());
+                              }
+         
+                             //  console.log(res);
+                              
+                             }}
+                            />
                           </IconButton>
                         </div>
                       </Collapse>
@@ -322,7 +396,7 @@ export default function CartDetails({
         </div>
       )}
 
-      <pre>{JSON.stringify(cart, null, 4)}</pre>
+      {/* <pre>{JSON.stringify(cart, null, 4)}</pre> */}
     </div>
   );
 }

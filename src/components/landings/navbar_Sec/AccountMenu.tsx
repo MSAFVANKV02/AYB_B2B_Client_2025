@@ -126,6 +126,7 @@ export default function AccountMenu() {
                     className="text-black"
                   />
                 </Avatar>
+                
               </IconButton>
             </Tooltip>
 
@@ -147,8 +148,9 @@ export default function AccountMenu() {
                   />
                 </Avatar>
                 {cart && cart?.items.length > 0 && (
-                  <span className="absolute top-1 right-1 text-xs bg-[#6A0DAD] text-white rounded-full px-1">
-                    {cart?.items.length}
+                  <span className="absolute -top-0 -right-1 text-xs bg-[#6A0DAD] text-white rounded-full flex items-center 
+                  justify-center  h-[21px] w-[21px]">
+                    {cart?.totalItems > 9 ? `9+`:cart?.totalItems}
                   </span>
                 )}
               </IconButton>

@@ -10,82 +10,82 @@ const ShoppingCart = () => {
   const { handleClick } = useNavigateClicks();
   const { cart } = useAppSelector((state) => state.products);
 
-  const getPurchaseDetails = () => {
-    let totalGST = 0;
-    let totalCess = 0;
-    let totalPrice = 0;
-    let totalItems = 0;
-    let totalDiscountAmount = 0;
-    let subTotal = 0;
+  // const getPurchaseDetails = () => {
+  //   let totalGST = 0;
+  //   let totalCess = 0;
+  //   let totalPrice = 0;
+  //   let totalItems = 0;
+  //   let totalDiscountAmount = 0;
+  //   let subTotal = 0;
 
-    cart?.items?.forEach((item) => {
-      item.products.forEach((product) => {
-        const { price_per_pieces, tax_details, discount, discount_type } =
-          product;
-        const variation = product.variations?.[0];
-        const sizes = variation?.details ?? [];
+  //   cart?.items?.forEach((item) => {
+  //     item.products.forEach((product) => {
+  //       const { price_per_pieces, tax_details, discount, discount_type } =
+  //         product;
+  //       const variation = product.variations?.[0];
+  //       const sizes = variation?.details ?? [];
 
-        sizes.forEach((variantDetail) => {
-          const qty = variantDetail.quantity || 0;
+  //       sizes.forEach((variantDetail) => {
+  //         const qty = variantDetail.quantity || 0;
 
-          const priceTier = price_per_pieces.find(
-            (tier) =>
-              qty >= tier.minPiece &&
-              (tier.maxPiece === 0 || qty <= tier.maxPiece)
-          );
+  //         const priceTier = price_per_pieces.find(
+  //           (tier) =>
+  //             qty >= tier.minPiece &&
+  //             (tier.maxPiece === 0 || qty <= tier.maxPiece)
+  //         );
 
-          const basePrice = priceTier?.purchase_Amount ?? 0;
-          let discountedPrice = basePrice;
+  //         const basePrice = priceTier?.purchase_Amount ?? 0;
+  //         let discountedPrice = basePrice;
 
-          if (discount_type === "percentage") {
-            discountedPrice = basePrice - (basePrice * discount) / 100;
-          } else if (discount_type === "flat") {
-            discountedPrice = basePrice - discount;
-          }
+  //         if (discount_type === "percentage") {
+  //           discountedPrice = basePrice - (basePrice * discount) / 100;
+  //         } else if (discount_type === "flat") {
+  //           discountedPrice = basePrice - discount;
+  //         }
 
-          const productTotal = qty * discountedPrice;
-          const originalTotal = qty * basePrice;
+  //         const productTotal = qty * discountedPrice;
+  //         const originalTotal = qty * basePrice;
 
-          // === GST Calculation ===
-          const gstRate =
-            typeof tax_details?.igst === "number"
-              ? tax_details.igst
-              : (tax_details?.state_tax ?? 0) + (tax_details?.central_tax ?? 0);
+  //         // === GST Calculation ===
+  //         const gstRate =
+  //           typeof tax_details?.igst === "number"
+  //             ? tax_details.igst
+  //             : (tax_details?.state_tax ?? 0) + (tax_details?.central_tax ?? 0);
 
-          const gstAmount = (productTotal * gstRate) / 100;
+  //         const gstAmount = (productTotal * gstRate) / 100;
 
-          // === Cess Calculation ===
-          let cessRate = 0;
+  //         // === Cess Calculation ===
+  //         let cessRate = 0;
 
-          if (Array.isArray(tax_details?.on_items_rate_details)) {
-            const cessTier = tax_details.on_items_rate_details.find(
-              (tier) =>
-                originalTotal >= tier.greaterThan && originalTotal <= tier.upto
-            );
-            cessRate = cessTier?.cess ?? 0;
-          }
+  //         if (Array.isArray(tax_details?.on_items_rate_details)) {
+  //           const cessTier = tax_details.on_items_rate_details.find(
+  //             (tier) =>
+  //               originalTotal >= tier.greaterThan && originalTotal <= tier.upto
+  //           );
+  //           cessRate = cessTier?.cess ?? 0;
+  //         }
 
-          const cessAmount = (productTotal * cessRate) / 100;
+  //         const cessAmount = (productTotal * cessRate) / 100;
 
-          totalPrice += productTotal + gstAmount + cessAmount;
-          subTotal += productTotal;
-          totalDiscountAmount += originalTotal - productTotal;
-          totalGST += gstAmount;
-          totalCess += cessAmount;
-          totalItems += qty;
-        });
-      });
-    });
+  //         totalPrice += productTotal + gstAmount + cessAmount;
+  //         subTotal += productTotal;
+  //         totalDiscountAmount += originalTotal - productTotal;
+  //         totalGST += gstAmount;
+  //         totalCess += cessAmount;
+  //         totalItems += qty;
+  //       });
+  //     });
+  //   });
 
-    return {
-      totalPrice,
-      totalGST,
-      totalCess,
-      totalItems,
-      totalDiscountAmount,
-      subTotal,
-    };
-  };
+  //   return {
+  //     totalPrice,
+  //     totalGST,
+  //     totalCess,
+  //     totalItems,
+  //     totalDiscountAmount,
+  //     subTotal,
+  //   };
+  // };
 
   return (
     <CartLayout>
@@ -116,12 +116,12 @@ const ShoppingCart = () => {
       {/* Order Summary Section ======== = == = ====== ======= = ===*/}
       <OrderSummary
         gst={cart?.gst.cgst ?? 0}
-        discount={getPurchaseDetails().totalDiscountAmount}
+        discount={cart?.discountValue}
         cess={cart?.gst.cgst}
-        itemSubTotal={cart?.subTotalExclTax}
+        itemSubTotal={cart?.cartValue}
         shippingCharge={cart?.shippingCharge}
         subTotal={cart?.subTotalExclTax}
-        totalPrice={cart?.cartValue}
+        totalPrice={cart?.cartTotal}
         totalItems={cart?.totalItems}
         btnLabel="Checkout"
         handleClick={() => handleClick("/cart/checkout")}

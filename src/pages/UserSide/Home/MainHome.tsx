@@ -15,7 +15,15 @@ import { useEffect } from "react";
 function MainHome() {
   const [width] = useWindowSize();
 
-  const { products, isFetching } = ProductData();
+  const { products, isFetching } = ProductData(
+    [
+      {
+        key: "is_todays_deal",
+        value: "true",
+      },
+    ],
+    undefined
+  );
   const { wishlist, recentView } = useAppSelector((state) => state.products);
   // console.log(recentView,'recentView');
 
@@ -77,6 +85,8 @@ function MainHome() {
 
   const recentViewProducts =
     width > 1280 ? recentView.slice(0, 5) : recentView.slice(0, 4);
+
+  // console.log(todaysDeals, "todaysDeals");
 
   return (
     <div className="min-h-screen sm:space-y-8 space-y-2 py-3">
@@ -155,35 +165,37 @@ function MainHome() {
           <h4>Today's Deals</h4>
 
           <div className="grid sm:gap-2 xl:grid-cols-5 md:grid-cols-4 sm:grid-cols-3  grid-cols-2 w-full ">
-            {todaysDeals.map((product, index) => {
-              const isFavorite =
-                wishlist && wishlist.some((item) => item._id === product._id);
-              // console.log(products,'products');
+            {todaysDeals
+              .filter((p) => p.product.is_todays_deal)
+              .map((product, index) => {
+                const isFavorite =
+                  wishlist && wishlist.some((item) => item._id === product._id);
+                // console.log(products,'products');
 
-              // console.log(isFavorite,'isFavorite');
+                // console.log(isFavorite,'isFavorite');
 
-              return (
-                <div key={index}>
-                  <ProdCard
-                    show={product.product.is_todays_deal}
-                    basePrice={product.product.basePrice}
-                    featured={product.product.is_featured_product}
-                    imageContainer="md:h-[310px] h-[260px]"
-                    imgClass=""
-                    products={product.product}
-                    stockData={product}
-                    key={product._id}
-                    link={`/product/${product.product.slug}`}
-                    title={product.product.product_name}
-                    minQty={product.product.minimum_quantity}
-                    image={product.product.thumbnails}
-                    isFavorite={isFavorite}
-                    PricePerPiece={product.product.price_per_pieces}
-                    loading={isFetching}
-                  />
-                </div>
-              );
-            })}
+                return (
+                  <div key={index}>
+                    <ProdCard
+                      show={product.product.is_todays_deal}
+                      basePrice={product.product.basePrice}
+                      featured={product.product.is_featured_product}
+                      imageContainer="md:h-[310px] h-[260px]"
+                      imgClass=""
+                      products={product.product}
+                      stockData={product}
+                      key={product._id}
+                      link={`/product/${product.product.slug}`}
+                      title={product.product.product_name}
+                      minQty={product.product.minimum_quantity}
+                      image={product.product.thumbnails}
+                      isFavorite={isFavorite}
+                      PricePerPiece={product.product.price_per_pieces}
+                      loading={isFetching}
+                    />
+                  </div>
+                );
+              })}
           </div>
         </div>
       )}
@@ -230,7 +242,12 @@ function MainHome() {
           <h4>Recently Viewed</h4>
           <div className="grid sm:gap-2 xl:grid-cols-5 md:grid-cols-4 sm:grid-cols-3  grid-cols-2 w-full ">
             {recentViewProducts.map((product, index) => {
-            if (!product.product || product.product.basePrice === 0 || !product.product.basePrice) return null;
+              if (
+                !product.product ||
+                product.product.basePrice === 0 ||
+                !product.product.basePrice
+              )
+                return null;
 
               const isFavorite =
                 wishlist && wishlist.some((item) => item._id === product._id);

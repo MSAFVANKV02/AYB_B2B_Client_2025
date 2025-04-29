@@ -12,13 +12,27 @@ import { API } from "../auth/route_url";
 // export const get_All_Products_Api = async () =>
 //   API.post(GET_ALL_PRODUCT_URL,{}, { withCredentials: true });
 
-export type IGetAllFilterKey = "category"|"product"|"brand"|"color"|"sort"|"page"|"limit"|""
+export type IGetAllFilterKey =
+  | "category"
+  | "product"
+  | "brand"
+  | "color"
+  | "sort"
+  | "page"
+  | "limit"
+  | "is_todays_deal"
+  | "is_cod"
+  | "is_free_shipping"
+  | "is_featured_product"
+  | "is_featured_product"
+  | "is_best_selling"
+  | "";
 export interface IFilterProducts {
-  size: any
-  colors: any
-  priceRange: number[]
-  brands: any[]
-  minimumQuantity: number
+  size: any;
+  colors: any;
+  priceRange: number[];
+  brands: any[];
+  minimumQuantity: number;
 }
 
 export const get_All_Products_Api = (
@@ -33,35 +47,39 @@ export const get_All_Products_Api = (
     });
   }
 
-  return API.post(GET_ALL_PRODUCT_URL,{filter}, {
-    withCredentials: true,
-    params, // ✅ Send dynamic query params
-  });
+  return API.post(
+    GET_ALL_PRODUCT_URL,
+    { filter },
+    {
+      withCredentials: true,
+      params, // ✅ Send dynamic query params
+    }
+  );
 };
 
 // 2 get product details with slug
 export const get_Product_Details_With_Slug_Api = async (slug: string) =>
   API.get(`${GET_PRODUCT_BY_SLUG_URL}/${slug}`, { withCredentials: true });
 
-
 // 3 . get all available colors
 
 export const get_All_Available_Colors_Api = async () =>
   API.get(`${GET_ALL_AVAILABLE_COLORS_URL}`, { withCredentials: true });
 
-
-
 // # == WISHLIST ROUTES ======
 export const get_WishList_Api = async () =>
   API.get(`${GET_ALL_WISHLIST_URL}`, { withCredentials: true });
 
-export const add_WishList_Api = async (productId:string) =>
-  API.post(`${CREATE_WISHLIST_URL}`,{productId}, { withCredentials: true });
-
+export const add_WishList_Api = async (productId: string) =>
+  API.post(`${CREATE_WISHLIST_URL}`, { productId }, { withCredentials: true });
 
 // # == Recent View ROUTES ======
 export const get_Recent_View_Api = async () =>
   API.get(`${GET_ALL_RECENT_VIEW_URL}`, { withCredentials: true });
 
-export const add_Recent_View_Api = async (productId:string) =>
-  API.post(`${CREATE__RECENT_VIEW_URL}`,{productId}, { withCredentials: true });
+export const add_Recent_View_Api = async (productId: string) =>
+  API.post(
+    `${CREATE__RECENT_VIEW_URL}`,
+    { productId },
+    { withCredentials: true }
+  );

@@ -29,8 +29,7 @@ import {
 import { useSetSearchParams } from "@/hooks/use-set-searchParams";
 import Image from "@/components/global/image";
 import { useAppSelector } from "@/redux/hook";
-import { useAddNewCart } from "@/hooks/use-Cart";
-import { makeToast } from "@/utils/toaster";
+import { useAddNewCart } from "@/hooks/use-cart";
 
 type IDrawerTypes = {
   product?: Product;
@@ -47,7 +46,7 @@ export default function ProductDrawer({
   setBuyOpen,
 }: IDrawerTypes) {
   const { products: stockData } = useAppSelector((state) => state.products);
-  const { onAddNewCart, data } = useAddNewCart();
+  const { onAddNewCart } = useAddNewCart();
   const [open, setOpen] = useState(false);
   const [selectedVariant, setSelectedVariant] =
     useState<IFinalVariation | null>(product?.variations?.[0] ?? null);
@@ -55,9 +54,9 @@ export default function ProductDrawer({
     [variantId: string]: { [size: string]: number };
   }>({});
   // console.log(product?.price_per_pieces);
-  console.log(product?.bundle_details);
+  // console.log(product);
 
-  console.log(selectedVariant, "selectedVariant");
+  // console.log(selectedVariant, "selectedVariant");
   // console.log(products, "stockData");
   // console.log(quantities, "quantities");
 
@@ -491,6 +490,7 @@ export default function ProductDrawer({
       matchedTier?.purchase_Amount ?? priceTiers[0]?.purchase_Amount ?? null
     );
   }, [cartItems, product]);
+
   const getPriceForSizeAfterDiscount = useCallback(() => {
     if (!product?.price_per_pieces?.length || !cartItems?.length) return null;
 
@@ -553,42 +553,102 @@ export default function ProductDrawer({
   //     return { subtotalAfterDiscount, subtotalWithoutDiscount, totalQty, discount };
   //   });
   // }, [cartItems, getPriceForSize, getPriceForSizeAfterDiscount]);
+  // ==========================
+  // const getSubtotal = useMemo(() => {
+  //   let totalQuantity = 0;
+  //   let subtotalAfterDiscount = 0;
+  //   let subtotalWithoutDiscount = 0;
+  //   let totalDiscount = 0;
+
+  //   cartItems.forEach((item) => {
+  //     const totalQty = item.preferred_size.reduce(
+  //       (sum: any, s: any) => sum + s.quantity,
+  //       0
+  //     );
+  //     const priceAfterDiscount = getPriceForSizeAfterDiscount();
+  //     const priceWithoutDiscount = getPriceForSize();
+  //     // console.log(priceAfterDiscount, "priceAfterDiscount==");
+  //     // console.log(priceWithoutDiscount, "priceWithoutDiscount");
+
+  //     const subtotalAfter = priceAfterDiscount
+  //       ? priceAfterDiscount * totalQty
+  //       : 0;
+  //     const subtotalBefore = priceWithoutDiscount
+  //       ? priceWithoutDiscount * totalQty
+  //       : 0;
+  //     const discount = subtotalAfter - subtotalBefore;
+
+  //     // Accumulate the totals for the entire cart
+  //     totalQuantity += totalQty;
+  //     subtotalAfterDiscount += subtotalAfter;
+  //     subtotalWithoutDiscount += subtotalBefore;
+  //     totalDiscount += discount;
+  //   });
+
+  //   return {
+  //     totalQuantity,
+  //     subtotalAfterDiscount,
+  //     subtotalWithoutDiscount,
+  //     totalDiscount,
+  //   };
+  // }, [cartItems, getPriceForSize, getPriceForSizeAfterDiscount]);
+  // ====================
   const getSubtotal = useMemo(() => {
     let totalQuantity = 0;
-    let subtotalAfterDiscount = 0;
     let subtotalWithoutDiscount = 0;
     let totalDiscount = 0;
 
-    cartItems.forEach((item) => {
-      const totalQty = item.preferred_size.reduce(
-        (sum: any, s: any) => sum + s.quantity,
-        0
+    for (const item of cartItems) {
+      const variant = product?.variations.find(
+        (v) => v._id === item.stock_variant
       );
-      const priceAfterDiscount = getPriceForSizeAfterDiscount();
-      const priceWithoutDiscount = getPriceForSize();
+      if (!variant) continue;
 
-      const subtotalAfter = priceAfterDiscount
-        ? priceAfterDiscount * totalQty
-        : 0;
-      const subtotalBefore = priceWithoutDiscount
-        ? priceWithoutDiscount * totalQty
-        : 0;
-      const discount = subtotalAfter - subtotalBefore;
+      for (const sizeObj of item.preferred_size) {
+        const { size, quantity } = sizeObj;
 
-      // Accumulate the totals for the entire cart
-      totalQuantity += totalQty;
-      subtotalAfterDiscount += subtotalAfter;
-      subtotalWithoutDiscount += subtotalBefore;
-      totalDiscount += discount;
-    });
+        const detail = variant.details.find((d) => d.size === size);
+        if (!detail) continue;
+
+        const priceTiers = product?.price_per_pieces ?? [];
+        const lastTier = priceTiers[priceTiers.length - 1];
+
+        const getUnitPrice = (qty: number) => {
+          if (qty >= lastTier.minPiece) return lastTier.purchase_Amount;
+
+          return (
+            priceTiers.find(
+              (tier) => qty >= tier.minPiece && qty <= tier.maxPiece
+            )?.purchase_Amount ?? priceTiers[0]?.purchase_Amount
+          );
+        };
+
+        const unitPrice = getUnitPrice(quantity);
+        let discountedPrice = unitPrice;
+
+        if (detail.discount && detail.discount > 0) {
+          if (product?.discount_type === "percentage") {
+            discountedPrice = unitPrice - (unitPrice * detail.discount) / 100;
+          } else if (product?.discount_type === "flat") {
+            discountedPrice = unitPrice - detail.discount;
+          }
+
+          if (discountedPrice < 0) discountedPrice = 0;
+        }
+
+        subtotalWithoutDiscount += unitPrice * quantity;
+        totalDiscount += (unitPrice - discountedPrice) * quantity;
+        totalQuantity += quantity;
+      }
+    }
 
     return {
       totalQuantity,
-      subtotalAfterDiscount,
+      subtotalAfterDiscount: subtotalWithoutDiscount - totalDiscount,
       subtotalWithoutDiscount,
       totalDiscount,
     };
-  }, [cartItems, getPriceForSize, getPriceForSizeAfterDiscount]);
+  }, [cartItems, product]);
 
   return (
     <React.Fragment>
@@ -831,8 +891,9 @@ export default function ProductDrawer({
                   >
                     <Typography sx={{ textAlign: "left" }}>
                       ₹
-                      {getPriceForSizeAfterDiscount()?.toFixed(2) ??
-                        product?.price_per_pieces[0].purchase_Amount}
+                      {size.discount
+                        ? getPriceForSizeAfterDiscount()?.toFixed(2)
+                        : product?.price_per_pieces[0].purchase_Amount}
                     </Typography>
                     {cartItems.length > 0 && size.discount > 0 && (
                       <Typography

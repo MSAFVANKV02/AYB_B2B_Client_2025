@@ -1,5 +1,7 @@
 import {
-  delete_Cart_Item_Api,
+  delete_Cart_All_Item_Api,
+  delete_Cart_Size_Item_Api,
+  delete_Cart_Variant_Item_Api,
   get_Cart_Item_Api,
 } from "@/services/user_side_api/cart/route";
 import {
@@ -83,7 +85,7 @@ export const getRecentViewRedux = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await get_Recent_View_Api();
-      console.log(response, "getRecentViewRedux");
+      // console.log(response, "getRecentViewRedux");
 
       return response.data.recentlyViewed;
     } catch (error: any) {
@@ -133,15 +135,61 @@ export const getCartRedux = createAsyncThunk(
 
 export const deleteCartRedux = createAsyncThunk(
   "cart/deleteCartRedux",
-  async (productId: string, { rejectWithValue }) => {
+  async (
+    {
+      productId,
+      type,
+      store,
+      stock_variant,
+      size,
+      purchaseType,
+    }: {
+      productId: string;
+      type: "all" | "variant" | "size";
+      store?: string;
+      stock_variant?: string;
+      size?: string;
+      purchaseType?: string;
+    },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await delete_Cart_Item_Api(productId);
+      // if(type === "size"){
+      //   makeToast("Size deleted successfully");
+      //   return {
+      //     productId: productId,
+      //     type: type,
+      //   }
+      const route =
+        type === "variant"
+          ? delete_Cart_Variant_Item_Api(productId)
+          : type === "size"
+            ? delete_Cart_Size_Item_Api({
+                product: productId,
+                store: store ?? "",
+                stock_variant: stock_variant ?? "",
+                size: size ?? "",
+                purchaseType: purchaseType ?? "",
+              })
+            : delete_Cart_All_Item_Api();
+
+      const response = await route;
       // console.log(JSON.stringify(response.data.data));
       // console.log(response.data.data);
 
       if (response.status === 200 || response.status === 201) {
-        makeToast(response.data.message)
-        return productId;
+        if (type === "size") {
+          makeToast("Size deleted successfully");
+          return {
+            productId: productId,
+            type: type,
+          };
+        }
+        makeToast(response.data.message);
+        return {
+          productId: productId,
+          type: type,
+        };
       }
     } catch (error: any) {
       console.log(error);
@@ -244,20 +292,93 @@ const productSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteCartRedux.fulfilled, (state, action) => {
-        // console.log(action.payload,'action.payload');
+      // .addCase(deleteCartRedux.fulfilled, (state, action) => {
+      //   // console.log(action.payload,'action.payload');
 
-        const productId = action.payload;
-        if (state.cart) {
-          state.cart.items = state.cart.items
-            .map((item) => ({
-              ...item,
-              products: item.products.filter((product) => product._id !== productId),
-            }))
-            .filter((item) => item.products.length > 0); // Remove cart items with no products
+      //   const productId = action.payload;
+      //   if (state.cart) {
+      //     state.cart.items = state.cart.items
+      //       .map((item) => ({
+      //         ...item,
+      //         products: item.products.filter((product) => {
+      //           // console.log(product._id,'product._id, productId');
+
+      //           return product._id !== productId;
+      //         }),
+      //       }))
+      //       .filter((item) => item.products.length > 0); // Remove cart items with no products
+      //   }
+      //   state.loading = false;
+      // })
+      .addCase(deleteCartRedux.fulfilled, (state, action) => {
+        const { productId, type } = action.meta.arg;
+        // console.log(action.meta.arg, "action.meta.arg");
+
+        if (!state.cart) return;
+
+        switch (type) {
+          case "all":
+            state.cart = null;
+            break;
+          case "variant":
+            state.cart.items = state.cart.items
+              .map((item) => ({
+                ...item,
+                products: item.products.filter(
+                  (product) => product._id !== productId
+                ),
+              }))
+              .filter((item) => item.products.length > 0);
+            break;
+
+          case "size": {
+            const sizeToDelete = action.meta.arg?.size;
+            const stockVariantToDelete = action.meta.arg?.stock_variant;
+
+            if (!sizeToDelete || !stockVariantToDelete) break;
+
+            state.cart.items = state.cart.items
+              .map((item) => {
+                return {
+                  ...item,
+                  products: item.products.map((product) => {
+                    if (product._id !== productId) return product;
+
+                    return {
+                      ...product,
+                      variations: product.variations.map((variant) => {
+                        if (variant._id !== stockVariantToDelete)
+                          return variant;
+
+                        return {
+                          ...variant,
+                          details: variant.details.filter(
+                            (detail) => detail.size !== sizeToDelete
+                          ),
+                        };
+                      }),
+                    };
+                  }),
+                };
+              })
+              .filter((item) =>
+                item.products.some((product) =>
+                  product.variations.some(
+                    (variant) => variant.details.length > 0
+                  )
+                )
+              );
+
+            break;
+          }
+
+          default:
+            break;
         }
+
         state.loading = false;
       })
+
       .addCase(deleteCartRedux.rejected, (state, action) => {
         state.error = action.payload as string;
         state.loading = false;
