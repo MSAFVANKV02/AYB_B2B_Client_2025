@@ -58,7 +58,7 @@ function WishlistTab() {
 
       {/* body starts */}
       {wishlist.length > 0 ? (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 h-full">
           {wishlist.map((items, i) => (
             <div
               key={i}

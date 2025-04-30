@@ -27,6 +27,7 @@ interface ProductState {
   products: IFinalProductTypes[];
   wishlist: IFinalProductTypes[];
   cart: ICartTypes | null;
+  saveLaterCart: ICartTypes | null;
   recentView: IFinalProductTypes[];
   singleProduct: Product[];
   availableSizes: string[];
@@ -202,6 +203,7 @@ const initialState: ProductState = {
   products: [],
   singleProduct: [],
   cart: null,
+  saveLaterCart: null,
   recentView: [],
   availableSizes: [],
   availableColors: [],
@@ -222,6 +224,9 @@ const productSlice = createSlice({
     },
     setProducts: (state, action: PayloadAction<IFinalProductTypes[]>) => {
       state.products = action.payload;
+    },
+    setSaveLaterCartRedux: (state, action: PayloadAction<ICartTypes | null>) => {
+      state.saveLaterCart = action.payload;
     },
     setProductData: (
       state,
@@ -457,6 +462,7 @@ export const {
   setSingleProducts,
   setProducts,
   setProductData,
+  setSaveLaterCartRedux
 } = productSlice.actions;
 
 export default productSlice.reducer;

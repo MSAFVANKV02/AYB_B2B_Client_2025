@@ -1,39 +1,43 @@
-import { ICart } from "@/types/cartTypes";
-import { useTheme } from "@mui/material/styles";
-import { Checkbox, Collapse, IconButton, Stack } from "@mui/material";
+import { ICartTypes } from "@/types/cartTypes";
+// import { useTheme } from "@mui/material/styles";
+import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
+// import AddIcon from "@mui/icons-material/Add";
+// import RemoveIcon from "@mui/icons-material/Remove";
 import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
 import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
 import { useState } from "react";
-import { dispatch, useAppSelector } from "@/redux/hook";
+import { dispatch } from "@/redux/hook";
 import Image from "../global/image";
 import { deleteCartRedux, getCartRedux } from "@/redux/userSide/product_Slice";
-import { useAddNewCart } from "@/hooks/use-cart";
-import { IFinalVariation, Product } from "@/types/final-product-types";
-import { makeToastError } from "@/utils/toaster";
+// import { useAddNewCart } from "@/hooks/use-cart";
+// import { IFinalVariation, Product } from "@/types/final-product-types";
+// import { makeToastError } from "@/utils/toaster";
+import { Link } from "react-router-dom";
+import CartSizeVariants from "./cart_size_variants";
 
 type Props = {
-  details?: ICart[];
+  cart?: ICartTypes | null;
   title: string | number;
   isCollapsible?: boolean;
   isAllSelect?: boolean;
+  errorMessage?: string;
 };
 
 export default function CartDetails({
   title,
   isCollapsible = false,
-  isAllSelect = false,
+  cart,
+  errorMessage,
+  // isAllSelect = false,
 }: Props) {
   // const onlyWidth = useWindowWidth();
   // const mobileWidth = onlyWidth <= 768;
-  const { onAddNewCart } = useAddNewCart();
+  // const { onAddNewCart } = useAddNewCart();
   // const [quantity, setQuantity] = useState(1);
 
-  const theme = useTheme();
-  const { cart } = useAppSelector((state) => state.products);
-
+  // const theme = useTheme();
+  // const { cart } = useAppSelector((state) => state.products);
 
   // console.log(cart, "cart");
 
@@ -52,60 +56,60 @@ export default function CartDetails({
     }));
   };
 
-  const handleAddClick = ({
-    product,
-    variant,
-    productId,
-    storeId,
-    variantId,
-    size,
-  }: {
-    product: Product;
-    variant: IFinalVariation;
-    productId: string;
-    storeId: string;
-    variantId: string;
-    size: string;
-  }) => {
-    const userInput = prompt("Enter the quantity to add:");
-    if (userInput !== null) {
-      const inputQuantity = parseInt(userInput);
-      if (isNaN(inputQuantity) || inputQuantity <= 0) {
-        makeToastError("Please enter a valid positive number");
-        return;
-      }
+  // const handleAddClick = ({
+  //   product,
+  //   variant,
+  //   productId,
+  //   storeId,
+  //   variantId,
+  //   size,
+  // }: {
+  //   product: Product;
+  //   variant: IFinalVariation;
+  //   productId: string;
+  //   storeId: string;
+  //   variantId: string;
+  //   size: string;
+  // }) => {
+  //   const userInput = prompt("Enter the quantity to add:");
+  //   if (userInput !== null) {
+  //     const inputQuantity = parseInt(userInput);
+  //     if (isNaN(inputQuantity) || inputQuantity <= 0) {
+  //       makeToastError("Please enter a valid positive number");
+  //       return;
+  //     }
 
-      const preferredSize =
-        product.selectWise === "bundle"
-          ? variant.details.map((d) => {
-              const bundleDetail = product.bundle_details.find(
-                (bd) => bd.size === d.size
-              );
-              return {
-                size: d.size,
-                quantity: (bundleDetail?.quantity ?? 1) * inputQuantity,
-              };
-            })
-          : [
-              {
-                size,
-                quantity: inputQuantity,
-              },
-            ];
+  //     const preferredSize =
+  //       product.selectWise === "bundle"
+  //         ? variant.details.map((d) => {
+  //             const bundleDetail = product.bundle_details.find(
+  //               (bd) => bd.size === d.size
+  //             );
+  //             return {
+  //               size: d.size,
+  //               quantity: (bundleDetail?.quantity ?? 1) * inputQuantity,
+  //             };
+  //           })
+  //         : [
+  //             {
+  //               size,
+  //               quantity: inputQuantity,
+  //             },
+  //           ];
 
-      onAddNewCart({
-        items: [
-          {
-            product: productId,
-            store: storeId,
-            stock_variant: variantId,
-            purchaseType: product.selectWise === "bundle" ? "bundle" : "normal",
-            preferred_size: preferredSize,
-          },
-        ],
-      });
-    }
-  };
+  //     onAddNewCart({
+  //       items: [
+  //         {
+  //           product: productId,
+  //           store: storeId,
+  //           stock_variant: variantId,
+  //           purchaseType: product.selectWise === "bundle" ? "bundle" : "normal",
+  //           preferred_size: preferredSize,
+  //         },
+  //       ],
+  //     });
+  //   }
+  // };
 
   return (
     <div>
@@ -118,24 +122,32 @@ export default function CartDetails({
               <div key={index} className="mb-4">
                 {/* Header Section */}
                 <div className="flex items-start md:justify-between space-x-4 mb-2">
-                  <div className="flex items-center gap-3">
-                    {isAllSelect && (
+                  <div className="flex  gap-3">
+                    {/* {isAllSelect && (
                       <Checkbox
                         color="default"
                         sx={{
                           "&.Mui-checked": { color: "#5F08B1" },
                         }}
                       />
-                    )}
+                    )} */}
                     <Image
                       src={product.thumbnails[0]}
+                      link={`/product/${product.slug}`}
+                      classNameImg="w-full h-full object-contain"
                       alt="Product"
                       className="w-20 h-20 object-cover"
                     />
-                    <div>
-                      <p className="text-gray-800 xl:max-w-[450px] md:max-w-[300px] sm:max-w-[100px] max-w-[90px] truncate">
+                    <div className="flex flex-col">
+                      <span className="text-textMain">
+                        Store: {item.store.name}
+                      </span>
+                      <Link
+                        to={`/product/${product.slug}`}
+                        className="text-gray-800 xl:max-w-[450px] md:max-w-[300px] sm:max-w-[100px] max-w-[90px] truncate"
+                      >
                         {product.product_name}
-                      </p>
+                      </Link>
                       <p className="text-sm text-gray-500">
                         Min. order: {product.price_per_pieces[0].minPiece}{" "}
                         pieces
@@ -143,17 +155,18 @@ export default function CartDetails({
                     </div>
                   </div>
                   <IconButton
-                    onClick={async() => {
-                     const res = await dispatch(deleteCartRedux({
-                      productId:product._id,
-                      type:"variant"
-                     }));
-                     if(res.meta.requestStatus === 'fulfilled'){
-                      dispatch(getCartRedux());
-                     }
+                    onClick={async () => {
+                      const res = await dispatch(
+                        deleteCartRedux({
+                          productId: product._id,
+                          type: "variant",
+                        })
+                      );
+                      if (res.meta.requestStatus === "fulfilled") {
+                        dispatch(getCartRedux());
+                      }
 
-                    //  console.log(res);
-                     
+                      //  console.log(res);
                     }}
                   >
                     <DeleteIcon />
@@ -188,211 +201,22 @@ export default function CartDetails({
 
                 {/* Variants Section */}
 
-                {product.variations.map((variant, vIndex) =>
-                  variant.details.map((details, dIndex) => (
-                    <div key={pIndex}>
-                      <Collapse
-                        key={`${collapseKey}-v${vIndex}-d${dIndex}`}
-                        // in={!isCollapsed[pIndex]}
-                        in={!isCollapsed[collapseKey]}
-                        timeout="auto"
-                        unmountOnExit
-                      >
-                        <div
-                          className={`flex items-center justify-between gap-4 md:p-4 p-2 md:border rounded-lg mb-3 ${
-                            window.location.pathname !== "/cart/checkout" &&
-                            "md:ml-7"
-                          }`}
-                        >
-                          <div className="flex items-center md:space-x-4">
-                            <img
-                              src={variant.image}
-                              alt="Variant"
-                              className="sm:w-12 sm:h-12 w-9 h-9 object-cover"
-                            />
-                            <div className="ml-1">
-                              <p className="sm:text-sm text-xs font-medium">
-                                Size: {details.size}; Color: {variant.colorName}
-                              </p>
-                              <p className="sm:text-sm text-xs text-gray-600">
-                                {details.quantity} / piece
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* Quantity Controls */}
-                          <Stack
-                            direction="row"
-                            spacing={1}
-                            alignItems="center"
-                            sx={{
-                              border: "1px solid #d0c7c7",
-                              borderRadius: "5px",
-                              width: "auto",
-                              padding: "3px",
-                              display: "flex",
-                              flexWrap: "nowrap",
-                              [theme.breakpoints.down("sm")]: {
-                                width: "auto",
-                                padding: "1px",
-                              },
-                            }}
-                          >
-                            <IconButton
-                              size="small"
-                              style={{
-                                border: "1px solid #F0F0F0",
-                                borderRadius: "5px",
-                                padding: 5,
-                              }}
-                              onClick={() => {
-                                const preferredSize =
-                                  product.selectWise === "bundle"
-                                    ? variant.details.map((d) => {
-                                        const bundleDetail =
-                                          product.bundle_details.find(
-                                            (bd) => bd.size === d.size
-                                          );
-                                        return {
-                                          size: d.size,
-                                          quantity: -(
-                                            bundleDetail?.quantity ?? 1
-                                          ),
-                                        };
-                                      })
-                                    : [
-                                        {
-                                          size: details.size,
-                                          quantity: -1,
-                                        },
-                                      ];
-
-                                onAddNewCart({
-                                  items: [
-                                    {
-                                      product: product._id,
-                                      store: item.store._id,
-                                      stock_variant: variant._id,
-                                      purchaseType:
-                                        product.selectWise === "bundle"
-                                          ? "bundle"
-                                          : "normal",
-                                      preferred_size: preferredSize,
-                                    },
-                                  ],
-                                });
-                              }}
-                            >
-                              <RemoveIcon
-                                sx={{
-                                  fontSize: "small",
-                                  color: "#5F08B1",
-                                }}
-                              />
-                            </IconButton>
-                            <span
-                              onClick={() => {
-                                handleAddClick({
-                                  product,
-                                  variant,
-                                  productId: product._id,
-                                  storeId: item.store._id,
-                                  variantId: variant._id,
-                                  size: details.size,
-                                });
-                              }}
-                              className="sm:text-sm text-xs cursor-pointer"
-                            >
-                              {details.quantity}
-                            </span>
-                            <IconButton
-                              size="small"
-                              style={{
-                                border: "1px solid #F0F0F0",
-                                borderRadius: "5px",
-                                padding: 5,
-                              }}
-                              onClick={() => {
-                                const preferredSize =
-                                  product.selectWise === "bundle"
-                                    ? variant.details.map((d) => {
-                                        const bundleDetail =
-                                          product.bundle_details.find(
-                                            (bd) => bd.size === d.size
-                                          );
-                                        return {
-                                          size: d.size,
-                                          quantity: bundleDetail?.quantity ?? 1,
-                                        };
-                                      })
-                                    : [
-                                        {
-                                          size: details.size,
-                                          quantity: 1,
-                                        },
-                                      ];
-
-                                onAddNewCart({
-                                  items: [
-                                    {
-                                      product: product._id,
-                                      store: item.store._id,
-                                      stock_variant: variant._id,
-                                      purchaseType:
-                                        product.selectWise === "bundle"
-                                          ? "bundle"
-                                          : "normal",
-                                      preferred_size: preferredSize,
-                                    },
-                                  ],
-                                });
-                              }}
-                            >
-                              <AddIcon
-                                sx={{
-                                  fontSize: "small",
-                                  color: "#5F08B1",
-                                }}
-                              />
-                            </IconButton>
-                          </Stack>
-
-                          {/* Price and Delete */}
-                          <p className="text-gray-800 font-semibold">
-                            ₹{details.selling_price}
-                          </p>
-                          <IconButton>
-                            <DeleteIcon 
-                             onClick={async() => {
-                              const res = await dispatch(deleteCartRedux({
-                               productId:product._id,
-                               type:"size",
-                               store:item.store._id,
-                               stock_variant:variant._id,
-                                size:details.size,
-                                purchaseType:product.selectWise === "bundle" ? "bundle" : "normal"
-                              }));
-                              if(res.meta.requestStatus === 'fulfilled'){
-                               dispatch(getCartRedux());
-                              }
-         
-                             //  console.log(res);
-                              
-                             }}
-                            />
-                          </IconButton>
-                        </div>
-                      </Collapse>
-                    </div>
-                  ))
-                )}
+                <CartSizeVariants
+                  product={product}
+                  item={item}
+                  pIndex={pIndex}
+                  isCollapsed={isCollapsed}
+                  collapseKey={collapseKey}
+                />
               </div>
             );
           })
         )
       ) : (
         <div className="flex items-center justify-center h-48">
-          <p className="text-gray-500">No items in the cart</p>
+          <p className="text-gray-500">
+            {errorMessage ? errorMessage : "No items in the cart"}
+          </p>
         </div>
       )}
 

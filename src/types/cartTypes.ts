@@ -10,7 +10,7 @@ export type ICart = {
   }
 
   export interface ICartTypes {
-    items: Item[]
+    items: CartItemsType[]
     totalItems: number
     cartValue: number
     discountValue: number
@@ -22,7 +22,7 @@ export type ICart = {
     cartTotal: number
   }
 
-  export interface Item {
+  export interface CartItemsType {
     store: Store
     products: Product[]
   }

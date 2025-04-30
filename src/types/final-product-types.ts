@@ -120,10 +120,10 @@ type IBundle = {
     variant_name: string
     colorName: string
     sample: boolean
-    details: Detail[]
+    details: ISizeDetailType[]
   }
   
-  export interface Detail {
+  export interface ISizeDetailType {
     size: string
     discount: number
     selling_price: number

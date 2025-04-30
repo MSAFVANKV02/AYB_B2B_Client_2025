@@ -4,11 +4,32 @@ import CartDetails from "@/components/cart/CartDetails";
 // import { cartDetailsData } from "@/data/dummyData/carData";
 import CartLayout from "./layout";
 import { useAppSelector } from "@/redux/hook";
+import SaveLaterDetails from "@/components/cart/save_later_widgets/save-later-details";
+import { Separator } from "@/components/ui/separator";
+import { useQueryData } from "@/hooks/useQueryData";
+import { getSaveLaterAction } from "@/action/cart/cartAction";
+import { ICartTypes } from "@/types/cartTypes";
 
 const ShoppingCart = () => {
   // const onlyWidth = useWindowWidth();
   const { handleClick } = useNavigateClicks();
   const { cart } = useAppSelector((state) => state.products);
+
+  const { data: saveLaterData,  } = useQueryData(
+    ["save-later"],
+    getSaveLaterAction
+  );
+
+  const { data: saveLater } = (saveLaterData ?? {}) as {
+    status?: number;
+    data?: ICartTypes | null;
+  };
+
+  // useEffect(()=>{
+  //   if(status === 200 && saveLater) {
+  //     dispatch(setSaveLaterCartRedux(saveLater));
+  //   }
+  // })
 
   // const getPurchaseDetails = () => {
   //   let totalGST = 0;
@@ -105,12 +126,31 @@ const ShoppingCart = () => {
         </div> */}
 
         {/* Product Section */}
-        <CartDetails
-          // details={cartDetailsData}
-          title={"items"}
-          isCollapsible
-          isAllSelect
-        />
+        <div className="flex flex-col gap-3">
+          <div className="bg-gray-50 p-2 rounded-md shadow-md max-h-[80dvh] overflow-y-auto">
+            <CartDetails
+              // details={cartDetailsData}
+              cart={cart}
+              title={"items"}
+              isCollapsible
+              isAllSelect
+            />
+          </div>
+
+          <Separator />
+
+          {/* save later sections */}
+          {
+            saveLater && saveLater?.items.length > 0 && (
+              <div className="bg-gray-50 p-2 rounded-md shadow-md max-h-[80dvh] overflow-y-auto">
+            <SaveLaterDetails 
+            saveLater={saveLater}
+            />
+          </div>
+            )
+          }
+          
+        </div>
       </div>
 
       {/* Order Summary Section ======== = == = ====== ======= = ===*/}
