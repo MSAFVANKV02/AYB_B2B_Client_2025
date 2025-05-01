@@ -1,5 +1,8 @@
 import { add_Cart_Item_Api } from "@/services/user_side_api/cart/route";
-import { add_Save_Later_Item_Api, get_Save_Later_Item_Api } from "@/services/user_side_api/saveLater/route";
+import {
+  add_Save_Later_Item_Api,
+  get_Save_Later_Item_Api,
+} from "@/services/user_side_api/saveLater/route";
 
 export const addToCartAction = async (items: any) => {
   try {
@@ -53,28 +56,27 @@ export const addSaveLaterAction = async (data: {
   }
 };
 
-
 export const getSaveLaterAction = async () => {
   try {
     const response = await get_Save_Later_Item_Api();
 
-    console.log(response.data.data,'response save laetr');
-    
+    // console.log(response.data.data,'response save laetr');
 
     if (response.status === 200 || response.status === 201) {
       return {
         data: response.data.data,
         message: response.data.message,
-        status: response.status
+        status: response.status,
       };
-     
     }
   } catch (error) {
-    console.error("Error adding to saveLater:", error);
-    return {
-      data: [],
-      message: "Failed to add item to saveLater",
-      status: 404,
-    };
+    if (error) {
+      console.error("Error adding to saveLater:");
+      return {
+        data: [],
+        message: "Failed to add item to saveLater",
+        status: 404,
+      };
+    }
   }
 };

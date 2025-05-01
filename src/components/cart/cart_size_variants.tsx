@@ -9,6 +9,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import CartQtyChanger from "./cart_qty_changer";
 import { useUpdateSaveLater } from "@/hooks/saveLater-hook/use-saveLater";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   product: Product;
@@ -16,6 +17,7 @@ type Props = {
   pIndex: number;
   isCollapsed: Record<string, boolean>;
   collapseKey: string;
+  state:"cart"|"saveLater"
 };
 
 function CartSizeVariants({
@@ -24,8 +26,10 @@ function CartSizeVariants({
   isCollapsed,
   pIndex,
   collapseKey,
+  state
 }: Props) {
   const { onAddOrRemoveSaveLater } = useUpdateSaveLater();
+  const client = useQueryClient();
 
   return (
     <React.Fragment>
@@ -94,7 +98,10 @@ function CartSizeVariants({
                       }
                     }}
                   >
-                    save later
+                    {
+                      state === "cart" ? " save later" :"Move to cart"
+                    }
+                   
                   </button>
 
                   {/* delete */}
@@ -112,11 +119,16 @@ function CartSizeVariants({
                               product.selectWise === "bundle"
                                 ? "bundle"
                                 : "normal",
+                                state:state
                           })
                         );
                         if (res.meta.requestStatus === "fulfilled") {
                           dispatch(getCartRedux());
+                          if(state === "saveLater"){
+                            client.invalidateQueries({ queryKey: ["save-later"] });
+                          }
                         }
+
 
                         //  console.log(res);
                       }}

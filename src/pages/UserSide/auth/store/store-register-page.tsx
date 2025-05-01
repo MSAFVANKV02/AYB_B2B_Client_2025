@@ -151,7 +151,7 @@ import { Card } from "@/components/ui/card";
 
 export default function StoreRegisterPage() {
   return (
-    <div className="h-screen w-full flex xl:flex-row-reverse">
+    <div className="h-full w-full flex xl:flex-row-reverse">
       <div
         className="xl:w-[60%] xl:flex hidden justify-end"
         style={{

@@ -15,6 +15,7 @@ import { deleteCartRedux, getCartRedux } from "@/redux/userSide/product_Slice";
 // import { makeToastError } from "@/utils/toaster";
 import { Link } from "react-router-dom";
 import CartSizeVariants from "./cart_size_variants";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   cart?: ICartTypes | null;
@@ -22,6 +23,7 @@ type Props = {
   isCollapsible?: boolean;
   isAllSelect?: boolean;
   errorMessage?: string;
+  state:"cart"|"saveLater"
 };
 
 export default function CartDetails({
@@ -29,8 +31,11 @@ export default function CartDetails({
   isCollapsible = false,
   cart,
   errorMessage,
+  state
   // isAllSelect = false,
 }: Props) {
+  const client = useQueryClient();
+
   // const onlyWidth = useWindowWidth();
   // const mobileWidth = onlyWidth <= 768;
   // const { onAddNewCart } = useAddNewCart();
@@ -160,10 +165,14 @@ export default function CartDetails({
                         deleteCartRedux({
                           productId: product._id,
                           type: "variant",
+                          state:state
                         })
                       );
                       if (res.meta.requestStatus === "fulfilled") {
                         dispatch(getCartRedux());
+                        if(state === "saveLater"){
+                          client.invalidateQueries({ queryKey: ["save-later"] });
+                        }
                       }
 
                       //  console.log(res);
@@ -202,6 +211,7 @@ export default function CartDetails({
                 {/* Variants Section */}
 
                 <CartSizeVariants
+                state={state}
                   product={product}
                   item={item}
                   pIndex={pIndex}

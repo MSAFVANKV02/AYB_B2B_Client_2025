@@ -75,7 +75,7 @@ export const deleteAddressRedux = createAsyncThunk(
 
     try {
       const response = await delete_Address_Api(id);
-      console.log(response);
+      // console.log(response);
       if (response.status === 200) {
         return id;
       }

@@ -144,6 +144,7 @@ export const deleteCartRedux = createAsyncThunk(
       stock_variant,
       size,
       purchaseType,
+      state,
     }: {
       productId: string;
       type: "all" | "variant" | "size";
@@ -151,6 +152,7 @@ export const deleteCartRedux = createAsyncThunk(
       stock_variant?: string;
       size?: string;
       purchaseType?: string;
+      state: "cart" | "saveLater";
     },
     { rejectWithValue }
   ) => {
@@ -179,17 +181,12 @@ export const deleteCartRedux = createAsyncThunk(
       // console.log(response.data.data);
 
       if (response.status === 200 || response.status === 201) {
-        if (type === "size") {
-          makeToast("Size deleted successfully");
-          return {
-            productId: productId,
-            type: type,
-          };
-        }
+       
         makeToast(response.data.message);
         return {
           productId: productId,
           type: type,
+          state: state,
         };
       }
     } catch (error: any) {
@@ -225,7 +222,10 @@ const productSlice = createSlice({
     setProducts: (state, action: PayloadAction<IFinalProductTypes[]>) => {
       state.products = action.payload;
     },
-    setSaveLaterCartRedux: (state, action: PayloadAction<ICartTypes | null>) => {
+    setSaveLaterCartRedux: (
+      state,
+      action: PayloadAction<ICartTypes | null>
+    ) => {
       state.saveLaterCart = action.payload;
     },
     setProductData: (
@@ -316,56 +316,77 @@ const productSlice = createSlice({
       //   state.loading = false;
       // })
       .addCase(deleteCartRedux.fulfilled, (state, action) => {
-        const { productId, type } = action.meta.arg;
+        const { productId, type, state: actionState } = action.meta.arg;
         // console.log(action.meta.arg, "action.meta.arg");
 
         if (!state.cart) return;
 
         switch (type) {
           case "all":
-            state.cart = null;
+            if (actionState === "cart") {
+              state.cart = null;
+            } else {
+              state.saveLaterCart = null;
+            }
             break;
-          case "variant":
-            state.cart.items = state.cart.items
-              .map((item) => ({
+          
+          case "variant": {
+            const updatedItems = (
+              actionState === "cart"
+                ? state.cart?.items
+                : state.saveLaterCart?.items
+            )
+              ?.map((item) => ({
                 ...item,
                 products: item.products.filter(
                   (product) => product._id !== productId
                 ),
               }))
               .filter((item) => item.products.length > 0);
+
+            if (actionState === "cart" && updatedItems) {
+              state.cart!.items = updatedItems;
+            } else if (actionState === "saveLater" && updatedItems) {
+              state.saveLaterCart!.items = updatedItems;
+            }
             break;
+          }
 
           case "size": {
             const sizeToDelete = action.meta.arg?.size;
             const stockVariantToDelete = action.meta.arg?.stock_variant;
+            const actionState = action.meta.arg?.state;
 
             if (!sizeToDelete || !stockVariantToDelete) break;
 
-            state.cart.items = state.cart.items
-              .map((item) => {
-                return {
-                  ...item,
-                  products: item.products.map((product) => {
-                    if (product._id !== productId) return product;
+            const targetItems =
+              actionState === "cart"
+                ? state.cart?.items
+                : state.saveLaterCart?.items;
 
-                    return {
-                      ...product,
-                      variations: product.variations.map((variant) => {
-                        if (variant._id !== stockVariantToDelete)
-                          return variant;
+            if (!targetItems) break;
 
-                        return {
-                          ...variant,
-                          details: variant.details.filter(
-                            (detail) => detail.size !== sizeToDelete
-                          ),
-                        };
-                      }),
-                    };
-                  }),
-                };
-              })
+            const updatedItems = targetItems
+              .map((item) => ({
+                ...item,
+                products: item.products.map((product) => {
+                  if (product._id !== productId) return product;
+
+                  return {
+                    ...product,
+                    variations: product.variations.map((variant) => {
+                      if (variant._id !== stockVariantToDelete) return variant;
+
+                      return {
+                        ...variant,
+                        details: variant.details.filter(
+                          (detail) => detail.size !== sizeToDelete
+                        ),
+                      };
+                    }),
+                  };
+                }),
+              }))
               .filter((item) =>
                 item.products.some((product) =>
                   product.variations.some(
@@ -373,6 +394,12 @@ const productSlice = createSlice({
                   )
                 )
               );
+
+            if (actionState === "cart") {
+              if (state.cart) state.cart.items = updatedItems;
+            } else {
+              if (state.saveLaterCart) state.saveLaterCart.items = updatedItems;
+            }
 
             break;
           }
@@ -462,7 +489,7 @@ export const {
   setSingleProducts,
   setProducts,
   setProductData,
-  setSaveLaterCartRedux
+  setSaveLaterCartRedux,
 } = productSlice.actions;
 
 export default productSlice.reducer;

@@ -20,12 +20,15 @@ export const MyAccountLayout = () => {
 export const StoreLayout = () => {
   const { pathname } = useLocation();
 
-  
-  const titleName = pathname.includes("seller") ? "Ayaboo | Seller" : "Ayaboo | Store";
-  const headingName = pathname.includes("seller") ? "Register Seller" : "Register Store";
+  const titleName = pathname.includes("seller")
+    ? "Ayaboo | Seller"
+    : "Ayaboo | Store";
+  const headingName = pathname.includes("seller")
+    ? "Register Seller"
+    : "Register Store";
 
-  usePageTitle(titleName); 
-  
+  usePageTitle(titleName);
+
   return (
     <div className="bg-gray-50 ">
       <div className="flex justify-between w-full fixed top-5 left-0 right-0 px-5 items-center">
@@ -46,19 +49,17 @@ export const StoreLayout = () => {
 
         {/* {getErrors(errors)} */}
       </div>
-      <div className="">
+      <div className="h-screen flex flex-col">
         <Outlet />
+        <Separator />
+        <footer className="w-full max-w-screen-2xl text-sm mx-auto p-6 select-none flex justify-center">
+          <ul>
+            <li>Haashtechnologies Pvt Ltd &copy; 2025 | haash.tech</li>
+          </ul>
+        </footer>
       </div>
-      
-
-      <Separator />
 
       {/* footer ==== */}
-      <footer className="w-full max-w-screen-2xl text-sm mx-auto p-6 select-none flex justify-center">
-        <ul>
-          <li>Haashtechnologies Pvt Ltd &copy; 2025 | haash.tech</li>
-        </ul>
-      </footer>
     </div>
   );
 };

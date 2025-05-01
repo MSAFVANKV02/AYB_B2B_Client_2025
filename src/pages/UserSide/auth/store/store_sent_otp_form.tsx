@@ -86,7 +86,9 @@ export default function StoreRegisterSendOtpForm() {
   return (
     <div className="">
       {showOtpLogin ? (
-        <StoreVerifyOtpForm />
+        <StoreVerifyOtpForm
+        setShowOtpLogin={setShowOtpLogin}
+        />
       ) : (
         <Form {...form}>
           <form
@@ -143,8 +145,9 @@ export default function StoreRegisterSendOtpForm() {
               />
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
-              <AyButton
-                title="Verify OTP"
+             <div className="fle w-full ">
+             <AyButton
+                title="Send OTP"
                 loading={loading}
                 type="submit"
                 sx={{
@@ -152,6 +155,7 @@ export default function StoreRegisterSendOtpForm() {
                   height: "40px",
                 }}
               />
+             </div>
               <div className="flex text-xs gap-2 items-center">
                 <p className="text-sm">Already a Supplier</p> ?
                 <Link

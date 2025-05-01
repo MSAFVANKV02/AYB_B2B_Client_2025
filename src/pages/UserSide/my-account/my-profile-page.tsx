@@ -12,6 +12,7 @@ import AyButton from "@/components/myUi/AyButton";
 
 import Modal from "react-modal";
 import CreateAddressForm from "./user-address/create_Address_Form";
+import { useAppSelector } from "@/redux/hook";
 Modal.setAppElement("#root");
 
 export default function SettingsProfilePage() {
@@ -23,6 +24,10 @@ export default function SettingsProfilePage() {
     setAddAddress,
     handleCloseModal,
   } = UseContextPage();
+
+  const { address } = useAppSelector((state) => state.auth);
+
+
   return (
     <SettingsLayout>
       <div>
@@ -58,7 +63,7 @@ export default function SettingsProfilePage() {
             </IconButton>
             {addAddress ? (
               <>
-                {/* <AddressForm addAddress={addAddress} /> */}
+                {/* <AddressForm addAddress={addAddress} /> d*/}
                 <CreateAddressForm addAddress={addAddress} />
               </>
             ) : (
@@ -71,16 +76,23 @@ export default function SettingsProfilePage() {
           </Modal>
 
           <div className="flex justify-between items-center ">
-            <div className="flex flex-col jc">
-              <h6>Default Shipping Address</h6>
-              <span className="text-sm text-gray-600">Name</span>
-              <span className="text-sm text-gray-600">
-                Malayamma, NIT Campus, +919846012078, support@ayaboo.in
-              </span>
-              <span className="text-sm text-gray-600">
-                Phone Number: 0000 000 00
-              </span>
-            </div>
+            {
+              address?.filter((filter)=>filter.isDefault).map((add,index)=>(
+                <div className="flex flex-col jc"
+                key={index}
+                >
+                <h6>Default Shipping Address</h6>
+                <span className="text-sm text-gray-600">{add.name}</span>
+                <span className="text-sm text-gray-600">
+                 {add.street}
+                </span>
+                <span className="text-sm text-gray-600">
+                  Phone Number: {add.mobile}
+                </span>
+              </div>
+              ))
+            }
+         
 
             <AyButton
               onClick={handleOpenModal}

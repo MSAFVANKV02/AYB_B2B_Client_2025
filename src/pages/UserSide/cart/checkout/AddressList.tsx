@@ -37,8 +37,11 @@ export default function AddressList({
     selectedAddress
   } = UseContextPage();
 
+  // console.log(selectedAddress,'selectedAddress');
+  
+
   const handleAddressSelect = (address: IAddressType | null) => {
-    console.log(address);
+    // console.log(address);
 
     if (handleFormDataChange) {
       handleFormDataChange("address", address); // Only allow one selected address
@@ -73,6 +76,7 @@ export default function AddressList({
             onClick={() => {
               if (setAddAddress) {
                 setAddAddress(true);
+                setSelectedAddress(null)
               }
             }}
           >
@@ -119,7 +123,15 @@ export default function AddressList({
                       Default shipping address
                     </span>
                   ) : (
-                    <button className="text-gray-500 text-sm underline hover:text-gray-700">
+                    <button className="text-gray-500 text-sm underline hover:text-gray-700"
+                    onClick={()=>{
+                      if (setAddAddress) {
+                        setAddAddress(true);
+                      }
+                      setIsModalOpen(true);
+                      setSelectedAddress(address);
+                    }}
+                    >
                       Set as default shipping address
                     </button>
                   )}

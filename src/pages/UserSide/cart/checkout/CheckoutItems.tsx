@@ -2,12 +2,28 @@ import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import { useWindowWidth } from "@react-hook/window-size";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CartDetails from "@/components/cart/CartDetails";
-import { cartDetailsData } from "@/data/dummyData/carData";
+// import { cartDetailsData } from "@/data/dummyData/carData";
+import { useEffect } from "react";
+import { dispatch, useAppSelector } from "@/redux/hook";
+import { getCartRedux } from "@/redux/userSide/product_Slice";
+import { useNavigate } from "react-router-dom";
 
 
 export default function CheckoutItems() {
+  const { cart } = useAppSelector((state) => state.products);
+  const navigate = useNavigate()
+
   const onlyWidth = useWindowWidth();
   const mobileWidth = onlyWidth <= 768;
+
+  useEffect(() => {
+    dispatch(getCartRedux());
+    if(cart?.items.length === 0){
+      navigate("/cart")
+    }
+  }, [cart,navigate]);
+
+
   return (
     <>
       <Accordion
@@ -26,10 +42,18 @@ export default function CheckoutItems() {
           aria-controls="panel1-content"
           id="panel1-header"
         >
-          <h2 className="text-lg font-semibold ">Store 1</h2>
+          {/* <h2 className="text-lg font-semibold ">Store 1</h2> */}
         </AccordionSummary>
         <AccordionDetails className="space-y-2">
-          <CartDetails details={cartDetailsData} title="store 1" />
+          {/* <CartDetails details={cartDetailsData} title="store 1" /> */}
+          <CartDetails
+            state="cart"
+              // details={cartDetailsData}
+              cart={cart}
+              title={"items"}
+              isCollapsible
+              isAllSelect
+            />
         </AccordionDetails>
       </Accordion>
     </>

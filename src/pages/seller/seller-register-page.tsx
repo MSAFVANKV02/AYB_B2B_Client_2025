@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 
 export default function SellerRegisterPage() {
   return (
-    <div className="h-screen w-full flex xl:flex-row">
+    <div className="h-full w-full flex xl:flex-row">
       <div
         className="xl:w-[60%] xl:flex hidden justify-end"
         style={{

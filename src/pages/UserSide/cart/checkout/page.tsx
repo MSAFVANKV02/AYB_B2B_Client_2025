@@ -1,5 +1,5 @@
 import OrderSummary from "@/components/checkout/OrderSummary";
-import AddressForm from "./AddAddress";
+// import AddressForm from "./AddAddress";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 
@@ -20,6 +20,8 @@ import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 import { UseContextPage } from "@/providers/context/context";
 import { IAddressType } from "@/types/address-types";
+import { useAppSelector } from "@/redux/hook";
+import CreateAddressForm from "../../my-account/user-address/create_Address_Form";
 Modal.setAppElement("#root"); // Add this line to avoid screen-reader issues with modal
 
 type IShipMethod = {
@@ -76,21 +78,23 @@ type RazorPayResult = {
 // Use more specific types instead of 'any'
 export type FormDataValue =
   | string
-  | AddressType
+  | IAddressType
   | ParcelOptionsType
   | TransactionDetails
   | null;
 
 export default function CheckoutPage() {
   // const { handleClick } = useNavigateClicks();
-  const { addAddress,setAddAddress } = UseContextPage();
+  const { addAddress, setAddAddress, selectedAddress, setIsOpenModal } =
+    UseContextPage();
+  const { cart } = useAppSelector((state) => state.products);
+  const { address } = useAppSelector((state) => state.auth);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openShipModal, setOpenShipModal] = useState(false);
   const [openOfflinePayModal, setOpenOfflinePayModal] = useState(false);
   // const [orderConfirmed, setOrderConfirmed] = useState(false);
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState<FormDataType>({
     address: null,
@@ -142,7 +146,7 @@ export default function CheckoutPage() {
     },
   ];
 
-  const orderExist = true;
+  // const orderExist = true;
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -152,7 +156,7 @@ export default function CheckoutPage() {
   //   window.scrollTo({ top: 0, behavior: "smooth" });
   // }, []);
 
-    // ////// FormData Changing //////////
+  // ////// FormData Changing //////////
 
   const handleFormDataChange = (field: string, value: FormDataValue) => {
     setFormData((prevData) => ({
@@ -160,7 +164,6 @@ export default function CheckoutPage() {
       [field]: value,
     }));
   };
-
 
   // ////// Offline Payment Submission //////////
 
@@ -170,17 +173,16 @@ export default function CheckoutPage() {
     comment: string,
     isPolicy: boolean
   ) => {
-    
     // console.log("Offline Payment Submitted", { upiId, referralDoc, comment });
     handleFormDataChange("transactionDetails", {
       remark: comment,
-      referral_docs: referralDoc, 
+      referral_docs: referralDoc,
       upi_id: upiId,
       is_policy_verified: isPolicy,
     });
   };
 
-    // ////// Shipping Method Selection //////////
+  // ////// Shipping Method Selection //////////
 
   const handleSelectShippingMethod = (ship: IShipMethod) => {
     handleFormDataChange("shippingMethod", ship.label);
@@ -230,7 +232,6 @@ export default function CheckoutPage() {
       });
       if (result.success) {
         alert(result.message);
-       
       } else {
         makeToastError(result.message || "Payment was unsuccessful.");
       }
@@ -239,7 +240,6 @@ export default function CheckoutPage() {
       setOpenOfflinePayModal(true);
     }
     if (formData.paymentMethod === "cod") {
-    
       navigate("/cart/checkout/order-confirmation");
     }
   };
@@ -252,8 +252,17 @@ export default function CheckoutPage() {
     ) {
       handleFormDataChange("shippingMethod", "");
     }
-    
   }, [openShipModal]);
+
+  useEffect(() => {
+    if (!formData.address && address) {
+      const defaultAddress = address.find((add) => add.isDefault);
+      const finalAddress = defaultAddress || address[0];
+
+      // setSelectedAddress(finalAddress);
+      handleFormDataChange("address", finalAddress); // Sync with formData
+    }
+  }, [selectedAddress, address]);
 
   return (
     <CartLayout>
@@ -276,25 +285,27 @@ export default function CheckoutPage() {
         {/*================= starting Address   ================ */}
         {/*================= ----------------------   ================ */}
         <div className="lg:ml-6">
-          {orderExist ? (
+          {formData.address ? (
             <div className="flex  flex-col gap-1 ">
               <span className="flex gap-1 items-center">
-                <p>Name</p>
+                <p>{formData.address.name}</p>
               </span>
               {/* ======== */}
-              <span className="flex gap-1 items-center">
-                <p>Address</p>,<p>City</p>,<p>State</p>,<p>Pincode</p>,
-                <p>Country</p>
+              <span className="flex gap-1 items-center break-words flex-wrap">
+                {formData.address.street}
               </span>
               {/* ======= */}
               <span className="flex gap-1 items-center">
-                <p>Kerala</p>,<p>67890</p>,<p>9067439020</p>
+                <p>{formData.address.city}</p>,<p>{formData.address.zip}</p>,
+                <p>{formData.address.mobile}</p>
               </span>
               <div className="flex gap-2 items-center">
-                <span className="bg-bgSoft text-sm p-1 text-textMain rounded-md">
-                  {" "}
-                  Default shipping address{" "}
-                </span>{" "}
+                {formData.address.isDefault && (
+                  <span className="bg-bgSoft text-sm p-1 text-textMain rounded-md">
+                    Default shipping address
+                  </span>
+                )}
+
                 <IconButton
                   sx={{
                     color: "#93c5fd",
@@ -311,7 +322,7 @@ export default function CheckoutPage() {
             </div>
           ) : (
             <div className="max-w-3xl">
-              <AddressForm addAddress={addAddress} />
+              <CreateAddressForm addAddress={addAddress} />
             </div>
           )}
 
@@ -334,7 +345,8 @@ export default function CheckoutPage() {
                 {/* <span className=" text-xl">Add Address</span> */}
 
                 <div className="h-full bg-">
-                  <AddressForm addAddress={addAddress} />
+                  {/* <AddressForm addAddress={addAddress} /> */}
+                  <CreateAddressForm addAddress={addAddress} />
                 </div>
               </div>
             ) : openShipModal ? (
@@ -353,8 +365,8 @@ export default function CheckoutPage() {
               />
             ) : (
               <AddressList
-              formData={formData}
-                setIsModalOpen={setIsModalOpen}
+                formData={formData}
+                setIsModalOpen={setIsOpenModal}
                 setAddAddress={setAddAddress}
                 handleFormDataChange={handleFormDataChange}
               />
@@ -471,15 +483,15 @@ export default function CheckoutPage() {
         </div>
       </div>
       <OrderSummary
-        gst={18}
-        discount={20}
+        gst={cart?.gst.cgst ?? 0}
+        discount={cart?.discountValue}
+        cess={cart?.gst.cgst}
+        itemSubTotal={cart?.cartValue}
+        shippingCharge={cart?.shippingCharge}
+        subTotal={cart?.subTotalExclTax}
+        totalPrice={cart?.cartTotal}
+        totalItems={cart?.totalItems}
         btnLabel="Pay & Submit Order"
-        cess={2}
-        itemSubTotal={500}
-        shippingCharge={20}
-        subTotal={550}
-        totalPrice={600}
-        totalItems={3}
         isCoupon
         handleClick={createOrder}
       />
