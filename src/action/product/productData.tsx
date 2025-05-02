@@ -25,6 +25,9 @@ export const ProductData = (
     data?: IFinalProductTypes[];
   };
 
+  // console.log(products,'filter response');
+  
+
   return {
     products,
     isFetching,

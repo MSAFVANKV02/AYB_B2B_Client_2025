@@ -75,7 +75,7 @@ function AllKindProducts() {
   });
 
   const [filter, setFilter] = useState<ProductState>(getInitialFilterState);
-  // console.log(mapToBackendFilter(filter),'mapToBackendFilter');
+  console.log(mapToBackendFilter(filter),'mapToBackendFilter');
   const debouncedUrlUpdate = useMemo(
     () =>
       debounce((updatedFilter: ProductState) => {
@@ -157,7 +157,7 @@ function AllKindProducts() {
     //   minimumQuantity: Number(filter.minimumQuantity) || 0,
     // }
   );
-  // console.log();
+  console.log(products);
 
   useEffect(() => {
     // alert( query.get("sort"))
