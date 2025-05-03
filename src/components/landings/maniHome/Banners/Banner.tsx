@@ -13,7 +13,7 @@
 //   className?: string;
 //   imgClass?: string;
 //   onClick?: () => void;
-//   isVideoControll?: boolean;
+//   isVideoControl?: boolean;
 // }
 
 // function Banner({
@@ -25,7 +25,7 @@
 //   imgClass,
 //   video,
 //   onClick,
-//   isVideoControll = true,
+//   isVideoControl = true,
 // }: IBanner) {
 //   // const isVideo = image.endsWith(".mp4") || image.includes("video");
 //   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -70,7 +70,7 @@
 //               <video
 //                 ref={videoRef}
 //                 src={video}
-//                 controls={isVideoControll}
+//                 controls={isVideoControl}
 //                 autoPlay={isPlayVideo}
 //                 loop
 //                 muted={isMuted}
@@ -128,7 +128,7 @@
 //           <video
 //             ref={videoRef}
 //             src={video}
-//             controls={isVideoControll}
+//             controls={isVideoControl}
 //             autoPlay={isPlayVideo}
 //             loop
 //             muted={isMuted}
@@ -200,7 +200,8 @@ interface IBanner {
   className?: string;
   imgClass?: string;
   onClick?: () => void;
-  isVideoControll?: boolean;
+  isVideoControl?: boolean;
+  loading?:boolean
 }
 
 function Banner({
@@ -212,7 +213,8 @@ function Banner({
   imgClass,
   video,
   onClick,
-  isVideoControll = true,
+  isVideoControl = true,
+  loading
 }: IBanner) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isMuted, setIsMuted] = useState(true);
@@ -293,6 +295,13 @@ function Banner({
     }
   }, [showPlayIcon]);
 
+
+  if(loading){
+    return <div className={cn("h-full w-full flex justify-center items-center rounded-md overflow-hidden", className)}>
+ <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
+    </div>
+  }
+
   return (
     <div className={cn("h-full w-full rounded-md overflow-hidden", className)}>
       {isLink && link ? (
@@ -302,15 +311,15 @@ function Banner({
               <video
                 ref={videoRef}
                 src={video}
-                controls={isVideoControll}
+                controls={isVideoControl}
                 controlsList="nodownload"
-                autoPlay={!isVideoControll && isPlayVideo}
+                autoPlay={!isVideoControl && isPlayVideo}
                 loop
                 muted={isMuted}
                 className={cn("w-full h-full object-cover", imgClass)}
-                onClick={() => !isVideoControll && togglePlayVideo}
+                onClick={() => !isVideoControl && togglePlayVideo}
               />
-              {!isVideoControll && (
+              {!isVideoControl && (
                 <div className="group-hover:block lg:hidden absolute -bottom-5 left-0 right-0 w-[70%] m-auto ">
                   <div className="flex gap-5 mt-7">
                     {/* Volume Control Slider */}
@@ -335,7 +344,7 @@ function Banner({
                 </div>
               )}
 
-              {showPlayIcon && !isVideoControll && (
+              {showPlayIcon && !isVideoControl && (
                 <div
                   className={`absolute rounded-full w-10 h-10 flex justify-center items-center cursor-pointer top-1/2 -translate-y-1/2 right-1/2 translate-x-1/2 z-30 transition-opacity duration-500 opacity-100 ${
                     showPlayIcon ? "blink-effect" : ""
@@ -352,7 +361,7 @@ function Banner({
                 </div>
               )}
 
-              {!isVideoControll && (
+              {!isVideoControl && (
                 <div
                   className={`absolute group-hover:flex hidden rounded-full w-7 h-7 justify-center items-center cursor-pointer lg:bottom-10 bottom-0 -translate-y-1/2 right-10 z-50 transition-opacity duration-500 opacity-100 ${
                     showMuteIcon ? "" : ""
@@ -383,15 +392,15 @@ function Banner({
           <video
             ref={videoRef}
             src={video}
-            controls={isVideoControll}
-            autoPlay={!isVideoControll && isPlayVideo}
+            controls={isVideoControl}
+            autoPlay={!isVideoControl && isPlayVideo}
             controlsList="nodownload "
             loop
             muted={isMuted}
             className={cn("w-full h-full object-cover", imgClass)}
-            onClick={() => !isVideoControll && togglePlayVideo}
+            onClick={() => !isVideoControl && togglePlayVideo}
           />
-          {!isVideoControll && (
+          {!isVideoControl && (
             <div className="group-hover:block lg:hidden absolute -bottom-5 left-0 right-0 w-[70%] m-auto ">
               <div className="flex gap-5 mt-7">
                 {/* Volume Control Slider */}
@@ -416,7 +425,7 @@ function Banner({
             </div>
           )}
 
-          {showPlayIcon && !isVideoControll && (
+          {showPlayIcon && !isVideoControl && (
             <div
               className={`absolute rounded-full w-10 h-10 flex justify-center items-center cursor-pointer top-1/2 -translate-y-1/2 right-1/2 translate-x-1/2 z-30 transition-opacity duration-500 opacity-100 ${
                 showPlayIcon ? "blink-effect" : ""
@@ -433,7 +442,7 @@ function Banner({
             </div>
           )}
 
-          {!isVideoControll && (
+          {!isVideoControl && (
             <div
               className={`absolute group-hover:flex hidden rounded-full w-7 h-7 justify-center items-center cursor-pointer lg:bottom-10 bottom-0 -translate-y-1/2 right-10 z-50 transition-opacity duration-500 opacity-100 ${
                 showMuteIcon ? "" : ""

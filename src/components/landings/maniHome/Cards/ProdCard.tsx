@@ -89,7 +89,7 @@ export default function ProductNav({
               onClick={() => {
                 dispatch(AddRecentViewRedux(stockData?._id ?? ""));
 
-                handleClick(link);
+                handleClick(link,true);
               }}
             >
               {/* <Link to={link}> */}

@@ -68,6 +68,7 @@ type Props = {
   priority?: boolean;
   link?: string;
   disableLink?: boolean;
+  draggable?: boolean;
 };
 
 const Image = ({
@@ -83,6 +84,8 @@ const Image = ({
   children,
   link,
   disableLink = false,
+  draggable = false,
+  loading,
 }: Props) => {
   // const [imgSrc, setImgSrc] = useState(src);
   const [imgSrc, setImgSrc] = useState(src || fallbackSrc || "/");
@@ -93,6 +96,19 @@ const Image = ({
   }, []);
   // alert(JSON.stringify(redirect))
 
+  if (loading) {
+    return (
+      <div
+        className={cn(
+          "h-full w-full flex justify-center items-center rounded-md overflow-hidden",
+          className
+        )}
+      >
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
   return (
     <div className={`relative overflow-hidden ${className}`}>
       {!hasError ? (
@@ -100,7 +116,7 @@ const Image = ({
           <img
             src={isValidUrl(imgSrc) ? imgSrc : "/"}
             alt={alt}
-            draggable={false}
+            draggable={draggable}
             className={cn(`w-full h-full object-contain`, classNameImg)}
             onClick={onClick}
             style={style}

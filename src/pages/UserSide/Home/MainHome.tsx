@@ -1,16 +1,20 @@
+import { getAllAddedCoverImages } from "@/action/banners/bannersAction";
 import { ProductData } from "@/action/product/productData";
+import Image from "@/components/global/image";
 import Banner from "@/components/landings/maniHome/Banners/Banner";
 import BannerWrapper from "@/components/landings/maniHome/Banners/BannerWrapper";
 import ColorGrid from "@/components/landings/maniHome/Cards/ColorCard";
 import ProdCard from "@/components/landings/maniHome/Cards/ProdCard";
 import CategoryCard from "@/components/landings/maniHome/Shop_By_Cat/CategoryCard";
+import { useQueryData } from "@/hooks/useQueryData";
 // import { getDeviceToken, messaging } from "@/lib/firebase";
 import { dispatch, useAppSelector } from "@/redux/hook";
 import { getRecentViewRedux } from "@/redux/userSide/product_Slice";
+import { IBannerImageTypes } from "@/types/ads.bannerTypes";
 // import { ProductsDetail } from "@/utils/CardDetails";
 import { useWindowSize } from "@react-hook/window-size";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function MainHome() {
   const [width] = useWindowSize();
@@ -24,6 +28,54 @@ function MainHome() {
     ],
     undefined
   );
+
+  const {
+    data: fetchedBannerImages,
+    isFetching:fetchingBanner,
+    // refetch:refetchBanner,
+  } = useQueryData(
+    ["banner-images"],
+    () => getAllAddedCoverImages("") // Wrap in an arrow function
+  );
+
+  // console.log(fetchedBannerImages);
+
+  const { data: banners = [] } = (fetchedBannerImages ?? {}) as {
+    status?: number;
+    data?: IBannerImageTypes[];
+  };
+
+  const [bannerData, setBannerData] = useState({
+    FLASH_BANNERS: [] as IBannerImageTypes[],
+    HOME_SLIDER_1: [] as IBannerImageTypes[],
+    HOME_SLIDER_2: [] as IBannerImageTypes[],
+    HOME_SLIDER_3: [] as IBannerImageTypes[],
+    ADS: [] as IBannerImageTypes[],
+    KYC_SLIDER: [] as IBannerImageTypes[],
+    LOGIN_PAGE: [] as IBannerImageTypes[],
+  });
+
+  // console.log(bannerData,'bannerData');
+
+  useEffect(() => {
+    if (banners && banners.length > 0) {
+      const grouped: Record<string, IBannerImageTypes[]> = {};
+
+      banners.forEach((banner) => {
+        const key = banner.banner_type?.toUpperCase();
+        if (!grouped[key]) {
+          grouped[key] = [];
+        }
+        grouped[key].push(banner);
+      });
+
+      setBannerData((prev) => ({
+        ...prev,
+        ...grouped,
+      }));
+    }
+  }, [banners]);
+
   const { wishlist, recentView } = useAppSelector((state) => state.products);
   // console.log(recentView,'recentView');
 
@@ -46,40 +98,6 @@ function MainHome() {
 
   // console.log(products, "products");
 
-  const BannerDetails = [
-    {
-      id: 1,
-      name: "Home Banner 1",
-      link: "#",
-      image: "/img/banners/image 92.png",
-    },
-    {
-      id: 2,
-      name: "Home Banner 2",
-      link: "#",
-      image: "/img/banners/Banner2.png",
-    },
-    {
-      id: 3,
-      name: "Home Banner 3",
-      link: "#",
-      image: "/img/banners/Banner3.png",
-    },
-    {
-      id: 4,
-      name: "Home Banner 3",
-      link: "#",
-      image: "/img/banners/Banner6.png",
-    },
-    {
-      id: 5,
-      name: "Home Banner 3",
-      link: "#",
-      image: "/img/banners/Banner5.png",
-    },
-    // Add more banners as needed...
-  ];
-
   const todaysDeals =
     width > 1280 ? products.slice(0, 5) : products.slice(0, 4);
 
@@ -99,20 +117,23 @@ function MainHome() {
         }}
       >
         <BannerWrapper
+          infinite={bannerData.HOME_SLIDER_1.length > 1}
           isActive={true}
           className="sm:w-[80%] w-[70%]"
           nextBtnClass="shadow-md active:scale-90 duration-300 transition-all sm:px-2 sm:py-2 px-1 py-[2px]"
           prevBtnClass="shadow-md active:scale-90 duration-300 transition-all  sm:px-2 sm:py-2 px-1 py-[2px] text-xs"
           btnClass="justify-end  gap-3  right-0 sm:bottom-10 bottom-4"
         >
-          {BannerDetails.map((banner) => (
+          {bannerData.HOME_SLIDER_1.map((banner) => (
             <Banner
+            isLink
+            loading={fetchingBanner}
               className="w-full md:h-[360px] sm:h-[200px] h-[100px] rounded-md overflow-hidden " // Consistent height
-              _id={banner.id}
-              name={banner.name}
-              link={banner.link}
-              image={banner.image}
-              key={banner.id}
+              _id={banner._id}
+              name={banner.banner_type}
+              link={banner.redirectUrl}
+              image={banner.banner}
+              key={banner._id}
             />
           ))}
         </BannerWrapper>
@@ -120,12 +141,19 @@ function MainHome() {
         {/* Ensure same height for AdvertiseBanner */}
         <div className="flex-grow rounded-md md:h-[360px] sm:h-[200px] h-[100px] overflow-hidden w-[100px]">
           {/* <AdvertiseBanner /> */}
-          <img
-            draggable={false}
-            src="/img/advertise/adv1.png"
-            alt=""
-            className="h-full object-cover rounded-xl"
-          />
+          {bannerData.ADS.filter(
+            (ad) => ad.context === window.location.href
+          ).map((ads, index) => (
+            <Image
+              link={ads.redirectUrl}
+              loading={fetchingBanner}
+              key={index}
+              src={ads.banner || "/img/advertise/adv1.png"}
+              alt="ads banner"
+              classNameImg="h-full object-cover rounded-xl"
+              className="h-full w-full"
+            />
+          ))}
         </div>
       </div>
 
@@ -213,19 +241,22 @@ function MainHome() {
 
       <BannerWrapper
         isActive={true}
+        infinite={bannerData.HOME_SLIDER_2.length > 1}
         className="w-full section_container_dash overflow-hidden"
         nextBtnClass="shadow-md active:scale-90 duration-300 transition-all"
         prevBtnClass="shadow-md active:scale-90 duration-300 transition-all"
         btnClass="sm:left-28 sm:right-28 top-1/2 -translate-y-1/2 left-0  right-0"
       >
-        {BannerDetails.map((banner) => (
+        {bannerData.HOME_SLIDER_2.map((banner) => (
           <Banner
+          isLink
+          loading={fetchingBanner}
             className="w-full md:h-auto md:min-h-[370px] md:max-h-[450px] sm:h-[200px] h-[110px] rounded-md overflow-hidden" // Consistent height
-            _id={banner.id}
-            name={banner.name}
-            link={banner.link}
-            image={banner.image}
-            key={banner.id}
+            _id={banner._id}
+            name={banner.banner_type}
+            link={banner.redirectUrl}
+            image={banner.banner}
+            key={banner._id}
           />
         ))}
       </BannerWrapper>
@@ -285,20 +316,22 @@ function MainHome() {
       {/* ======= Section 08 : Banner4 ========= starting */}
       <BannerWrapper
         isActive={true}
+        infinite={bannerData.HOME_SLIDER_3.length > 1}
         className="w-full section_container_dash overflow-hidden"
         nextBtnClass="shadow-md active:scale-90 duration-300 transition-all"
         prevBtnClass="shadow-md active:scale-90 duration-300 transition-all"
-        isAutoFlow={false}
         btnClass="sm:left-28 sm:right-28 top-1/2 -translate-y-1/2 left-0  right-0"
       >
-        {BannerDetails.map((banner) => (
+        {bannerData.HOME_SLIDER_3.map((banner) => (
           <Banner
+          loading={fetchingBanner}
+          isLink
             className="w-full md:h-auto md:min-h-[370px] md:max-h-[450px] sm:h-[200px] h-[110px] rounded-md overflow-hidden" // Consistent height
-            _id={banner.id}
-            name={banner.name}
-            link={banner.link}
-            image={banner.image}
-            key={banner.id}
+            _id={banner._id}
+            name={banner.banner_type}
+            link={banner.redirectUrl}
+            image={banner.banner}
+            key={banner._id}
           />
         ))}
       </BannerWrapper>

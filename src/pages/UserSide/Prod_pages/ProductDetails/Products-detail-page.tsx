@@ -67,7 +67,11 @@ export default function ProductsPage() {
 
           {/* Product Features tabs */}
           <div className="">
-            <ProductTabs />
+            <ProductTabs
+              // productFeatures={product?.productFeatures ?? ""}
+              // specialFeatures={product?.specialFeatures ?? ""}
+              // careGuide={product?.careGuide ?? ""}
+            />
           </div>
 
           {/* <div className="">

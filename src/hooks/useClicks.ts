@@ -7,8 +7,15 @@ const useNavigateClicks = () => {
   
   const router = useNavigate();
 
-  const handleClick = useCallback((redirect: string) => {
-    router(redirect,{replace: true});
+  // const handleClick = useCallback((redirect: string) => {
+  //   router(redirect,{replace: true});
+  // }, [router]);
+  const handleClick = useCallback((redirect: string, isNewTab?: boolean) => {
+    if (isNewTab) {
+      window.open(redirect, "_blank", "noopener,noreferrer");
+    } else {
+      router(redirect, { replace: true });
+    }
   }, [router]);
 
   return {

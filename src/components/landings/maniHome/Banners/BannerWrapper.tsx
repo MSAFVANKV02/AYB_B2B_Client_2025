@@ -86,6 +86,7 @@ interface IBannerWrapperProps {
   btnClass?: string;
   isActive?: boolean;
   isAutoFlow?: boolean;
+  infinite?: boolean;
   iconSize?: number;
   initialSlide?: number;
   setCurrentImageIndex?: (index: number) => void;
@@ -99,6 +100,7 @@ const BannerWrapper: React.FC<IBannerWrapperProps> = ({
   btnClass,
   isActive,
   isAutoFlow = true,
+  infinite,
   iconSize = 20,
   initialSlide = 0,
   setCurrentImageIndex
@@ -107,7 +109,7 @@ const BannerWrapper: React.FC<IBannerWrapperProps> = ({
 
   const settings = {
     dots: false,
-    infinite: true,
+    infinite: infinite,
     autoplay: isAutoFlow? true : false,
     autoplaySpeed: 3000,
     speed: 500,
