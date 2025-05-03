@@ -182,7 +182,7 @@ export default function ProductDrawer({
   //   [product?.selectWise, selectedVariant]
   // );
   const handleIncrease = useCallback(
-    (variantId: string, size: string, bundleQuantity: number) => {
+    (variantId: string, size: string) => {
       setQuantities((prev) => {
         const updatedQuantities = { ...prev };
         const variantQuantities = { ...prev[variantId] };
@@ -246,7 +246,7 @@ export default function ProductDrawer({
   // 2. Decrease Cart Qty =============
   //
   const handleDecrease = useCallback(
-    (variantId: string, size: string, bundleQuantity: number) => {
+    (variantId: string, size: string, ) => {
       setQuantities((prev) => {
         const updatedQuantities = { ...prev };
         const variantQuantities = { ...prev[variantId] };
@@ -930,7 +930,7 @@ export default function ProductDrawer({
                         handleDecrease(
                           selectedVariant._id,
                           size.size,
-                          size.bundleQuantity
+                          // size.bundleQuantity
                         )
                       }
                     >
@@ -952,7 +952,7 @@ export default function ProductDrawer({
                         handleIncrease(
                           selectedVariant._id,
                           size.size,
-                          size.bundleQuantity
+                          // size.bundleQuantity
                         )
                       }
                     >
