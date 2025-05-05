@@ -71,7 +71,7 @@ export const getSaveLaterAction = async () => {
     }
   } catch (error) {
     if (error) {
-      console.error("Error adding to saveLater:");
+      console.error("Error adding to saveLater:",error);
       return {
         data: [],
         message: "Failed to add item to saveLater",

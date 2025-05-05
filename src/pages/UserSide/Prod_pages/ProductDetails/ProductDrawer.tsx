@@ -654,7 +654,7 @@ export default function ProductDrawer({
     <React.Fragment>
       {!buyNow ? (
         <>
-          {product?.variations.map((variant, index) => (
+          {product && product?.variations && product?.variations.map((variant, index) => (
             <div
               className={`${currentImageIndex === index ? "border-2 border-blue-400" : "border-gray-200"} w-14 h-14 rounded-sm  overflow-hidden`}
               key={index}
@@ -838,7 +838,7 @@ export default function ProductDrawer({
 
             {/* #Color Options */}
             <Typography level="body-sm" fontWeight="bold">
-              1. Color {product?.variations.length}: Red
+              1. Color {product?.variations.length}: {selectedVariant?.colorName}
             </Typography>
             <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
               {product?.variations.map((variant, index) => (

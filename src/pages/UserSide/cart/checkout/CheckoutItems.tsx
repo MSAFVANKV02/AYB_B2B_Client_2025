@@ -21,7 +21,7 @@ export default function CheckoutItems() {
     if(cart?.items.length === 0){
       navigate("/cart")
     }
-  }, [cart,navigate]);
+  }, []);
 
 
   return (

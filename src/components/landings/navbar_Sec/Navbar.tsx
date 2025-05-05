@@ -70,7 +70,7 @@ function Navbar({ navItems }: NavbarProps) {
       return () => clearTimeout(timeoutId);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLogged, dispatch, handleLogout, isLoggedInKyc]);
+  }, [isLogged, isLoggedInKyc]);
 
   return (
     <nav

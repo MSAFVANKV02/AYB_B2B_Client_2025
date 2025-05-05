@@ -118,7 +118,7 @@ export default function CartDetails({
 
   return (
     <div>
-      {cart && cart?.items.length > 0 ? (
+      {cart && cart?.items && cart?.items.length > 0 ? (
         cart?.items.map((item, index) =>
           item.products?.map((product, pIndex) => {
             const collapseKey = `${index}-${pIndex}`;

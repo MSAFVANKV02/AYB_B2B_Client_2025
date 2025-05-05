@@ -72,6 +72,7 @@
 
 // ==================================================
 import React, { useEffect } from "react";
+import "@/assets/css/slick-slider.css"
 import Slider from "react-slick";
 import { cn } from "@/lib/utils";
 import { Icon } from "@iconify/react/dist/iconify.js";

@@ -12,12 +12,15 @@ import { dispatch, useAppSelector } from "@/redux/hook";
 import { getRecentViewRedux } from "@/redux/userSide/product_Slice";
 import { IBannerImageTypes } from "@/types/ads.bannerTypes";
 // import { ProductsDetail } from "@/utils/CardDetails";
-import { useWindowSize } from "@react-hook/window-size";
+import { useWindowSize, useWindowWidth } from "@react-hook/window-size";
+import "@/assets/css/slick-slider.css"
 
 import { useEffect, useState } from "react";
 
 function MainHome() {
   const [width] = useWindowSize();
+  const onlyWidth = useWindowWidth();
+  const LapScreen = onlyWidth > 768
 
   const { products, isFetching } = ProductData(
     [
@@ -31,7 +34,7 @@ function MainHome() {
 
   const {
     data: fetchedBannerImages,
-    isFetching:fetchingBanner,
+    isFetching: fetchingBanner,
     // refetch:refetchBanner,
   } = useQueryData(
     ["banner-images"],
@@ -111,24 +114,25 @@ function MainHome() {
       {/* ======= Section 01 Banner and Advertise ======= staring */}
 
       <div
-        className="flex m-auto justify-between relative 2xl:px-4 xl:px-24 md:px-16 sm:px-5 px-2 md:gap-5 gap-2 sm:py-5 py-3 bg-center bg-cover bg-no-repeat"
+        className="flex m-auto justify-between relative 2xl:px-4 xl:px-24 md:px-16 sm:px-5 px-2 md:gap-5 gap-2 sm:py-5 bg-center bg-cover bg-no-repeat"
         style={{
           backgroundImage: "url(/img/banners/bgimage1.png)",
         }}
       >
         <BannerWrapper
           infinite={bannerData.HOME_SLIDER_1.length > 1}
-          isActive={true}
-          className="sm:w-[80%] w-[70%]"
+          isActive={bannerData.HOME_SLIDER_1.length > 1 && LapScreen}
+          className="sm:w-[80%] md:h-[360px] sm:h-[200px] h-[100px] rounded-lg overflow-hidden w-[70%] !mb-0 !pb-0"
           nextBtnClass="shadow-md active:scale-90 duration-300 transition-all sm:px-2 sm:py-2 px-1 py-[2px]"
           prevBtnClass="shadow-md active:scale-90 duration-300 transition-all  sm:px-2 sm:py-2 px-1 py-[2px] text-xs"
           btnClass="justify-end  gap-3  right-0 sm:bottom-10 bottom-4"
         >
           {bannerData.HOME_SLIDER_1.map((banner) => (
             <Banner
-            isLink
-            loading={fetchingBanner}
-              className="w-full md:h-[360px] sm:h-[200px] h-[100px] rounded-md overflow-hidden " // Consistent height
+              isLink
+              imgClass="h-full"
+              loading={fetchingBanner}
+              className="w-full md:h-[360px] sm:h-[200px] h-[100px]  " // Consistent height
               _id={banner._id}
               name={banner.banner_type}
               link={banner.redirectUrl}
@@ -168,7 +172,7 @@ function MainHome() {
       {/*  */}
       {/* ======= Section 03 : Banner2 ========= starting */}
       {/* <BannerWrapper
-        isActive={true}
+         isActive={bannerData.HOME_SLIDER_2.length > 1}
         className="w-full section_spacing"
         nextBtnClass="shadow-md active:scale-90 duration-300 transition-all"
         prevBtnClass="shadow-md active:scale-90 duration-300 transition-all"
@@ -240,24 +244,25 @@ function MainHome() {
       {/* ======= Section 06 : Testimonials ========= starting */}
 
       <BannerWrapper
-        isActive={true}
+        isActive={bannerData.HOME_SLIDER_2.length > 1&& LapScreen}
         infinite={bannerData.HOME_SLIDER_2.length > 1}
-        className="w-full section_container_dash overflow-hidden"
+        className="w-full section_container_dash md:h-[370px] md:max-h-[450px] sm:h-[200px] h-[110px] rounded-lg overflow-hidden"
         nextBtnClass="shadow-md active:scale-90 duration-300 transition-all"
         prevBtnClass="shadow-md active:scale-90 duration-300 transition-all"
         btnClass="sm:left-28 sm:right-28 top-1/2 -translate-y-1/2 left-0  right-0"
       >
         {bannerData.HOME_SLIDER_2.map((banner) => (
           <Banner
-          isLink
           loading={fetchingBanner}
-            className="w-full md:h-auto md:min-h-[370px] md:max-h-[450px] sm:h-[200px] h-[110px] rounded-md overflow-hidden" // Consistent height
-            _id={banner._id}
-            name={banner.banner_type}
-            link={banner.redirectUrl}
-            image={banner.banner}
-            key={banner._id}
-          />
+          isLink
+          imgClass="h-full"
+          className="w-full  md:h-[370px] md:max-h-[450px] sm:h-[200px] h-[110px] " // Consistent height
+          _id={banner._id}
+          name={banner.banner_type}
+          link={banner.redirectUrl}
+          image={banner.banner}
+          key={banner._id}
+        />
         ))}
       </BannerWrapper>
 
@@ -315,18 +320,19 @@ function MainHome() {
 
       {/* ======= Section 08 : Banner4 ========= starting */}
       <BannerWrapper
-        isActive={true}
+        isActive={bannerData.HOME_SLIDER_3.length > 1 && LapScreen}
         infinite={bannerData.HOME_SLIDER_3.length > 1}
-        className="w-full section_container_dash overflow-hidden"
+          className="w-full section_container_dash md:h-[370px] md:max-h-[450px] sm:h-[200px] h-[110px] rounded-lg overflow-hidden"
         nextBtnClass="shadow-md active:scale-90 duration-300 transition-all"
         prevBtnClass="shadow-md active:scale-90 duration-300 transition-all"
         btnClass="sm:left-28 sm:right-28 top-1/2 -translate-y-1/2 left-0  right-0"
       >
         {bannerData.HOME_SLIDER_3.map((banner) => (
           <Banner
-          loading={fetchingBanner}
-          isLink
-            className="w-full md:h-auto md:min-h-[370px] md:max-h-[450px] sm:h-[200px] h-[110px] rounded-md overflow-hidden" // Consistent height
+            loading={fetchingBanner}
+            isLink
+            imgClass="h-full"
+            className="w-full  md:h-[370px] md:max-h-[450px] sm:h-[200px] h-[110px] " // Consistent height
             _id={banner._id}
             name={banner.banner_type}
             link={banner.redirectUrl}

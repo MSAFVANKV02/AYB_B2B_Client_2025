@@ -74,7 +74,7 @@ const ShoppingCart = () => {
           <Separator />
 
           {/* save later sections */}
-          {saveLater && saveLater?.items.length > 0 && (
+          {saveLater && saveLater?.items && saveLater?.items.length > 0 && (
             <div className="bg-gray-50 p-2 rounded-md shadow-md max-h-[80dvh] overflow-y-auto">
               <SaveLaterDetails saveLater={saveLater} />
             </div>

@@ -13,7 +13,7 @@ export const getAllProductAction = async (
 ) => {
   try {
     const response = await get_All_Products_Api(filterData, filter);
-    // console.log(response)
+    console.log(response)
     if (response.status === 200 || response.status === 201) {
       dispatch(
         setProductData({
