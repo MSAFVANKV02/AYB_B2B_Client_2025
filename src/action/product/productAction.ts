@@ -1,5 +1,5 @@
-import { dispatch } from "@/redux/hook";
-import { setProductData } from "@/redux/userSide/product_Slice";
+import { dispatch } from "@/providers/redux/hook";
+import { setProductData } from "@/providers/redux/userSide/product_Slice";
 import {
   get_All_Available_Colors_Api,
   get_All_Products_Api,

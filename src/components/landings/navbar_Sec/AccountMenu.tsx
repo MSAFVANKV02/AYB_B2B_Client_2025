@@ -13,12 +13,12 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import useNavigateClicks from "@/hooks/useClicks";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/providers/redux/hook";
 import { isAuthenticated_4_Kyc } from "@/middlewares/IsAuthenticated";
 import { Logout_User_Api } from "@/services/user_side_api/auth/route_url";
 import { makeToast, makeToastError } from "@/utils/toaster";
-import { clearKycDetails } from "@/redux/userSide/KycSlice";
-import { logoutUser } from "@/redux/userSide/UserAuthSlice";
+import { clearKycDetails } from "@/providers/redux/userSide/KycSlice";
+import { logoutUser } from "@/providers/redux/userSide/UserAuthSlice";
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);

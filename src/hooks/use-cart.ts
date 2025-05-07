@@ -1,7 +1,7 @@
-import { dispatch } from "@/redux/hook";
+import { dispatch } from "@/providers/redux/hook";
 import { useMutationData } from "./useMutationData";
 import { addToCartAction } from "@/action/cart/cartAction";
-import { getCartRedux } from "@/redux/userSide/product_Slice";
+import { getCartRedux } from "@/providers/redux/userSide/product_Slice";
 
 export const useAddNewCart = () => {
 //   const client = useQueryClient();

@@ -1,13 +1,13 @@
 // import AyButton from "@/components/myUi/AyButton";
 // import { useNavigate } from "react-router-dom";
 // import AngledDivMUI from "./KycHomeChilds/Angle_Div";
-// import { useAppDispatch, useAppSelector } from "@/redux/hook";
+// import { useAppDispatch, useAppSelector } from "@/providers/redux/hook";
 // import { getKycStatusContent } from "./KycHomeChilds/Kyc-Status-banner";
 // import { useMemo } from "react";
 // import { makeToast } from "@/utils/toaster";
 // import Cookies from "js-cookie";
-// import { logoutUser } from "@/redux/userSide/UserAuthSlice";
-// import { clearKycDetails } from "@/redux/userSide/KycSlice";
+// import { logoutUser } from "@/providers/redux/userSide/UserAuthSlice";
+// import { clearKycDetails } from "@/providers/redux/userSide/KycSlice";
 // import FashionGallery from "./KycHomeChilds/Kyc_Card_Gellery";
 
 // export default function KycHome() {

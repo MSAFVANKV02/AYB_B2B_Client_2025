@@ -28,7 +28,7 @@ import {
 } from "@/types/final-product-types";
 import { useSetSearchParams } from "@/hooks/use-set-searchParams";
 import Image from "@/components/global/image";
-import { useAppSelector } from "@/redux/hook";
+import { useAppSelector } from "@/providers/redux/hook";
 import { useAddNewCart } from "@/hooks/use-cart";
 
 type IDrawerTypes = {

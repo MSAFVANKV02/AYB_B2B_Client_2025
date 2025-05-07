@@ -27,8 +27,8 @@ import {
   Resend_Otp_Api,
   VerifyOtp_Login_Api,
 } from "@/services/user_side_api/auth/route_url";
-import { useAppDispatch } from "@/redux/hook";
-import { fetchAyabooUserDetails } from "@/redux/userSide/UserAuthSlice";
+import { useAppDispatch } from "@/providers/redux/hook";
+import { fetchAyabooUserDetails } from "@/providers/redux/userSide/UserAuthSlice";
 import { getDeviceToken } from "@/lib/firebase";
 
 const formSchema = z.object({

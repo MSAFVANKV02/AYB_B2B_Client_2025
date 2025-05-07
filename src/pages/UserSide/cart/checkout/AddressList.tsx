@@ -4,9 +4,9 @@ import { Divider } from "@mui/joy";
 import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { FormDataType, FormDataValue } from "./page";
-import { dispatch, useAppSelector } from "@/redux/hook";
+import { dispatch, useAppSelector } from "@/providers/redux/hook";
 import { IAddressType } from "@/types/address-types";
-import { deleteAddressRedux } from "@/redux/userSide/UserAuthSlice";
+import { deleteAddressRedux } from "@/providers/redux/userSide/UserAuthSlice";
 import { UseContextPage } from "@/providers/context/context";
 
 type Props = {

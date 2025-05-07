@@ -5,7 +5,7 @@ import MyClock from "@/components/myUi/MyClock";
 import MyPageTab from "@/components/myUi/MyTab";
 import { useUpdateNotificationStatus } from "@/hooks/use-notification";
 import { useQueryData } from "@/hooks/useQueryData";
-import { useAppSelector } from "@/redux/hook";
+import { useAppSelector } from "@/providers/redux/hook";
 import { INotification } from "@/types/notification-types";
 
 function NotificationMessages() {

@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import kycReducer from "@/redux/userSide/KycSlice"
-import authReducer from "@/redux/userSide/UserAuthSlice"
-import loadingReducer from "@/redux/userSide/loadingSlice"
-import categoryReducer from "@/redux/userSide/category_Slice"
-import ProductReducer from "@/redux/userSide/product_Slice"
+import kycReducer from "@/providers/redux/userSide/KycSlice"
+import authReducer from "@/providers/redux/userSide/UserAuthSlice"
+import loadingReducer from "@/providers/redux/userSide/loadingSlice"
+import categoryReducer from "@/providers/redux/userSide/category_Slice"
+import ProductReducer from "@/providers/redux/userSide/product_Slice"
 
 
 import storage from 'redux-persist/lib/storage';

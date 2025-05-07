@@ -208,8 +208,8 @@
 // };
 
 // export default NavigationMenuBar;
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { getCategoriesWithSub } from "@/redux/userSide/category_Slice";
+import { useAppDispatch, useAppSelector } from "@/providers/redux/hook";
+import { getCategoriesWithSub } from "@/providers/redux/userSide/category_Slice";
 import { ICategory } from "@/types/categorytypes";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState, useRef, useEffect } from "react";

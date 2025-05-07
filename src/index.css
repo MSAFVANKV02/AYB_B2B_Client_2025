@@ -29,6 +29,10 @@ ol {
   margin-left: 20px; 
 } */
 
+/* .css-1tnbzxw-MuiToolbar-root{
+  min-height: 0;
+} */
+
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;

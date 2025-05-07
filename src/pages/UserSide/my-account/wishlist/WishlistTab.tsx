@@ -1,6 +1,6 @@
 import Image from "@/components/global/image";
-import { dispatch, useAppSelector } from "@/redux/hook";
-import { AddWishlistRedux } from "@/redux/userSide/product_Slice";
+import { dispatch, useAppSelector } from "@/providers/redux/hook";
+import { AddWishlistRedux } from "@/providers/redux/userSide/product_Slice";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 

@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/providers/redux/hook";
 import { getKycStatusContent } from "./KycHomeChilds/Kyc-Status-banner";
 
 import { makeToast } from "@/utils/toaster";
 import Cookies from "js-cookie";
-import { logoutUser } from "@/redux/userSide/UserAuthSlice";
-import { clearKycDetails } from "@/redux/userSide/KycSlice";
+import { logoutUser } from "@/providers/redux/userSide/UserAuthSlice";
+import { clearKycDetails } from "@/providers/redux/userSide/KycSlice";
 import FashionGallery from "./KycHomeChilds/Kyc_Card_Gellery";
 import KycUserReviewSec from "./KycHomeChilds/Kyc_Review_Sec";
 import KYCProgress from "./KycHomeChilds/Kyc_Progress_Circle";

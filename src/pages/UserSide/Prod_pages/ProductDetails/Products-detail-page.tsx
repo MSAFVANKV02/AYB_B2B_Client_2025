@@ -11,7 +11,7 @@ import "@/assets/css/remover.css";
 import { useParams } from "react-router-dom";
 import { ProductData } from "@/action/product/productData";
 import { IGetAllFilterKey } from "@/services/user_side_api/products/route";
-import { useAppSelector } from "@/redux/hook";
+import { useAppSelector } from "@/providers/redux/hook";
 import ProductDetailSkelton from "./product_detail_skelton";
 
 // import NavbarCheck from "@/components/checkings/page";

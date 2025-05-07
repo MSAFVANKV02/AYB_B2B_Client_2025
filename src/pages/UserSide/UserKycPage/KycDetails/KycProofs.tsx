@@ -1,5 +1,5 @@
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { setProofType } from "@/redux/userSide/KycSlice";
+import { useAppDispatch, useAppSelector } from "@/providers/redux/hook";
+import { setProofType } from "@/providers/redux/userSide/KycSlice";
 import KycUpload from "./KycUpload";
 
 interface IProofType {

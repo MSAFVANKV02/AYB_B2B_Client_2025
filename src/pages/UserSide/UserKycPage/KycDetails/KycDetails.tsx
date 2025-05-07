@@ -13,8 +13,8 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import KycBanner from "./KycBanner";
-import { saveKycDetails } from "@/redux/userSide/KycSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { saveKycDetails } from "@/providers/redux/userSide/KycSlice";
+import { useAppDispatch, useAppSelector } from "@/providers/redux/hook";
 import KycProofs from "./KycProofs";
 import { Input } from "@/components/ui/input";
 

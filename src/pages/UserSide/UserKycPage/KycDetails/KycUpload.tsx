@@ -1,10 +1,10 @@
 import React, { useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/providers/redux/hook";
 import {
   clearKycDetails,
   restProofType,
   uploadFile,
-} from "@/redux/userSide/KycSlice";
+} from "@/providers/redux/userSide/KycSlice";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -13,9 +13,9 @@ import ClipLoader from "react-spinners/ClipLoader";
 // import { UPLOAD_USER_KYC } from "@/utils/urlPath";
 import axios from "axios";
 import { Kyc_Submit_Api } from "@/services/user_side_api/auth/route_url";
-import { setLoadingState } from "@/redux/userSide/loadingSlice";
+import { setLoadingState } from "@/providers/redux/userSide/loadingSlice";
 import PdfFile from "@/components/myUi/PdfFile";
-import { fetchAyabooUserDetails } from "@/redux/userSide/UserAuthSlice";
+import { fetchAyabooUserDetails } from "@/providers/redux/userSide/UserAuthSlice";
 
 // pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 //   "pdfjs-dist/build/pdf.worker.min.mjs",

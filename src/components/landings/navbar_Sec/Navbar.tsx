@@ -5,15 +5,15 @@ import { Input } from "@/components/ui/input";
 import AccountMenu from "./AccountMenu";
 import Logo from "./Logo";
 
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/providers/redux/hook";
 import { useEffect } from "react";
-import { fetchAyabooUserDetails } from "@/redux/userSide/UserAuthSlice";
+import { fetchAyabooUserDetails } from "@/providers/redux/userSide/UserAuthSlice";
 import { useAuth } from "@/providers/AuthContext";
 import {
   isAuthenticated,
   isAuthenticated_4_Kyc,
 } from "@/middlewares/IsAuthenticated";
-import { getCartRedux, getWishlistRedux } from "@/redux/userSide/product_Slice";
+import { getCartRedux, getWishlistRedux } from "@/providers/redux/userSide/product_Slice";
 
 export type INavbarItems = {
   href: string;

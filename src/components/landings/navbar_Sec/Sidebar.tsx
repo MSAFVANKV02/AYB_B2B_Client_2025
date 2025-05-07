@@ -12,7 +12,7 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { INavbarItems } from "./Navbar";
 import { Box } from "@mui/material";
-import { useAppSelector } from "@/redux/hook";
+import { useAppSelector } from "@/providers/redux/hook";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 type NavItem = {

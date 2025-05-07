@@ -1,5 +1,5 @@
-import { dispatch } from "@/redux/hook";
-import { deleteCartRedux, getCartRedux } from "@/redux/userSide/product_Slice";
+import { dispatch } from "@/providers/redux/hook";
+import { deleteCartRedux, getCartRedux } from "@/providers/redux/userSide/product_Slice";
 import { CartItemsType } from "@/types/cartTypes";
 import { Product } from "@/types/final-product-types";
 import React from "react";

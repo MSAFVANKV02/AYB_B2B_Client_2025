@@ -20,16 +20,11 @@ import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 import { UseContextPage } from "@/providers/context/context";
 import { IAddressType } from "@/types/address-types";
-import { useAppSelector } from "@/redux/hook";
+import { useAppSelector } from "@/providers/redux/hook";
 import CreateAddressForm from "../../my-account/user-address/create_Address_Form";
+import ShippingMethod from "./shipping-methods/shipping_method";
 Modal.setAppElement("#root"); // Add this line to avoid screen-reader issues with modal
 
-type IShipMethod = {
-  id: number;
-  label: string;
-  value: string;
-  icon: string;
-};
 
 export type AddressType = {
   id?: number;
@@ -110,21 +105,7 @@ export default function CheckoutPage() {
 
   // Track a single selected address ID
 
-  const shippingMethods = [
-    {
-      id: 1,
-      label: "Pickup from Parcel office",
-      value: "",
-      icon: "material-symbols:storefront-outline-sharp",
-    },
-    {
-      id: 2,
-      label: "Door delivery",
-      value: "",
-      icon: "icon-park-outline:delivery",
-    },
-    { id: 3, label: "Store pickup", value: "", icon: "carbon:delivery" },
-  ];
+
   const paymentMethods = [
     {
       id: 1,
@@ -183,19 +164,6 @@ export default function CheckoutPage() {
   };
 
   // ////// Shipping Method Selection //////////
-
-  const handleSelectShippingMethod = (ship: IShipMethod) => {
-    handleFormDataChange("shippingMethod", ship.label);
-
-    if (ship.label === "Store pickup") {
-      handleFormDataChange("parcelOptions", null);
-      // handleFormDataChange("parcelMethod", "");
-      setOpenShipModal(false); // Ensure modal stays closed for Store pickup
-    } else {
-      // Open shipping modal for other options
-      setOpenShipModal(true);
-    }
-  };
 
   // /////////   Close Modal Function ///////////////////
 
@@ -402,54 +370,11 @@ export default function CheckoutPage() {
           />
           Choose shipping method
         </p>
-        <div className="md:ml-6">
-          <div className="flex flex-wrap gap-4 select-none">
-            {shippingMethods.map((ship, index) => (
-              <div className="flex flex-col gap-1" key={index}>
-                <div
-                  className={`flex gap-1 items-center px-2 py-2 text-sm ${
-                    ship.label === formData.shippingMethod
-                      ? "text-textMain border border-[#5F08B1] bg-bgSoft"
-                      : "text-black border border-black"
-                  } rounded-md cursor-pointer`}
-                  onClick={() => handleSelectShippingMethod(ship)}
-                >
-                  <Icon
-                    icon={ship.icon}
-                    className={` ${ship.label === formData.shippingMethod ? "text-textMain" : ""} `}
-                  />
-                  <span>{ship.label}</span>
-                </div>
-                {/* selected parcel option */}
-
-                {ship.label === formData.shippingMethod &&
-                  formData.parcelOptions && (
-                    <div className="text-textMain font-semibold bg-bgHardSoft h-auto w-full p-2 rounded flex items-start flex-col">
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={formData.parcelOptions.logo}
-                          alt=""
-                          className="h-5 object-cover"
-                        />
-                        <span className="text-black text-xs">
-                          {formData.parcelOptions.serviceName}
-                        </span>
-                      </div>
-                      {/* ========= */}
-                      <div className="">
-                        <span className="text-xs text-gray-400">
-                          Parcel Price: Rs{" "}
-                          {formData.parcelOptions.orderDetails.parcelPrice.toFixed(
-                            1
-                          )}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-              </div>
-            ))}
-          </div>
-        </div>
+        <ShippingMethod 
+        formData={formData}
+        handleFormDataChange={handleFormDataChange}
+        setOpenShipModal={setOpenShipModal}
+        />
 
         {/* ======= Payment methods ========== */}
         <p className="font-bold flex items-center gap-1">

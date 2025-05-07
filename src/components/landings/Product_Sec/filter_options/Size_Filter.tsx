@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Checkbox, FormControlLabel } from "@mui/material";
-import { useAppSelector } from "@/redux/hook";
+import { useAppSelector } from "@/providers/redux/hook";
 import { ProductState } from "@/utils/Validator/product-validator";
 
 

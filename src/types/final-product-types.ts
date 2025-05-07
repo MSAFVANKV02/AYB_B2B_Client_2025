@@ -144,6 +144,7 @@ type IBundle = {
     bankDetails: BankDetails
     _id: string
     role: string
+    avatar:string
     createdBy: IProductCreatedBy
     subscription: boolean
     mobileVerified: boolean

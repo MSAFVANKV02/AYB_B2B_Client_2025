@@ -12,11 +12,11 @@ import {
   Product,
 } from "@/types/final-product-types";
 import { Skeleton } from "@/components/ui/skeleton";
-import { dispatch } from "@/redux/hook";
+import { dispatch } from "@/providers/redux/hook";
 import {
   AddRecentViewRedux,
   AddWishlistRedux,
-} from "@/redux/userSide/product_Slice";
+} from "@/providers/redux/userSide/product_Slice";
 
 interface ProdCardProps {
   title: string;

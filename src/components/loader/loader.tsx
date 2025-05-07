@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/redux/hook"
+import { useAppSelector } from "@/providers/redux/hook"
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Link } from "react-router-dom";
 

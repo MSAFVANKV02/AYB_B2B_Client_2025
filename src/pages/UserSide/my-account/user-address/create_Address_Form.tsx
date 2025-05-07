@@ -8,8 +8,8 @@ import {
   create_Address_Api,
   update_Address_Api,
 } from "@/services/user_side_api/address/route";
-import { dispatch } from "@/redux/hook";
-import { setAddressReducers } from "@/redux/userSide/UserAuthSlice";
+import { dispatch } from "@/providers/redux/hook";
+import { setAddressReducers } from "@/providers/redux/userSide/UserAuthSlice";
 import { UseContextPage } from "@/providers/context/context";
 import { Checkbox } from "@mui/material";
 import { Label } from "@/components/ui/label";

@@ -4,7 +4,7 @@ import useNavigateClicks from "@/hooks/useClicks";
 import CartDetails from "@/components/cart/CartDetails";
 // import { cartDetailsData } from "@/data/dummyData/carData";
 import CartLayout from "./layout";
-import { dispatch, useAppSelector } from "@/redux/hook";
+import { dispatch, useAppSelector } from "@/providers/redux/hook";
 import SaveLaterDetails from "@/components/cart/save_later_widgets/save-later-details";
 import { Separator } from "@/components/ui/separator";
 import { useQueryData } from "@/hooks/useQueryData";
@@ -14,12 +14,15 @@ import { useEffect } from "react";
 import {
   getCartRedux,
   setSaveLaterCartRedux,
-} from "@/redux/userSide/product_Slice";
+} from "@/providers/redux/userSide/product_Slice";
 
 const ShoppingCart = () => {
   // const onlyWidth = useWindowWidth();
   const { handleClick } = useNavigateClicks();
   const { cart } = useAppSelector((state) => state.products);
+
+  console.log(cart,'cart');
+  
 
   const { data: saveLaterData } = useQueryData(
     ["save-later"],
@@ -65,7 +68,7 @@ const ShoppingCart = () => {
               state="cart"
               // details={cartDetailsData}
               cart={cart}
-              title={"items"}
+              title={"store"}
               isCollapsible
               isAllSelect
             />

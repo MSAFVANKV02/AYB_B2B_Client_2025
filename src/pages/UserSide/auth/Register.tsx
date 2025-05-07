@@ -19,8 +19,8 @@ import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useAppDispatch } from "@/redux/hook";
-import { setUserData } from "@/redux/userSide/UserAuthSlice";
+import { useAppDispatch } from "@/providers/redux/hook";
+import { setUserData } from "@/providers/redux/userSide/UserAuthSlice";
 import { SendOtp_Register_Api } from "@/services/user_side_api/auth/route_url";
 // import { SEND_OTP_REGISTER_USER } from "@/utils/urlPath";
 

@@ -40,7 +40,7 @@ function AppLayout() {
             <NavigationMenuBar />
           </div>
         )}
-        <div className="max-w-screen-2xl mx-auto 2xl:px-20 md:px-10 sm:px-5 px-1">
+        <div className="max-w-screen-2xl mx-auto 2xl:px-0 md:px-10 sm:px-5 px-1">
             <Outlet />
         </div>
 

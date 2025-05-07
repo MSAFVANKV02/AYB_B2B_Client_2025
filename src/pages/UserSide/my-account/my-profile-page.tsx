@@ -12,7 +12,7 @@ import AyButton from "@/components/myUi/AyButton";
 
 import Modal from "react-modal";
 import CreateAddressForm from "./user-address/create_Address_Form";
-import { useAppSelector } from "@/redux/hook";
+import { useAppSelector } from "@/providers/redux/hook";
 Modal.setAppElement("#root");
 
 export default function SettingsProfilePage() {

@@ -7,7 +7,7 @@
 // import BrandFilter from "./filter_options/Brand_Filter";
 // import { Separator } from "@/components/ui/separator";
 // import ColorFilter from "./filter_options/Color_Filter";
-// import { useAppSelector } from "@/redux/hook";
+// import { useAppSelector } from "@/providers/redux/hook";
 // import SizeFilter from "./filter_options/Size_Filter";
 // import RespFilterTabs from "./Resp_Filter_Tabs";
 // import { useWindowWidth } from "@react-hook/window-size";
@@ -173,7 +173,7 @@ import MinimumOrderFilter from "./filter_options/Minimum_Order_Filter";
 import BrandFilter from "./filter_options/Brand_Filter";
 import { Separator } from "@/components/ui/separator";
 import ColorFilter from "./filter_options/Color_Filter";
-import { useAppSelector } from "@/redux/hook";
+import { useAppSelector } from "@/providers/redux/hook";
 import SizeFilter from "./filter_options/Size_Filter";
 import RespFilterTabs from "./Resp_Filter_Tabs";
 import { useWindowWidth } from "@react-hook/window-size";

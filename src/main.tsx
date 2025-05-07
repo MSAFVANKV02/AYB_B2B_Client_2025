@@ -6,7 +6,7 @@ import axios from "axios";
 import { Provider } from "react-redux";
 import { RouterProvider } from "react-router-dom";
 import rootRouter from "./routers/RootRouter.tsx";
-import { store } from "./redux/store.ts";
+import { store } from "@/providers/redux/store.ts";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 import { AuthProvider } from "./providers/AuthContext.tsx";

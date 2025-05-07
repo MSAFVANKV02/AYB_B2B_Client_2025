@@ -1,8 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useMutationData } from "../useMutationData";
 import { addSaveLaterAction } from "@/action/cart/cartAction";
-import { dispatch } from "@/redux/hook";
-import { getCartRedux } from "@/redux/userSide/product_Slice";
+import { dispatch } from "@/providers/redux/hook";
+import { getCartRedux } from "@/providers/redux/userSide/product_Slice";
 
 export const useUpdateSaveLater = () => {
   const client = useQueryClient();
