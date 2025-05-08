@@ -13,6 +13,7 @@ import { setAddressReducers } from "@/providers/redux/userSide/UserAuthSlice";
 import { UseContextPage } from "@/providers/context/context";
 import { Checkbox } from "@mui/material";
 import { Label } from "@/components/ui/label";
+import { useModal } from "@/providers/context/modal-context";
 
 export interface AddressForm {
   address: Address;
@@ -61,11 +62,15 @@ const validationSchema = Yup.object({
   }),
 });
 
-type Props = {
-  addAddress: boolean;
-};
+// type Props = {
+//   addAddress: boolean;
+// };
 
-function CreateAddressForm({ addAddress }: Props) {
+function CreateAddressForm() {
+
+  const {  modalState } = useModal();
+
+
   const { selectedAddress } = UseContextPage();
   const initialValues: AddressForm = {
     address: {
@@ -214,7 +219,7 @@ function CreateAddressForm({ addAddress }: Props) {
       {({ values, isSubmitting, resetForm, setFieldValue }) => (
         <Form className="flex flex-col justify-between h-full">
           <div className="sm:space-y-5 space-y-3">
-            {addAddress && <span className="text-xl">Add Address</span>}
+            {modalState.type === "address" && <span className="text-xl">Add Address</span>}
             <p className="text-gray-500">
               <LockOutlinedIcon
                 sx={{

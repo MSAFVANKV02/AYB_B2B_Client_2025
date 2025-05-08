@@ -235,26 +235,23 @@
 //   );
 // }
 import { ICartTypes } from "@/types/cartTypes";
-// import { useTheme } from "@mui/material/styles";
-import { IconButton } from "@mui/material";
+import { Collapse, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-// import AddIcon from "@mui/icons-material/Add";
-// import RemoveIcon from "@mui/icons-material/Remove";
 import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
 import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { dispatch } from "@/providers/redux/hook";
 import Image from "../global/image";
-import { deleteCartRedux, getCartRedux } from "@/providers/redux/userSide/product_Slice";
-// import { useAddNewCart } from "@/hooks/use-cart";
-// import { IFinalVariation, Product } from "@/types/final-product-types";
-// import { makeToastError } from "@/utils/toaster";
+import {
+  deleteCartRedux,
+  getCartRedux,
+} from "@/providers/redux/userSide/product_Slice";
 import { Link } from "react-router-dom";
 import CartSizeVariants from "./cart_size_variants";
 import { useQueryClient } from "@tanstack/react-query";
-import groupBy from "lodash/groupBy"; // add this line
-
+import groupBy from "lodash/groupBy";
 import VerifiedLabel from "../global/verivied-label";
+import ShippingMethod from "../checkout/shipping-methods/shipping_method";
 
 type Props = {
   cart?: ICartTypes | null;
@@ -263,6 +260,8 @@ type Props = {
   isAllSelect?: boolean;
   errorMessage?: string;
   state: "cart" | "saveLater";
+  isCollapseDefault?: boolean;
+  showShippingMethod?: boolean;
 };
 
 export default function CartDetails({
@@ -271,6 +270,8 @@ export default function CartDetails({
   cart,
   errorMessage,
   state,
+  isCollapseDefault = true,
+  showShippingMethod,
 }: Props) {
   const client = useQueryClient();
 
@@ -282,49 +283,74 @@ export default function CartDetails({
     }));
   };
 
+  useEffect(() => {
+    if (!isCollapsible || !cart?.items) return;
+
+    const grouped = groupBy(cart.items, (item) => item.store._id);
+    const initialCollapsedState: Record<string, boolean> = {};
+
+    Object.keys(grouped).forEach((storeId) => {
+      const key = `store-${storeId}`;
+      initialCollapsedState[key] = !isCollapseDefault; // true = collapsed if isCollapseDefault is false
+    });
+
+    setIsCollapsed(initialCollapsedState);
+  }, [cart, isCollapsible, isCollapseDefault]);
+
   const groupedByStore = groupBy(cart?.items || [], (item) => item.store._id);
 
   return (
     <div>
       {cart && cart?.items && cart?.items.length > 0 ? (
         Object.entries(groupedByStore).map(([storeId, items]) => {
-          const collapseKey = storeId;
+          const storeCollapseKey = `store-${storeId}`;
 
           return (
             <div key={storeId} className="mb-4">
               {/* Store Header */}
-              <div className="flex items-center justify-between mb-2">
-                {/* <span className="font-medium text-textMain text-sm md:text-base">
-                  Store: {items[0].store.name}
-                </span> */}
-              
-                {
-                  items.map((store)=>(
-                    <VerifiedLabel {...store.store} />
-                  
-                  ))
-                }
-                {isCollapsible && (
-                  <div className="flex items-center">
-                    <span className="text-sm text-gray-400">{title}</span>
-                    <IconButton onClick={() => toggleCollapse(collapseKey)}>
-                      {isCollapsed[collapseKey] ? (
-                        <KeyboardArrowDownOutlinedIcon />
-                      ) : (
-                        <KeyboardArrowUpOutlinedIcon />
-                      )}
-                    </IconButton>
-                  </div>
-                )}
-              </div>
+              {items.map((store) => (
+                <div className="flex flex-col">
+                  <div className="flex items-center justify-between mb-2">
+                    <VerifiedLabel key={store.store._id} {...store.store} />
 
-              {/* Products under store */}
-              {!isCollapsible || !isCollapsed[collapseKey] ? (
-                items.map((item, index) =>
+                    {isCollapsible && (
+                      <div className="flex items-center">
+                        <span className="text-sm text-gray-400">{title}</span>
+                        <IconButton
+                          onClick={() => toggleCollapse(storeCollapseKey)}
+                        >
+                          {isCollapsed[storeCollapseKey] ? (
+                            <KeyboardArrowDownOutlinedIcon />
+                          ) : (
+                            <KeyboardArrowUpOutlinedIcon />
+                          )}
+                        </IconButton>
+                      </div>
+                    )}
+                  </div>
+                  {showShippingMethod && (
+                    <div className="">
+                      <ShippingMethod storeId={store.store._id ?? ""} />
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              <Collapse
+                in={!isCollapsible || !isCollapsed[storeCollapseKey]}
+                sx={{
+                  border: "1px solid #c9c3c3",
+                }}
+              >
+                {items.map((item, index) =>
                   item.products?.map((product, pIndex) => {
                     const productKey = `${storeId}-${index}-${pIndex}`;
+
                     return (
-                      <div key={productKey} className="mb-4">
+                      <div
+                        key={productKey}
+                        className={`mb-4  ${pIndex !== 0 && "border-t"}  p-2 `}
+                      >
                         <div className="flex items-start md:justify-between space-x-4 mb-2">
                           <div className="flex gap-3">
                             <Image
@@ -342,10 +368,12 @@ export default function CartDetails({
                                 {product.product_name}
                               </Link>
                               <p className="text-sm text-gray-500">
-                                Min. order: {product.price_per_pieces[0].minPiece} pieces
+                                Min. order:{" "}
+                                {product.price_per_pieces[0].minPiece} pieces
                               </p>
                             </div>
                           </div>
+
                           <IconButton
                             onClick={async () => {
                               const res = await dispatch(
@@ -358,7 +386,9 @@ export default function CartDetails({
                               if (res.meta.requestStatus === "fulfilled") {
                                 dispatch(getCartRedux());
                                 if (state === "saveLater") {
-                                  client.invalidateQueries({ queryKey: ["save-later"] });
+                                  client.invalidateQueries({
+                                    queryKey: ["save-later"],
+                                  });
                                 }
                               }
                             }}
@@ -367,6 +397,23 @@ export default function CartDetails({
                           </IconButton>
                         </div>
 
+                        {/* 🔽 Second Collapse Button for Size Variants */}
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-400">
+                            Variants
+                          </span>
+                          <IconButton
+                            onClick={() => toggleCollapse(productKey)}
+                          >
+                            {isCollapsed[productKey] ? (
+                              <KeyboardArrowDownOutlinedIcon />
+                            ) : (
+                              <KeyboardArrowUpOutlinedIcon />
+                            )}
+                          </IconButton>
+                        </div>
+
+                        {/* <Collapse in={!isCollapsed[productKey]}> */}
                         <CartSizeVariants
                           state={state}
                           product={product}
@@ -375,11 +422,12 @@ export default function CartDetails({
                           isCollapsed={isCollapsed}
                           collapseKey={productKey}
                         />
+                        {/* </Collapse> */}
                       </div>
                     );
                   })
-                )
-              ) : null}
+                )}
+              </Collapse>
             </div>
           );
         })

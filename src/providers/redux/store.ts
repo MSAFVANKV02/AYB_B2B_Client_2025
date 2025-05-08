@@ -4,6 +4,8 @@ import authReducer from "@/providers/redux/userSide/UserAuthSlice"
 import loadingReducer from "@/providers/redux/userSide/loadingSlice"
 import categoryReducer from "@/providers/redux/userSide/category_Slice"
 import ProductReducer from "@/providers/redux/userSide/product_Slice"
+import CheckoutReducer from "@/providers/redux/userSide/checkout-slice"
+
 
 
 import storage from 'redux-persist/lib/storage';
@@ -23,7 +25,9 @@ const rootReducer = combineReducers({
   auth: authReducer, 
   loading: loadingReducer,
   category: categoryReducer, //
-  products: ProductReducer, //
+  checkout: CheckoutReducer, 
+  products: ProductReducer, 
+
 
 
 });

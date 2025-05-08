@@ -20,6 +20,9 @@ export type ICart = {
     gst: ICartGst
     cess: number
     cartTotal: number
+    coupon:string
+    appliedCoupon:string
+
   }
 
   export interface CartItemsType {

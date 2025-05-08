@@ -63,10 +63,11 @@ const ShoppingCart = () => {
 
         {/* Product Section */}
         <div className="flex flex-col gap-3">
-          <div className="bg-gray-50 p-2 rounded-md shadow-md max-h-[80dvh] overflow-y-auto">
+          <div className=" p-2 max-h-[80dvh] overflow-y-auto">
             <CartDetails
               state="cart"
               // details={cartDetailsData}
+          
               cart={cart}
               title={"store"}
               isCollapsible

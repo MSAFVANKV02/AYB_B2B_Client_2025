@@ -5,7 +5,7 @@ import ProfileKycDetails from "./Profile-Kyc-Details";
 import { UseContextPage } from "@/providers/context/context";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 
-import AddressList from "../cart/checkout/AddressList";
+import AddressList from "../../../components/checkout/AddressList";
 // import AddressForm from "../cart/checkout/AddAddress";
 import { IconButton } from "@mui/material";
 import AyButton from "@/components/myUi/AyButton";

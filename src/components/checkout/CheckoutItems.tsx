@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 // import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CartDetails from "@/components/cart/CartDetails";
@@ -6,22 +7,21 @@ import { useEffect } from "react";
 import { dispatch, useAppSelector } from "@/providers/redux/hook";
 import { getCartRedux } from "@/providers/redux/userSide/product_Slice";
 import { useNavigate } from "react-router-dom";
-
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 export default function CheckoutItems() {
   const { cart } = useAppSelector((state) => state.products);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // const onlyWidth = useWindowWidth();
   // const mobileWidth = onlyWidth <= 768;
 
   useEffect(() => {
     dispatch(getCartRedux());
-    if(cart?.items.length === 0){
-      navigate("/cart")
+    if (cart?.items.length === 0) {
+      navigate("/cart");
     }
   }, []);
-
 
   return (
     <>
@@ -55,14 +55,28 @@ export default function CheckoutItems() {
             />
         </AccordionDetails>
       </Accordion> */}
-       <CartDetails
-            state="cart"
-              // details={cartDetailsData}
-              cart={cart}
-              title={"Store"}
-              isCollapsible
-              isAllSelect
-            />
+
+      <p className="font-bold flex items-center gap-1">
+        {" "}
+        <Icon
+          icon="material-symbols-light:box-outline"
+          className="text-lg text-textMain"
+        />
+        Items
+      </p>
+      <div className="md:ml-6">
+         <CartDetails
+        showShippingMethod
+        state="cart"
+        // details={cartDetailsData}
+        isCollapseDefault={false}
+        cart={cart}
+        title={"Store"}
+        isCollapsible
+        isAllSelect
+      />
+      </div>
+     
     </>
   );
 }

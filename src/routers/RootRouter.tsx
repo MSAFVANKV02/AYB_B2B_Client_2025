@@ -38,8 +38,8 @@ import { isAuthenticated } from "@/middlewares/IsAuthenticated";
 
 import Products from "@/pages/UserSide/Prod_pages/ProductDetails/Products-detail-page";
 import ShoppingCart from "@/pages/UserSide/cart/page";
-import CheckoutPage from "@/pages/UserSide/cart/checkout/page";
-import ConfirmOrder from "@/pages/UserSide/cart/checkout/Confirm-Order";
+
+import ConfirmOrder from "@/components/checkout/Confirm-Order";
 import SettingsProfilePage from "@/pages/UserSide/my-account/my-profile-page";
 import MyOrdersPage from "@/pages/UserSide/my-account/my-orders/My-Orders-Page";
 import SingleOrderPage from "@/pages/UserSide/my-account/my-orders/single-order/Single-Order-Page";
@@ -57,6 +57,7 @@ import SellerRegisterPage from "@/pages/seller/seller-register-page";
 import SellerRegisterForm from "@/pages/seller/seller_register_form";
 import AllKindProducts from "@/pages/UserSide/Prod_pages/all_pages/all-kind-products";
 import NotificationsPage from "@/pages/UserSide/my-account/notifications/notifications-page";
+import PurchasePage from "@/pages/UserSide/cart/checkout/page";
 // import PreloaderPage from "@/preloader-page";
 
 // import withAuth from "@/middlewares/WithAuth";
@@ -207,7 +208,8 @@ const rootRouter = createBrowserRouter(
           element: (
             <ProtectedRoute isProtected={true}>
               {" "}
-              <CheckoutPage />
+              {/* <CheckoutPageOld /> */}
+              <PurchasePage />
             </ProtectedRoute>
           ),
         },

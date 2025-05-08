@@ -14,6 +14,7 @@ import { ContextProvider } from "./providers/context/context.tsx";
 import { Toaster } from "react-hot-toast";
 import { pdfjs } from "react-pdf";
 import ReactQueyProvider from "./providers/react-quey/index.tsx";
+import { ModalProvider } from "./providers/context/modal-context.tsx";
 
 const persister = persistStore(store);
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -27,25 +28,27 @@ axios.defaults.withCredentials = true;
 createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
     <ContextProvider>
-      <ReactQueyProvider>
-        <AuthProvider>
-          <PersistGate persistor={persister}>
-            <RouterProvider router={rootRouter} />
+      <ModalProvider>
+        <ReactQueyProvider>
+          <AuthProvider>
+            <PersistGate persistor={persister}>
+              <RouterProvider router={rootRouter} />
 
-            <Toaster
-              position="top-right"
-              reverseOrder={true}
-              toastOptions={{
-                duration: 2000,
-              }}
-              containerStyle={{
-                zIndex: "100009",
-              }}
-              gutter={14}
-            />
-          </PersistGate>
-        </AuthProvider>
-      </ReactQueyProvider>
+              <Toaster
+                position="top-right"
+                reverseOrder={true}
+                toastOptions={{
+                  duration: 2000,
+                }}
+                containerStyle={{
+                  zIndex: "100009",
+                }}
+                gutter={14}
+              />
+            </PersistGate>
+          </AuthProvider>
+        </ReactQueyProvider>
+      </ModalProvider>
     </ContextProvider>
   </Provider>
 );

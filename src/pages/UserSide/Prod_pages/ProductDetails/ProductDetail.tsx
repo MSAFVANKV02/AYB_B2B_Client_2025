@@ -12,10 +12,7 @@ import useNavigateClicks from "@/hooks/useClicks";
 import { IFinalProductTypes, Product } from "@/types/final-product-types";
 import { AddWishlistRedux } from "@/providers/redux/userSide/product_Slice";
 import { dispatch, useAppSelector } from "@/providers/redux/hook";
-import { Link } from "react-router-dom";
-import Image from "@/components/global/image";
-import { getSimpleRelativeTime } from "@/utils/date-calculator";
-import My_Icon from "@/components/icons/My_Icon";
+import VerifiedLabel from "@/components/global/verivied-label";
 
 type Props = {
   stockData?: IFinalProductTypes[];
@@ -66,33 +63,8 @@ function ProductDetail({ product, stockData }: Props) {
         <div className="relative">
           <div className=" md:w-3/4 w-[80%] flex flex-col">
             <div className=" bg-pink-50 w-full">
-              {stockData?.map((stock) => (
-                <Link
-                  to={``}
-                  className=" flex items-center group gap-3  text-xs p-1"
-                >
-                  <Image
-                    disableLink
-                    src={stock.store.avatar}
-                    className="h-10 w-10 rounded-md border"
-                    classNameImg="object-cover w-full h-full "
-                  />
-                  <div className="flex items-center gap-1">
-                    <span className="group-hover:underline">
-                      {stock.store.name}
-                    </span>
-                    <div className="font-bold flex items-center gap-1  text-blue-500">
-                      <My_Icon  color="green"fontSize={15} />
-                      Verified</div>
-                    <span className="f">Manufacturer .</span>
-                    <span className="text-gray-400 ">
-                    {getSimpleRelativeTime(stock.store.createdAt)}
-                    </span>
-                  </div>
-                  {/* <pre>
-              {JSON.stringify(stock.store,null,4)}
-             </pre> */}
-                </Link>
+              {stockData?.map((store) => (
+                <VerifiedLabel key={store.store._id} {...store.store} />
               ))}
             </div>
             <span className="md:text-[20px] font-bold">

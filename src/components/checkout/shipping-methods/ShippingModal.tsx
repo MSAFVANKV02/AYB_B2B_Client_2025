@@ -1,16 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { FormDataType, FormDataValue, ParcelOptionsType } from "./page";
 import { makeToast, makeToastError } from "@/utils/toaster";
 import { useState } from "react";
+import { useModal } from "@/providers/context/modal-context";
+import { dispatch, useAppSelector } from "@/providers/redux/hook";
+import {  ParcelOptionsType, setCheckoutFormDataField } from "@/providers/redux/userSide/checkout-slice";
 
-type Props = {
-  handleFormDataChange: (
-    field: keyof FormDataType,
-    value: FormDataValue
-  ) => void;
-  formData: FormDataType;
-  setOpenShipModal: (val: boolean) => void;
-};
+// type Props = {
+//   // handleFormDataChange: (
+//   //   field: keyof FormDataType,
+//   //   value: FormDataValue
+//   // ) => void;
+//   formData: FormDataType;
+//   // setOpenShipModal: (val: boolean) => void;
+// };
 
 const parcelOptions = [
   {
@@ -59,13 +61,13 @@ const parcelOptions = [
   },
 ];
 
-export default function ShippingModal({
-  handleFormDataChange,
-  formData,
-  setOpenShipModal,
-}: Props) {
+export default function ShippingModal() {
   const [selectedOptions, setSelectedOptions] =
     useState<ParcelOptionsType | null>(null);
+
+  const { dispatchModal } = useModal();
+  const { formData } = useAppSelector((state) => state.checkout);
+  
 
   // console.log(selectedOptions);
 
@@ -78,9 +80,17 @@ export default function ShippingModal({
       makeToastError("Please select a parcel Option.");
       return;
     }
-    handleFormDataChange("parcelOptions", selectedOptions);
+    // handleFormDataChange("parcelOptions", selectedOptions);
+    dispatch(
+      setCheckoutFormDataField({
+        field: "parcelOptions",
+        value: selectedOptions,
+      })
+    );
+
     makeToast(`Selected ${option?.serviceName}'s Service`);
-    setOpenShipModal(false);
+    // setOpenShipModal(false);
+    dispatchModal({ type: "CLOSE_MODAL" });
   };
 
   const handleCancelSelectedParcelOption = () => {
@@ -96,13 +106,29 @@ export default function ShippingModal({
         <div className="w-full flex mt-2">
           <Button
             className={`w-full border-n border-b ${formData.parcelMethod === "toPay" ? "border-b-textMain bg-bgSoft text-textMain" : "bg-white text-black"}  rounded-none hover:bg-bgSoft`}
-            onClick={() => handleFormDataChange("parcelMethod", "toPay")}
+            onClick={() => {
+              dispatch(
+                setCheckoutFormDataField({
+                  field: "parcelMethod",
+                  value: "toPay",
+                })
+              );
+              // handleFormDataChange("parcelMethod", "toPay")
+            }}
           >
             ToPay
           </Button>
           <Button
             className={`w-full border-n border-b ${formData.parcelMethod === "pay" ? "border-b-textMain bg-bgSoft text-textMain" : "bg-white text-black"}  rounded-none hover:bg-bgSoft`}
-            onClick={() => handleFormDataChange("parcelMethod", "pay")}
+            onClick={() => {
+              dispatch(
+                setCheckoutFormDataField({
+                  field: "parcelMethod",
+                  value: "pay",
+                })
+              );
+              // handleFormDataChange("parcelMethod", "toPay")
+            }}
           >
             Pay
           </Button>

@@ -6,9 +6,9 @@ import {
   AccordionSummary,
   Button,
 } from "@mui/material";
-import { Input } from "../ui/input";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useWindowWidth } from "@react-hook/window-size";
+import CouponWidget from "./coupon/coupon_widget";
 
 type Props = {
   handleClick?: () => void;
@@ -22,7 +22,9 @@ type Props = {
   isCoupon?: boolean;
   discount?: number;
   subTotal?: number;
-  btnLabel:string;
+  btnLabel: string;
+  couponCode?: string;
+
 };
 
 export default function OrderSummary({
@@ -37,7 +39,8 @@ export default function OrderSummary({
   isCoupon = false,
   discount = 0,
   subTotal = 0,
-  btnLabel
+  btnLabel,
+  couponCode
 }: Props) {
   const onlyWidth = useWindowWidth();
   const mobileWidth = onlyWidth <= 768;
@@ -49,7 +52,6 @@ export default function OrderSummary({
         boxShadow: "4px 2px 15px rgba(0, 0, 0, 0.13)", // Custom shadow effect
       }}
     >
-   
       {/* Item subtotal .1*/}
       <div>
         <Accordion
@@ -58,8 +60,8 @@ export default function OrderSummary({
           elevation={0} // Remove shadow
           square // Remove border-radius
           sx={{
-            "&:before": { display: "none" }, 
-            padding:0// Remove top border
+            "&:before": { display: "none" },
+            padding: 0, // Remove top border
           }}
           defaultExpanded={mobileWidth ? false : true}
         >
@@ -68,22 +70,22 @@ export default function OrderSummary({
             aria-controls="panel1-content"
             id="panel1-header"
             sx={{
-              "&:before": { display: "none" }, 
-              padding:0// Remove top border
+              "&:before": { display: "none" },
+              padding: 0, // Remove top border
             }}
           >
-              <h2 className="text-lg font-semibold ">
-        Order summary ({totalItems} item{totalItems > 1 ? "s" : ""} )
-      </h2>
+            <h2 className="text-lg font-semibold ">
+              Order summary ({totalItems} item{totalItems > 1 ? "s" : ""} )
+            </h2>
           </AccordionSummary>
-          <AccordionDetails 
-          className="space-y-2"
-          sx={{
-            "&:before": { display: "none" }, 
-            padding:0// Remove top border
-          }}
+          <AccordionDetails
+            className="space-y-2"
+            sx={{
+              "&:before": { display: "none" },
+              padding: 0, // Remove top border
+            }}
           >
-          {itemSubTotal >= 0 && (
+            {itemSubTotal >= 0 && (
               <div className="flex justify-between text-gray-600 sm:text-sm text-xs">
                 <span>Item subtotal</span>
                 <span>₹ {itemSubTotal.toFixed(2)}</span>
@@ -152,48 +154,27 @@ export default function OrderSummary({
       <div className="lg:mt-16 space-y-5">
         {/* coupon Code Section starts ==== */}
         {isCoupon && (
-          <div className="w-full   h-11 flex gap-2 i">
-            <Input
-              type="text"
-              className="flex-1 border h-full bg-gray-50 rounded-lg"
-              placeholder="Coupon Code"
-            />
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: "black",
-                "&:hover": { backgroundColor: "#6d6c6d" },
-                borderRadius: "8px",
-                padding: "10px",
-                textTransform: "capitalize",
-                width: "90px",
-                color: "white",
-              }}
-            >
-              Apply
-            </Button>
-          </div>
+       <CouponWidget couponCode={couponCode} />
         )}
-  <div className="w-full h-full flex items-center justify-center">
-     <Button
-          variant="contained"
-          fullWidth
-          className="bg-pv"
-          sx={{
-            backgroundColor: "#8817EC",
-            "&:hover": { backgroundColor: "#5f08b1" },
-            borderRadius: "8px",
-            padding: "10px",
-            textTransform: "capitalize",
-           width: mobileWidth? "100%" : "100%",
-          }}
-          startIcon={<VerifiedUserOutlinedIcon />}
-          onClick={handleClick}
-        >
-          {btnLabel}
-        </Button>
-  </div>
-       
+        <div className="w-full h-full flex items-center justify-center">
+          <Button
+            variant="contained"
+            fullWidth
+            className="bg-pv"
+            sx={{
+              backgroundColor: "#8817EC",
+              "&:hover": { backgroundColor: "#5f08b1" },
+              borderRadius: "8px",
+              padding: "10px",
+              textTransform: "capitalize",
+              width: mobileWidth ? "100%" : "100%",
+            }}
+            startIcon={<VerifiedUserOutlinedIcon />}
+            onClick={handleClick}
+          >
+            {btnLabel}
+          </Button>
+        </div>
       </div>
     </div>
   );

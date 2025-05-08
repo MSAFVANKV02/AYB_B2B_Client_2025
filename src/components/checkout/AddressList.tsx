@@ -3,27 +3,28 @@ import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { Divider } from "@mui/joy";
 import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { FormDataType, FormDataValue } from "./page";
 import { dispatch, useAppSelector } from "@/providers/redux/hook";
 import { IAddressType } from "@/types/address-types";
-import { deleteAddressRedux } from "@/providers/redux/userSide/UserAuthSlice";
+import { deleteAddressRedux, fetchAyabooUserDetails } from "@/providers/redux/userSide/UserAuthSlice";
 import { UseContextPage } from "@/providers/context/context";
+import { setCheckoutFormDataField } from "@/providers/redux/userSide/checkout-slice";
+import { useModal } from "@/providers/context/modal-context";
 
 type Props = {
-  setIsModalOpen: (isOpen: boolean) => void;
-  setAddAddress?: (isAdd: boolean) => void;
-  formData?: FormDataType;
-  handleFormDataChange?: (
-    field: keyof FormDataType,
-    value: FormDataValue
-  ) => void;
+  // setIsModalOpen: (isOpen: boolean) => void;
+  // setAddAddress?: (isAdd: boolean) => void;
+  // formData?: FormDataType;
+  // handleFormDataChange?: (
+  //   field: keyof FormDataType,
+  //   value: FormDataValue
+  // ) => void;
   isRemoveThings?: boolean;
 };
 
 export default function AddressList({
-  setIsModalOpen,
-  setAddAddress,
-  handleFormDataChange,
+  // setIsModalOpen,
+  // setAddAddress,
+  // handleFormDataChange,
   // formData,
   isRemoveThings,
 }: Props) {
@@ -31,22 +32,24 @@ export default function AddressList({
   //   null
   // ); // Track a single selected address ID
   const { address } = useAppSelector((state) => state.auth);
+  const { formData } = useAppSelector((state) => state.checkout);
 
-  const {
-    setSelectedAddress,
-    selectedAddress
-  } = UseContextPage();
+  const { dispatchModal } = useModal();
+
+  const { setSelectedAddress, selectedAddress } = UseContextPage();
 
   // console.log(selectedAddress,'selectedAddress');
-  
 
   const handleAddressSelect = (address: IAddressType | null) => {
     // console.log(address);
 
-    if (handleFormDataChange) {
-      handleFormDataChange("address", address); // Only allow one selected address
-    } // Only allow one selected address
-    setIsModalOpen(false); //
+    dispatch(setCheckoutFormDataField({ field: "address", value: address }));
+    dispatchModal({type:"CLOSE_MODAL"})
+
+    // if (handleFormDataChange) {
+    //   handleFormDataChange("address", address); // Only allow one selected address
+    // } // Only allow one selected address
+    // setIsModalOpen(false); //
   };
 
   return (
@@ -74,10 +77,12 @@ export default function AddressList({
               textTransform: "capitalize",
             }}
             onClick={() => {
-              if (setAddAddress) {
-                setAddAddress(true);
-                setSelectedAddress(null)
-              }
+              // if (setAddAddress) {
+              //   setAddAddress(true);
+              //   setSelectedAddress(null)
+              // }
+              dispatchModal({ modalType: "NewAddress", type: "OPEN_MODAL" });
+              setSelectedAddress(null);
             }}
           >
             <AddOutlinedIcon /> Add An Address
@@ -123,14 +128,19 @@ export default function AddressList({
                       Default shipping address
                     </span>
                   ) : (
-                    <button className="text-gray-500 text-sm underline hover:text-gray-700"
-                    onClick={()=>{
-                      if (setAddAddress) {
-                        setAddAddress(true);
-                      }
-                      setIsModalOpen(true);
-                      setSelectedAddress(address);
-                    }}
+                    <button
+                      className="text-gray-500 text-sm underline hover:text-gray-700"
+                      onClick={() => {
+                        // if (setAddAddress) {
+                        //   setAddAddress(true);
+                        // }
+                        // setIsModalOpen(true);
+                        dispatchModal({
+                          modalType: "NewAddress",
+                          type: "OPEN_MODAL",
+                        });
+                        setSelectedAddress(address);
+                      }}
                     >
                       Set as default shipping address
                     </button>
@@ -149,11 +159,16 @@ export default function AddressList({
                         color: "white",
                       },
                     }}
-                    onClick={()=>{
-                      if (setAddAddress) {
-                        setAddAddress(true);
-                      }
-                      setIsModalOpen(true);
+                    onClick={() => {
+                      // if (setAddAddress) {
+                      //   setAddAddress(true);
+                      // }
+                      // setIsModalOpen(true);
+                      dispatchModal({
+                        modalType: "NewAddress",
+                        type: "OPEN_MODAL",
+                      });
+
                       setSelectedAddress(address);
                     }}
                   >
@@ -165,8 +180,12 @@ export default function AddressList({
                   </IconButton>
                   <IconButton
                     size="small"
-                    onClick={() => {
-                      dispatch(deleteAddressRedux(address._id));
+                    onClick={async() => {
+                     await dispatch(deleteAddressRedux(address._id));
+                     dispatch(fetchAyabooUserDetails());
+                     if(address._id === formData.address?._id){
+                      dispatch(setCheckoutFormDataField({field:"address",value:null}))
+                     }
                     }}
                   >
                     <DeleteIcon fontSize="medium" />
