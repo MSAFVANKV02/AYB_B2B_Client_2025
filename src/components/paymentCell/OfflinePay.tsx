@@ -1,6 +1,6 @@
 
 import { Button } from "../ui/button";
-import { resetPaymentDetails, setCheckoutFormDataField } from "@/providers/redux/userSide/checkout-slice";
+import { resetPaymentDetails, setPaymentDetailsField } from "@/providers/redux/userSide/checkout-slice";
 import { dispatch, useAppSelector } from "@/providers/redux/hook";
 import { useQueryData } from "@/hooks/useQueryData";
 import { getPaymentDetailsAction } from "@/action/platform/platformAction";
@@ -78,15 +78,22 @@ export default function OfflinePay() {
           <Button
             className={` ${formData.payment_details?.payment_type === "upi" ? "border-b-2 border-textMain bg-bgHardSoft hover:bg-bgHardSoft" : "bg-transparent border-b-2 hover:bg-bgHardSoft"} text-textMain rounded-none  w-full `}
             onClick={() => {
+              // dispatch(
+              //   setCheckoutFormDataField({
+              //     field: "payment_details",
+              //     value: {
+              //       ...(formData.payment_details || {}),
+              //       payment_type: "upi",
+              //     } as TransactionDetails,
+              //   })
+              // );
               dispatch(
-                setCheckoutFormDataField({
-                  field: "payment_details",
-                  value: {
-                    ...(formData.payment_details || {}),
-                    payment_type: "upi",
-                  },
+                setPaymentDetailsField({
+                  field: "payment_type",
+                  value: "upi",
                 })
               );
+              
             }}
           >
             UPI Payment
@@ -94,13 +101,19 @@ export default function OfflinePay() {
           <Button
             className={` ${formData.payment_details?.payment_type === "bank" ? "border-b-2 border-textMain bg-bgHardSoft hover:bg-bgHardSoft" : "bg-transparent border-b-2 hover:bg-bgHardSoft"} text-textMain rounded-none  w-full `}
             onClick={() => {
+              // dispatch(
+              //   setCheckoutFormDataField({
+              //     field: "payment_details",
+              //     value: {
+              //       ...(formData.payment_details || {}),
+              //       payment_type: "bank",
+              //     },
+              //   })
+              // );
               dispatch(
-                setCheckoutFormDataField({
-                  field: "payment_details",
-                  value: {
-                    ...(formData.payment_details || {}),
-                    payment_type: "bank",
-                  },
+                setPaymentDetailsField({
+                  field: "payment_type",
+                  value: "bank",
                 })
               );
             }}

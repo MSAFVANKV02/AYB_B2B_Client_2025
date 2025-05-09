@@ -1,3 +1,5 @@
+import { dispatch } from "@/providers/redux/hook";
+import { resetCheckoutState } from "@/providers/redux/userSide/checkout-slice";
 import { useEffect, useState, useRef } from "react";
 import { ThreeDot } from "react-loading-indicators";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -7,7 +9,7 @@ export default function ConfirmOrder() {
   const location = useLocation();
   const hasRedirected = useRef(false); // Track whether the redirection has occurred
 
-  const initialCountdown = 10; // Default countdown value
+  const initialCountdown = 3; // Default countdown value
   const [countdown, setCountdown] = useState(initialCountdown);
 
   useEffect(() => {
@@ -28,6 +30,7 @@ export default function ConfirmOrder() {
           hasRedirected.current = true; // Mark as redirected
           localStorage.removeItem("countdown"); // Clear countdown from localStorage
           navigate("/my-account/my-orders", { replace: true }); // Redirect to orders page
+          dispatch(resetCheckoutState({checkoutStatus:"nill"}))
           return 0;
         }
 

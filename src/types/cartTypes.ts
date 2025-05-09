@@ -17,7 +17,8 @@ export type ICart = {
     couponDiscountAmount: number
     shippingCharge: number
     subTotalExclTax: number
-    gst: ICartGst
+    // gst: ICartGst
+    gst: number
     cess: number
     cartTotal: number
     coupon:string

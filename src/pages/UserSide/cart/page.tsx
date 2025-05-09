@@ -21,8 +21,7 @@ const ShoppingCart = () => {
   const { handleClick } = useNavigateClicks();
   const { cart } = useAppSelector((state) => state.products);
 
-  console.log(cart,'cart');
-  
+  console.log(cart, "cart");
 
   const { data: saveLaterData } = useQueryData(
     ["save-later"],
@@ -67,7 +66,7 @@ const ShoppingCart = () => {
             <CartDetails
               state="cart"
               // details={cartDetailsData}
-          
+
               cart={cart}
               title={"store"}
               isCollapsible
@@ -88,16 +87,20 @@ const ShoppingCart = () => {
 
       {/* Order Summary Section ======== = == = ====== ======= = ===*/}
       <OrderSummary
-        gst={cart?.gst.cgst ?? 0}
+        page="cart"
+        gstValue={cart?.gst??0}
         discount={cart?.discountValue}
-        cess={cart?.gst.cgst}
+        cess={cart?.cess}
         itemSubTotal={cart?.cartValue}
         shippingCharge={cart?.shippingCharge}
         subTotal={cart?.subTotalExclTax}
         totalPrice={cart?.cartTotal}
         totalItems={cart?.totalItems}
         btnLabel="Checkout"
-        handleClick={() => handleClick("/cart/checkout")}
+        handleClick={() => {
+          dispatch(getCartRedux());
+          handleClick("/cart/checkout");
+        }}
       />
     </CartLayout>
   );

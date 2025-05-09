@@ -252,6 +252,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import groupBy from "lodash/groupBy";
 import VerifiedLabel from "../global/verivied-label";
 import ShippingMethod from "../checkout/shipping-methods/shipping_method";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 type Props = {
   cart?: ICartTypes | null;
@@ -328,8 +329,17 @@ export default function CartDetails({
                       </div>
                     )}
                   </div>
+
                   {showShippingMethod && (
-                    <div className="">
+                    <div className="mb-">
+                      <p className="font-bold flex items-center gap-1 pb-3">
+                        {" "}
+                        <Icon
+                          icon="carbon:delivery-truck"
+                          className="text-lg text-textMain"
+                        />
+                        Choose shipping method
+                      </p>
                       <ShippingMethod storeId={store.store._id ?? ""} />
                     </div>
                   )}
@@ -340,6 +350,7 @@ export default function CartDetails({
                 in={!isCollapsible || !isCollapsed[storeCollapseKey]}
                 sx={{
                   border: "1px solid #c9c3c3",
+                  mt: 2,
                 }}
               >
                 {items.map((item, index) =>
@@ -349,7 +360,7 @@ export default function CartDetails({
                     return (
                       <div
                         key={productKey}
-                        className={`mb-4  ${pIndex !== 0 && "border-t"}  p-2 `}
+                        className={`mb-4   ${pIndex !== 0 && "border-t"}  p-2 `}
                       >
                         <div className="flex items-start md:justify-between space-x-4 mb-2">
                           <div className="flex gap-3">

@@ -4,9 +4,12 @@ import { IconButton, Toolbar, Tooltip } from "@mui/material";
 type Props = {
   onClick: () => void;
   isTooltip?: boolean;
+  color?:string
 };
 
-export default function MyCloseIcon({ onClick, isTooltip }: Props) {
+export default function MyCloseIcon({ onClick, isTooltip, color }: Props) {
+  const icon = <Close sx={{ color }} />;
+
   return (
     <>
       {isTooltip ? (
@@ -14,7 +17,7 @@ export default function MyCloseIcon({ onClick, isTooltip }: Props) {
           <Tooltip title="Close" placement="top">
             <div className="">
             <IconButton onClick={onClick}>
-              <Close />
+              {icon}
             </IconButton>   
             </div>
            
@@ -22,7 +25,7 @@ export default function MyCloseIcon({ onClick, isTooltip }: Props) {
         </Toolbar>
       ) : (
         <IconButton onClick={onClick}>
-          <Close />
+          {icon}
         </IconButton>
       )}
     </>

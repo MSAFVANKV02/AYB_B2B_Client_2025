@@ -19,9 +19,7 @@ export default function SettingsProfilePage() {
   const {
     isOpenModal,
     handleOpenModal,
-    setIsOpenModal,
     addAddress,
-    setAddAddress,
     handleCloseModal,
   } = UseContextPage();
 
@@ -64,13 +62,11 @@ export default function SettingsProfilePage() {
             {addAddress ? (
               <>
                 {/* <AddressForm addAddress={addAddress} /> d*/}
-                <CreateAddressForm addAddress={addAddress} />
+                <CreateAddressForm />
               </>
             ) : (
               <AddressList
-                setIsModalOpen={setIsOpenModal}
-                setAddAddress={setAddAddress}
-                isRemoveThings
+         
               />
             )}
           </Modal>

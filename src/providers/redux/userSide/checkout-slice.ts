@@ -41,9 +41,10 @@ export type FormDataType = {
   shipping_info: ShippingInfoType;
   parcelOptions: ParcelOptionsType | null;
   parcelMethod: string;
-  paymentMethod: string;
+  payment_method: "offline_payment"|"razor_pay"|"cod"|"";
   transactionType: "upi" | "bank";
   payment_details: TransactionDetails | null;
+  checkoutStatus: "completed" | "nill" | "loading"|"checked-out";
 };
 
 interface CheckoutState {
@@ -58,9 +59,10 @@ const initialState: CheckoutState = {
     shipping_info: {},
     parcelOptions: null,
     parcelMethod: "",
-    paymentMethod: "",
+    payment_method: "",
     transactionType: "upi",
     payment_details: null,
+    checkoutStatus: "nill",
   },
   loading: false,
   error: null,
@@ -70,24 +72,31 @@ const checkoutSlice = createSlice({
   name: "checkout",
   initialState,
   reducers: {
-    setCheckoutFormDataField: (
-      state,
-      action: PayloadAction<{ field: keyof FormDataType; value: any }>
+    // setCheckoutFormDataField: (
+    //   state,
+    //   action: PayloadAction<{ field: keyof FormDataType; value: any }>
+    // ) => {
+    //   if (!state.formData) {
+    //     state.formData = {
+    //       // provide a fallback object
+    //       address: null,
+    //       shipping_info: {},
+    //       parcelOptions: null,
+    //       parcelMethod: "",
+    //       payment_method: "",
+    //       transactionType: "upi",
+    //       payment_details: null,
+    //       checkoutStatus: "nill",
+    //     };
+    //   }
+    //   state.formData[action.payload.field] = action.payload.value;
+    // },
+    setCheckoutFormDataField: <K extends keyof FormDataType>(
+      state: CheckoutState,
+      action: PayloadAction<{ field: K; value: FormDataType[K] }>
     ) => {
-      if (!state.formData) {
-        state.formData = {
-          // provide a fallback object
-          address: null,
-          shipping_info: {},
-          parcelOptions: null,
-          parcelMethod: "",
-          paymentMethod: "",
-          transactionType: "upi",
-          payment_details: null,
-        };
-      }
       state.formData[action.payload.field] = action.payload.value;
-    },
+    },    
     setShippingInfo: (
       state,
       action: PayloadAction<{
@@ -128,22 +137,45 @@ const checkoutSlice = createSlice({
         referral_doc: null,
         transaction_id: "",
         payment_type: "upi",
-        is_policy_verified: false,
+        // is_policy_verified: false,
       };
     },
 
-    resetCheckoutState: (state) => {
+    // resetCheckoutState: (state) => {
+    //   const existingAddress = state.formData.address; // keep the current address
+    
+    //   state.formData = {
+    //     address: existingAddress, // restore the saved address
+    //     shipping_info: {},
+    //     parcelOptions: null,
+    //     parcelMethod: "",
+    //     payment_method: "",
+    //     transactionType: "upi",
+    //     payment_details: null,
+    //     checkoutStatus: "nill",
+    //   };
+    // },
+    resetCheckoutState: (
+      state,
+      action: PayloadAction<Partial<FormDataType> | undefined>
+    ) => {
+      const overrides = action.payload || {};
+      const existingAddress = state.formData.address;
+    
       state.formData = {
-        // reset to default structure instead
-        address: null,
+        address: existingAddress,
         shipping_info: {},
         parcelOptions: null,
         parcelMethod: "",
-        paymentMethod: "",
+        payment_method: "",
         transactionType: "upi",
         payment_details: null,
+        checkoutStatus: "nill",
+        ...overrides, // apply any overrides
       };
     },
+    
+    
   },
 });
 

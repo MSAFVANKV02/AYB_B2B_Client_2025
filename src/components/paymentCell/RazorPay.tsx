@@ -7,7 +7,7 @@
 
 // export const RazorPay = (): Promise<RazorPayResult> => {
 //     const { Razorpay } = useRazorpay();
-   
+
 //     return new Promise((resolve, reject) => {
 //         try {
 //             const options: RazorpayOrderOptions = {
@@ -38,27 +38,28 @@
 //         }
 //     });
 // }
-import { makeToastError } from "@/utils/toaster";
+import { verify_Razorpay_Order_Api } from "@/services/user_side_api/checkout/route";
+import { makeToast, makeToastError } from "@/utils/toaster";
 // import axios from "axios";
 
-type RazorPayResult = {
-    success: boolean;
-    message?: string;
-  };
+export type RazorPayResult = {
+  success: boolean;
+  message?: string;
+};
 export const RazorPay = async ({
   totalAmount,
   orderIdRazorPay,
-  // address,
-
+  shipping_address,
+  shipping_info,
+  payment_method,
+  payment_details,
   // email
 }: any): Promise<RazorPayResult> => {
-
-  
   return new Promise((resolve) => {
     try {
       // console.log(process.env.RAZORPAY_KEY);
-      
-      const key = 'rzp_test_DrLUTuWIXIiihx';
+
+      const key = "rzp_test_DrLUTuWIXIiihx";
       const options = {
         key: key,
         name: "URACCA",
@@ -68,30 +69,29 @@ export const RazorPay = async ({
         description: "Order Payment",
         handler: async function (response: any) {
           // console.log(response);
-          
+
           try {
             const verificationData = {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_order_id: response.razorpay_order_id,
               razorpay_signature: response.razorpay_signature,
-           
             };
             console.log(verificationData);
-            
 
-            // const verifyRes = await axios.post(
-            //   `${BACKENTURL}/order/verifyOrder`,
-            //   verificationData,
-            //   { withCredentials: true }
-            // );
+            const verifyRes = await verify_Razorpay_Order_Api({
+              payment_details: payment_details,
+              payment_method: payment_method,
+              shipping_address: shipping_address,
+              shipping_info: shipping_info,
+            });
 
-            // if (verifyRes.data.success) {
-            //   makeToast(verifyRes.data.message);
-            //   resolve({ success: true });
-            // } else {
-            //   makeToastError("Payment verification failed");
-            //   resolve({ success: false });
-            // }
+            if (verifyRes.data.success) {
+              makeToast(verifyRes.data.message);
+              resolve({ success: true });
+            } else {
+              makeToastError("Payment verification failed");
+              resolve({ success: false });
+            }
           } catch (error) {
             console.error("Verification failed", error);
             makeToastError(
@@ -101,21 +101,20 @@ export const RazorPay = async ({
           }
         },
         prefill: {
-        //   name: `${address.userName}`,
-        //   email: `${email}`,
-        //   contact: `${address.userMobile}`,
+          //   name: `${address.userName}`,
+          //   email: `${email}`,
+          //   contact: `${address.userMobile}`,
         },
         theme: {
-          color: '#E56F61',
+          color: "#E56F61",
           // hide_topbar: true
-      },
+        },
         modal: {
           ondismiss: function () {
             // Redirect user to a custom URL when the modal is closed/dismissed
             resolve({ success: false }); // Change to your desired URL
             // window.location.replace("/cart");
           },
-
         },
       };
 
@@ -131,7 +130,7 @@ export const RazorPay = async ({
         resolve({ success: false });
       });
     } catch (error) {
-      console.error("Error initializing Razorpay",error);
+      console.error("Error initializing Razorpay", error);
       makeToastError("Error initializing Razorpay");
       resolve({ success: false });
     }
