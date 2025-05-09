@@ -143,6 +143,8 @@ export const checkoutOrderAction = async (
           payment_method: formData.payment_method,
           payment_details: formData.payment_details,
         });
+        console.log(result);
+        
       }
     }
   } catch (error) {

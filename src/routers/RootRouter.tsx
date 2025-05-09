@@ -46,7 +46,6 @@ import SingleOrderPage from "@/pages/UserSide/my-account/my-orders/single-order/
 import ChatPage from "@/pages/UserSide/my-account/chat/Chat-Page";
 import WishlistPage from "@/pages/UserSide/my-account/wishlist/wishlist-page";
 import UseReviewPage from "@/pages/UserSide/my-account/reviews/use-review-page";
-import UseReturnPage from "@/pages/UserSide/my-account/return_user/user-return-page";
 import { Suspense } from "react";
 import PreloaderPage from "@/preloader-page";
 import PageOnBuild from "@/components/myUi/PageOnBuild";
@@ -235,7 +234,7 @@ const rootRouter = createBrowserRouter(
             },
             { path: "chat", element: <ChatPage /> },
             { path: "my-wishlist", element: <WishlistPage /> },
-            { path: "return", element: <UseReturnPage /> },
+            // { path: "return", element: <UseReturnPage /> },
             { path: "notifications", element: <NotificationsPage /> },
             { path: "credit-request", element: <PageOnBuild /> },
           ],

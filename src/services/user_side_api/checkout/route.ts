@@ -19,7 +19,7 @@ export const remove_Coupon_Api = async () =>
 
 
 export const get_All_Order_Api = async () =>
-    await API.delete(GET_ALL_ORDERS_URL, { withCredentials: true });
+    await API.get(GET_ALL_ORDERS_URL, { withCredentials: true });
 
 // ======= checkout section ========= ///
 // 1. Coupon Apply
