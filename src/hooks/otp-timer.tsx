@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 
 type OtpTimerProps = {
   initialTime: number; // Add this to make timer configurable
-  onTimerFinish?: () => void; 
-  resendOtp: () => void; 
+  onTimerFinish?: () => void;
+  resendOtp: () => void;
+  success?: boolean;
 };
 
 const OtpTimer: React.FC<OtpTimerProps> = ({
   initialTime = 60, // Default to 60 seconds
   resendOtp,
+  success,
 }) => {
   const [timer, setTimer] = useState<number>(() => {
     const savedTimer = localStorage.getItem("otp-timer");
@@ -17,7 +19,7 @@ const OtpTimer: React.FC<OtpTimerProps> = ({
 
   const [isResendVisible, setIsResendVisible] = useState<boolean>(() => {
     const isFinished = localStorage.getItem("otp-finished") === "true";
-    return isFinished; 
+    return isFinished;
   });
 
   useEffect(() => {
@@ -51,14 +53,18 @@ const OtpTimer: React.FC<OtpTimerProps> = ({
     }
   }, [timer]);
 
-  const handleResendOtp = () => {
+  const handleResendOtp = async () => {
     // Reset the timer and resend OTP logic
-    setTimer(initialTime);
-    setIsResendVisible(false);
-    localStorage.setItem("otp-timer", initialTime.toString());
-    localStorage.setItem("otp-finished", "false");
-    resendOtp();
+    await resendOtp();
   };
+  useEffect(() => {
+    if (success) {
+      setTimer(initialTime);
+      setIsResendVisible(false);
+      localStorage.setItem("otp-timer", initialTime.toString());
+      localStorage.setItem("otp-finished", "false");
+    }
+  }, [success,initialTime]);
 
   return (
     <>

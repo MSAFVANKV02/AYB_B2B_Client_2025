@@ -224,13 +224,13 @@ export default function AyButton({
 }: Props) {
   const buttonStyles: SxProps<Theme> = {
     textTransform: "capitalize",
-    width: "150px",
+    width: "100% !important", 
     ...(variant === "contained"
       ? {
-          bgcolor: disabled ? "#d3d3d3" : "var(--mainColor)",
+          bgcolor: disabled ? "#d3d3d3" : "var(--primaryVariant)",
           color: disabled ? "#a0a0a0" : "#fff",
           "&:hover": {
-            bgcolor: disabled ? "#d3d3d3" : "var(--primaryVariant)",
+            bgcolor: disabled ? "#d3d3d3" : "var(--mainColor)",
           },
         }
       : variant === "outlined"

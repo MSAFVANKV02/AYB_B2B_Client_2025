@@ -18,9 +18,10 @@ import { Link, useNavigate } from "react-router-dom";
 // import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useEffect, useState } from "react";
-import LoginOtpVerifyUser from "./LoginOtpVerifyUser";
+// import LoginOtpVerifyUser from "./LoginOtpVerifyUser";
 import axios from "axios";
 import { SendOtp_Login_Api } from "@/services/user_side_api/auth/route_url";
+import UserLoginVerifyOtp from "./user-login-verify-otp";
 // import { userLoginSendOtp } from "@/services/admin_side_api/auth/use-login-api";
 
 // Define the Zod schema for phone number validation
@@ -126,11 +127,18 @@ function UserLogin() {
 
         {/* Form Section */}
         {showOtpLogin ? (
-          <LoginOtpVerifyUser
+          <>
+           {/* <LoginOtpVerifyUser
             setShowOtpLogin={setShowOtpLogin}
             setMessage={setMessage}
             
+          /> */}
+          <UserLoginVerifyOtp 
+          setMessage={setMessage}
+          setShowOtpLogin={setShowOtpLogin}
           />
+          </>
+         
         ) : (
           <div className="w-full lg:w-1/2 p-8 relative bg-[#F5E9FF] flex flex-col justify-center items-center">
             <ArrowLeft
