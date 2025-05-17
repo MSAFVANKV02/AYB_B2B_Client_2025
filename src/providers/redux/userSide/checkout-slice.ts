@@ -41,7 +41,7 @@ export type FormDataType = {
   shipping_info: ShippingInfoType;
   parcelOptions: ParcelOptionsType | null;
   parcelMethod: string;
-  payment_method: "offline_payment"|"razor_pay"|"cod"|"";
+  payment_method: "offline_payment"|"razorpay"|"cod"|"";
   transactionType: "upi" | "bank";
   payment_details: TransactionDetails | null;
   checkoutStatus: "completed" | "nill" | "loading"|"checked-out";

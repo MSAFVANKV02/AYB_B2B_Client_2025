@@ -42,7 +42,9 @@ export default function ProductsPage() {
     <>
       {isFetching ? (
         <div className="my-10">
-          <ProductDetailSkelton />
+          <ProductDetailSkelton 
+          
+          />
         </div>
       ) : (
         <div className="min-h-screen flex flex-col section_container_dash space-y-10 my-10">

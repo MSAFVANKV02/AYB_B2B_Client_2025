@@ -52,7 +52,7 @@ export default function OrderSummary({
   const { formData } = useAppSelector((state) => state.checkout);
   const { cart } = useAppSelector((state) => state.products);
 
-console.log(gstValue,'gst==');
+// console.log(gstValue,'gst==');
 
   // const isButtonDisabled = formData.checkoutStatus === "loading" || (page === "checkout" && progress !== 100);
 

@@ -3,11 +3,13 @@ import SettingsLayout from "../layout";
 import { useState } from "react";
 import OrderTab from "./OrderTab";
 import {  IOrders, IOrdersType } from "@/types/orderTypes";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import { useQueryData } from "@/hooks/useQueryData";
 import { getAllOrdersAction } from "@/action/checkout/checkoutAction";
 import { useSearchFn } from "@/hooks/useSeach-Fn";
 import Loader from "@/components/global/loader";
+import { Input } from "@/components/ui/input";
+import OrderTabPagination from "@/components/orders/order-tab-pagination";
+import { useSearchParams } from "react-router-dom";
 
 type IOrderTabs = "Order" | "Replace";
 
@@ -15,9 +17,18 @@ type IOrderTabs = "Order" | "Replace";
 export default function MyOrdersPage() {
   const [switchOrderTabs, setSwitchOrderTab] = useState<IOrderTabs>("Order");
 
+  const [searchParams] = useSearchParams();
+
+  const pageQ = searchParams.get("page")??"1";
+
   const { data: fetchedBannerImages, isFetching } = useQueryData(
-    ["banner-images"],
-    () => getAllOrdersAction()
+    ["banner-images",pageQ],
+    () => getAllOrdersAction([
+      {key:"page", value: pageQ},
+      
+      // {key:"limit", value: "1"},
+    ]),
+    {disableRefetch:true}
   );
 
   const { data: fetchedOrdersData } = (fetchedBannerImages ?? {}) as {
@@ -36,8 +47,8 @@ export default function MyOrdersPage() {
   if (isFetching) {
     return (
       <SettingsLayout>
-        <div className="h-full flex justify-center items-center">
-          <Loader state={isFetching} color="black" />
+        <div className="h-[80dvh] flex justify-center items-center">
+          <Loader state={isFetching} color="gray" />
         </div>
       </SettingsLayout>
     );
@@ -70,20 +81,20 @@ export default function MyOrdersPage() {
       {/* Search & Filter Controls */}
       <div className="flex items-center sm:gap-4 my-5">
         <div className="flex items-center w-full border rounded-md">
-          <input
-            type="text"
-            placeholder="Search by Product Name"
+          <Input
+            type="search"
+            placeholder="Fast Search..."
             onChange={handleSearch}
-            className="border sm:px-4 px-1 sm:py-2 sm:text-sm text-xs sm:rounded-md rounded-l-md   flex-grow focus:outline-none border-none"
+            className="border  text-xs sm:rounded-md rounded-l-md   flex-grow focus:outline-none border-none"
           />
-          <button className="flex items-center gap-2 bg-bgHardSoft text-textMain sm:px-5 px-2 sm:text-sm text-xs sm:py-2 py-3 sm:rounded-md rounded-l-md ">
+          {/* <button className="flex items-center gap-2 bg-bgHardSoft text-textMain sm:px-5 px-2 sm:text-sm text-xs sm:py-2 py-3 sm:rounded-md rounded-l-md ">
             <Icon
               icon={"hugeicons:search-01"}
               fontSize={20}
               className="sm:block hidden"
             />
             Search Order
-          </button>
+          </button> */}
         </div>
 
         <select
@@ -112,6 +123,10 @@ export default function MyOrdersPage() {
       /> */}
         </>
       )}
+
+      { fetchedOrdersData.total > fetchedOrdersData.limit &&
+        <OrderTabPagination order={fetchedOrdersData}/>
+      }
     </SettingsLayout>
   );
 }

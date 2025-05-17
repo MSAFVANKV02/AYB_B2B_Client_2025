@@ -21,7 +21,7 @@ const ShoppingCart = () => {
   const { handleClick } = useNavigateClicks();
   const { cart } = useAppSelector((state) => state.products);
 
-  console.log(cart, "cart");
+  // console.log(cart, "cart");
 
   const { data: saveLaterData } = useQueryData(
     ["save-later"],

@@ -1,7 +1,8 @@
-import { useQueryData } from "@/hooks/useQueryData";
+
 import { getAllAvailableColors, getAllProductAction, getProductWithSlugAction } from "./productAction";
 import { IFinalProductTypes } from "@/types/final-product-types";
 import { IFilterProducts, IGetAllFilterKey } from "@/services/user_side_api/products/route";
+import { useQueryData } from "@/hooks/useQueryData";
 
 export interface IColors {
   colorName: string
@@ -18,7 +19,7 @@ export const ProductData = (
     data: fetchedProducts,
     isFetching,
     refetch,
-  } = useQueryData(queryKey, () => getAllProductAction(filterData,filter));
+  } = useQueryData(queryKey, () => getAllProductAction(filterData,filter),{ disableRefetch: true });
 
   const { data: products = [] } = (fetchedProducts ?? {}) as {
     status?: number;

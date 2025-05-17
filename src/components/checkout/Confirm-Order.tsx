@@ -46,7 +46,7 @@ export default function ConfirmOrder() {
   }, [navigate]);
 
   return (
-    <div className="h-screen w-full bg-bg flex justify-center items-center">
+    <div className="fixed top-0 left-0 bottom-0 z-50 w-full bg-bg flex justify-center items-center">
       <div className="flex flex-col items-center gap-5">
         <ThreeDot color="#fcfcfc" size="medium" text="" textColor="" />
         <span className="text-white text-sm">Creating order... {countdown}s</span>

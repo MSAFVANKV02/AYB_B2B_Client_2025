@@ -28,15 +28,20 @@ const ProductDetailSkelton = () => {
               <Skeleton className="h-4 md:w-[250px] sm:w-[200px] " />
               <Skeleton className="h-4 sm:w-[200px]" />
               {/* gallery image */}
+              {/* gallery image */}
               <div className="flex gap-3 flex-wrap md:mt-10">
-                {[1, 2, 3, 4].map(() => (
-                  <Skeleton className="h-14 w-14" />
+                {[1, 2, 3, 4].map((_, index) => (
+                  <Skeleton
+                    key={`gallery-skel-${index}`}
+                    className="h-14 w-14"
+                  />
                 ))}
               </div>
-              {/* sizes  */}
+
+              {/* sizes */}
               <div className="flex gap-3 flex-wrap">
-                {[1, 2, 3, 4].map(() => (
-                  <Skeleton className="h-10 w-10" />
+                {[1, 2, 3, 4].map((_, index) => (
+                  <Skeleton key={`size-skel-${index}`} className="h-10 w-10" />
                 ))}
               </div>
             </div>

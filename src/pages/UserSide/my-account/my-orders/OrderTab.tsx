@@ -73,9 +73,10 @@
 
 import { useState } from "react";
 import { IOrders, IOrdersType } from "@/types/orderTypes";
-import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import Image from "@/components/global/image";
+import { AddToSessionStorage, SessionStorageAllPaths } from "@/hooks/use-sessioStorage";
+import { API } from "@/services/user_side_api/auth/route_url";
 
 type Props = {
   orders: IOrdersType;
@@ -85,8 +86,27 @@ type Props = {
 export default function OrderTab({ orders, filteredOrder }: Props) {
   const [showRawJson, setShowRawJson] = useState(false);
 
+  const {orders:ordersSession} = SessionStorageAllPaths()
+
+  const handleDelete = () => {
+    const id = window.prompt("Enter the Order ID to delete:");
+    if (id) {
+      if(id ==="all"){
+        return    API.delete(`/api/order/orders`, {
+          withCredentials: true,
+        })
+      }
+      API.delete(`/api/order/orders`, {
+        params: { id },
+        withCredentials: true,
+      })
+        .then(() => alert("Order deleted successfully."))
+        .catch(() => alert("Failed to delete the order."));
+    }
+  };
+
   return (
-    <div className="space-y-4">
+    <section className="space-y-2">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">
           Showing {filteredOrder.length} of {orders.orders.length} orders
@@ -100,29 +120,43 @@ export default function OrderTab({ orders, filteredOrder }: Props) {
         </button>
       </div>
 
+      <button className=""
+      onClick={()=>{
+        handleDelete()
+      }}
+      >
+        delete
+      </button>
+
       {showRawJson && (
         <div className="bg-gray-50 p-4 rounded border text-xs overflow-auto max-h-96 whitespace-pre-wrap">
-          <pre>{JSON.stringify(orders.orders, null, 2)}</pre>
+          <pre>{JSON.stringify(orders, null, 2)}</pre>
         </div>
       )}
 
       {filteredOrder.map((order) => (
-        <Link
-          to={`/my-account/my-orders/${order._id}`}
+        <div
+          // to={`/my-account/my-orders/${order._id}`}
           key={order._id}
-          className="border sm:p-4 p-2 rounded-lg shadow-sm flex  flex-col justify-between"
+          className="border  p-2  shadow-sm flex  flex-col justify-between"
         >
           <div>
             <p className="text-sm font-medium">Order ID: {order.order_id}</p>
+            {/* <p className="text-sm font-medium">ID: {order._id}</p> */}
+
             <p className="text-xs text-gray-500">
               Status: {order.payment_status} | Created: {new Date(order.createdAt).toLocaleDateString()}
             </p>
           </div>
-         <div className="pt-3 space-y-4">
+         <div className="pt-3 ">
          {
             order.store_orders.map((store)=>{
               return(
-                <div className="h-fit w-full border flex flex-col justify-between gap-3">
+                <div className="h-fit w-full border flex flex-col justify-between gap-3"
+                onClick={()=>{
+                  AddToSessionStorage(ordersSession,order)
+                }}
+                >
                   <div className="flex gap-2">
                     <Image
                     src={store.store_info.avatar}
@@ -150,8 +184,8 @@ export default function OrderTab({ orders, filteredOrder }: Props) {
             })
           }
          </div>
-        </Link>
+        </div>
       ))}
-    </div>
+    </section>
   );
 }

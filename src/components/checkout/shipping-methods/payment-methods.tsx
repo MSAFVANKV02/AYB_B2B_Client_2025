@@ -1,5 +1,6 @@
 import { getPlatformSettingsAction } from "@/action/platform/platformAction";
 import { useQueryData } from "@/hooks/useQueryData";
+
 import { useModal } from "@/providers/context/modal-context";
 import { dispatch, useAppSelector } from "@/providers/redux/hook";
 import { resetPaymentDetails, setCheckoutFormDataField } from "@/providers/redux/userSide/checkout-slice";

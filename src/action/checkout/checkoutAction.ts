@@ -12,7 +12,7 @@ import {
   submit_Order_Api,
 } from "@/services/user_side_api/checkout/route";
 import { IAddressType } from "@/types/address-types";
-import { ICartTypes } from "@/types/cartTypes";
+import { IFilterOrders } from "@/types/orderTypes";
 import { AxiosError } from "axios";
 
 export type OrderSummaryType = {
@@ -24,10 +24,14 @@ export type OrderSummaryType = {
 };
 
 export const checkoutOrderAction = async (
-  formData: FormDataType,
-  cart: ICartTypes | null
+  formData: FormDataType
+  // cart: ICartTypes | null
 ) => {
-  console.log(formData, "formData");
+  // console.log(formData, "formData");
+
+  // if(formData.payment_method === "offline_payment" && !formData.payment_details?.transaction_id && !formData.payment_details?.referral_doc ){
+  //   return makeToastError("Please submit payment details")
+  // }
 
   try {
     dispatch(
@@ -98,13 +102,13 @@ export const checkoutOrderAction = async (
       }
     }
 
-    for (const [key, value] of payload.entries()) {
-      if (value instanceof File) {
-        console.log(`${key}: [File] ${value.name}`);
-      } else {
-        console.log(`${key}: ${value}`);
-      }
-    }
+    // for (const [key, value] of payload.entries()) {
+    //   if (value instanceof File) {
+    //     console.log(`${key}: [File] ${value.name}`);
+    //   } else {
+    //     console.log(`${key}: ${value}`);
+    //   }
+    // }
 
     // const { data, status } = await submit_Order_Api(payload as unknown as OrderSummaryType);
     const { data, status } = await submit_Order_Api(payload);
@@ -128,27 +132,34 @@ export const checkoutOrderAction = async (
         //     value: "checked-out",
         //   })
         // );
+        dispatch(resetCheckoutState({ checkoutStatus: "checked-out" }));
         return {
           data: data.data,
           status: status,
           message: data.message,
         };
-      }
-      if (formData.payment_method === "razor_pay") {
+      } else if (formData.payment_method === "razorpay") {
+        // console.log(data,'data inside razorpay ');
+
         const result: RazorPayResult = await RazorPay({
-          totalAmount: cart?.cartTotal,
-          orderIdRazorPay: "",
+          totalAmount: data.data?.cartTotal,
+          orderIdRazorPay: data.data.razorpayOrderId,
           shipping_address: formData.address,
           shipping_info: formData.shipping_info,
-          payment_method: formData.payment_method,
-          payment_details: formData.payment_details,
         });
-        console.log(result);
-        
+        // console.log(result,'result');
+        if (result.success) {
+          dispatch(resetCheckoutState({ checkoutStatus: "checked-out" }));
+          return {
+            data: [],
+            status: 200,
+            message: "Order Success Wth Razorpay",
+          };
+        }
       }
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error, "error");
     dispatch(
       setCheckoutFormDataField({ field: "checkoutStatus", value: "nill" })
     );
@@ -159,16 +170,15 @@ export const checkoutOrderAction = async (
       message:
         err.response?.data?.message || err.message || "Something went wrong",
     };
-  } finally {
-    dispatch(resetCheckoutState({ checkoutStatus: "checked-out" }));
   }
 };
 
-
 // 2 get orders ===================
-export const getAllOrdersAction = async () => {
+export const getAllOrdersAction = async (
+  filter?: { key: IFilterOrders; value: string }[]
+) => {
   try {
-    const { data, status } = await get_All_Order_Api();
+    const { data, status } = await get_All_Order_Api(filter);
     if (status === 200 || status === 201) {
       return {
         data: data.data,

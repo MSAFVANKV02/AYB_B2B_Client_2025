@@ -5,6 +5,17 @@ export type IOrderItem = {
 };
 export type OrderStatus = "Pending" | "Confirmed" | "Shipped" | "Delivered"
 export type PaymentStatus = "Pending" | "Confirmed" 
+export type IFilterOrders =
+  | "page"
+  | "limit"
+  | "status"
+  | "store_id"
+  | "customer_id"
+  | "order_id"
+  | "date_from"
+  | "date_to"
+  | "sort_by"
+  | "sort_order";
 
 import { Store } from "./final-product-types";
 

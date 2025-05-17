@@ -7,15 +7,17 @@ import { ICartTypes } from "@/types/cartTypes";
 
 type SubmitPayload = {
   formData: FormDataType;
-  cart: ICartTypes | null;
+  cart?: ICartTypes | null;
 };
 
 export const useSubmitOrder = () => {
   const { mutate, data, status } = useMutationData(
     ["submit-order"],
-    ({ formData, cart }: SubmitPayload) => checkoutOrderAction(formData, cart),
+    ({ formData }: SubmitPayload) => checkoutOrderAction(formData),
     "submit-order-toast",
     (res) => {
+      console.log(res);
+      
       if (res?.status === 200 || res?.status === 201) {
         dispatch(getCartRedux());
       }
