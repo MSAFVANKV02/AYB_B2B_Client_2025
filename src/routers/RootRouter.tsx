@@ -227,7 +227,7 @@ const rootRouter = createBrowserRouter(
           children: [
             { path: "", element: <SettingsProfilePage /> },
             { path: "my-orders", element: <MyOrdersPage /> },
-            { path: "my-orders/:slug", element: <SingleOrderPage /> },
+            { path: "my-orders/:orderId", element: <SingleOrderPage /> },
             {
               path: "my-orders/:slug/review/:orderId",
               element: <UseReviewPage />,

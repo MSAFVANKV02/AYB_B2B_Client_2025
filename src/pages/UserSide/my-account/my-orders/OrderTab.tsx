@@ -76,6 +76,7 @@ import { IOrders, IOrdersType } from "@/types/orderTypes";
 import { Icon } from "@iconify/react";
 import Image from "@/components/global/image";
 import { AddToSessionStorage, SessionStorageAllPaths } from "@/hooks/use-sessioStorage";
+import { encodeId } from "@/utils/encorder";
 import { API } from "@/services/user_side_api/auth/route_url";
 
 type Props = {
@@ -108,7 +109,7 @@ export default function OrderTab({ orders, filteredOrder }: Props) {
   return (
     <section className="space-y-2">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">
+        <h3 className="text-sm underline">
           Showing {filteredOrder.length} of {orders.orders.length} orders
         </h3>
         <button
@@ -141,7 +142,7 @@ export default function OrderTab({ orders, filteredOrder }: Props) {
           className="border  p-2  shadow-sm flex  flex-col justify-between"
         >
           <div>
-            <p className="text-sm font-medium">Order ID: {order.order_id}</p>
+            <p className="text-sm ">Order ID: {order.order_id}</p>
             {/* <p className="text-sm font-medium">ID: {order._id}</p> */}
 
             <p className="text-xs text-gray-500">
@@ -172,7 +173,7 @@ export default function OrderTab({ orders, filteredOrder }: Props) {
                       return(
                         <Image
                         src={items.product.variations[0].image}
-                        link={`/my-account/my-orders/${items._id}`}
+                        link={`/my-account/my-orders/${encodeId(order.order_id)}`}
                         className="h-16 w-16 bg-gray-200"
                         classNameImg="w-full h-full object-contain"
                         />
