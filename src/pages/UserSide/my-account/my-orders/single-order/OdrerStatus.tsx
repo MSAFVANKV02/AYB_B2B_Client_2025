@@ -6,6 +6,7 @@ import StepLabel from "@mui/material/StepLabel";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { IFlatOrderItem } from "@/types/orderTypes";
 
 // OrderStatus and IOrder types
 export type OrderStatus = "Pending" | "Confirmed" | "Shipped" | "Delivered";
@@ -56,7 +57,7 @@ const steps = [
 ];
 
 interface OrderStatusStepperProps {
-  order: IOrder;
+  order: IFlatOrderItem;
 }
 
 const DottedConnector = styled("div")<{

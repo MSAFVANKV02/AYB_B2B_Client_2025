@@ -1,169 +1,170 @@
 import SettingsLayout from "../../layout";
 
-import { Icon } from "@iconify/react/dist/iconify.js";
 import { Separator } from "@/components/ui/separator";
-import { OrderStatusStepper } from "./OdrerStatus";
-import { IOrder, IOrdersType } from "@/types/orderTypes";
+import { IFlatOrderItem,  IOrders } from "@/types/orderTypes";
 import "@/assets/css/remover.css";
-import { Input } from "@/components/ui/input";
-import PdfFile from "@/pages/UserSide/UserKycPage/KycDetails/PdfFile";
 
 import { useWindowWidth } from "@react-hook/window-size";
 import useNavigateClicks from "@/hooks/useClicks";
 import MyBackBtn from "@/components/myUi/myBackBtn";
 import AyButton from "@/components/myUi/AyButton";
-import GstDropDown from "@/components/myUi/GstDropDown";
+// import GstDropDown from "@/components/myUi/GstDropDown";
 import { useParams } from "react-router-dom";
 import { decodeId } from "@/utils/encorder";
 import { useQueryData } from "@/hooks/useQueryData";
 import { getAllOrdersAction } from "@/action/checkout/checkoutAction";
 import VerifiedLabel from "@/components/global/verivied-label";
 import Image from "@/components/global/image";
+import Loader from "@/components/global/loader";
+import { OrderStatusStepper } from "@/components/orders/order_stepper";
+
 
 export default function SingleOrderPage() {
-  const { orderId } = useParams();
-  const decodedId = decodeId(orderId ?? "");
+  const { orderId, storeOrderId } = useParams();
+  const decodedOrderId = decodeId(orderId ?? "");
+  const decodedStoreOrderId = decodeId(storeOrderId ?? "");
+
   const onlyWidth = useWindowWidth();
   const { handleClick } = useNavigateClicks();
-  const order: IOrder = {
-    id: 1,
-    slug: "order-12345",
-    productName: "Smartphone",
-    subtotal: 550,
-    orderDate: "2024-11-01",
-    deliveryDate: "2024-11-05",
-    OrderStatus: "Confirmed",
-    deliveryStatus: "Pending",
-    paymentStatus: "Confirmed",
-    itemQuantity: [
-      { size: "M", count: 1, color: "Black" },
-      { size: "M", count: 1, color: "red" },
-    ],
-  };
 
-  const { data: fetchedBannerImages, isFetching } = useQueryData(
-    ["banner-images"],
-    () =>
-      getAllOrdersAction([
-        { key: "order_id", value: decodedId },
+  const { data: fetchedOrders, isFetching, refetch } = useQueryData(
+    ["order-details",orderId, storeOrderId],
+    async () => {
+      const res = await getAllOrdersAction([
+        { key: "order_id", value: decodedOrderId },
+      ]);
 
-        // {key:"limit", value: "1"},
-      ]),
+      // console.log(res,'res res');
+      
+  
+      if (res?.status === 200 && res.data) {
+        // Perform your flatMap logic here directly after validating response
+        const filteredItems: IFlatOrderItem[] = res.data.orders.flatMap((order: IOrders) =>
+          order.store_orders.flatMap((store) =>
+            store.items
+              .filter((item) => item.product_order_id === decodedStoreOrderId)
+              .map((item, index) => ({
+                ...item,
+                store,
+                order,
+                showVerifiedLabel: index === 0,
+              }))
+          )
+        );
+  
+        // Return in the proper structure
+        return {
+          status: res.status,
+          data: filteredItems,
+        };
+      }
+  
+      return { status: 500, data: [] };
+    },
     { disableRefetch: true }
   );
+  
+  // Properly type the returned data
+  const orders: IFlatOrderItem[] = fetchedOrders?.data ?? [];
+  // const order: IOrder = {
+  //   id: 1,
+  //   slug: "order-12345",
+  //   productName: "Smartphone",
+  //   subtotal: 550,
+  //   orderDate: "2024-11-01",
+  //   deliveryDate: "2024-11-05",
+  //   OrderStatus: "Confirmed",
+  //   deliveryStatus: "Pending",
+  //   paymentStatus: "Confirmed",
+  //   itemQuantity: [
+  //     { size: "M", count: 1, color: "Black" },
+  //     { size: "M", count: 1, color: "red" },
+  //   ],
+  // };
 
-  const { data: orders } = (fetchedBannerImages ?? {}) as {
-    status?: number;
-    data?: IOrdersType;
-  };
+  // const { data: orders } = (fetchedOrders ?? {}) as {
+  //   status?: number;
+  //   data?: IOrdersType;
+  // };
 
-  console.log(orders, "fetchedOrdersData");
+  // console.log(fetchedOrders, "fetchedOrdersData");
+  if (isFetching) {
+    return (
+      <SettingsLayout>
+        <div className="h-[80dvh] flex justify-center items-center">
+          <Loader state={isFetching} color="gray" />
+        </div>
+      </SettingsLayout>
+    );
+  }
 
   return (
     <SettingsLayout>
-      {/* =========== */}
-      <div className="flex h-fit lg:flex-row gap-3 flex-col justify-between">
-        {/* First row =============== */}
-        <div className="flex flex-col gap-4 lg:w-[60%] w-full">
-          {/* ======  back btn ======= */}
+      <div className="flex h-fit lg:flex-row gap-5 flex-col justify-between">
+        <div className="flex flex-col gap-4 lg:w-[70%] w-full">
           <div className="bg-gray-50 p-4 rounded border text-xs overflow-auto max-h-96 whitespace-pre-wrap">
-            <pre>{JSON.stringify(orders, null, 2)}</pre>
+            <pre>{JSON.stringify(orders[0].store.delivery_date, null, 2)}</pre>
           </div>
 
           <MyBackBtn icon={"bx:arrow-back"} />
 
-          {orders?.orders.map((order, index) => (
-            <div className="flex flex-col gap-2" key={index}>
-              {/* order id */}
-              <div className="">
-                <span className="">{order.order_id}</span>
+          {orders?.map((item, index) => (
+            <div className="flex flex-col gap-4" key={index}>
+              {item.showVerifiedLabel && (
+                <VerifiedLabel {...item.store.store_info} />
+              )}
+
+              <Separator />
+
+              <div className="flex md:flex-row flex-col gap-3">
+                <Image
+                  src={item.product.variations[0].image}
+                  className="h-20 w-20 bg-gray-200"
+                  classNameImg="w-full h-full object-contain"
+                />
+                <div className="flex flex-col">
+                  <h6>{item.product.product_name}</h6>
+                  <div className="flex gap-2 items-center">
+                    <b className="text-sm">Sub Total:</b>
+                    <span>{item.store.order_total.sub_total}</span>
+                  </div>
+                  <div className="flex gap-2 items-center">
+                    <b className="text-sm">Sub Total:</b>
+                    <span>{item.product_order_id}</span>
+                  </div>
+                </div>
               </div>
 
-              {order.store_orders.map((store, index) =>
-                store.items.map((item) => (
-                  <div className="flex flex-col gap-2" key={index}>
-                  
-                    <VerifiedLabel key={store._id} {...store.store_info} />
-
-                      {/*2. delivery address */}
-                      <div className="">
-                      <span className="">
-                        {/* {order.} */}
-                        shipping address
-                      </span>
-                    </div>
-
-                    <Separator />
-
-                    {/*3. return Details */}
-                    <span className="">
-                     No Refund Available
-                    </span>
-                    <span className="">
-                    No Return Policy, Know More
-                    </span>
-                    <Separator />
-
-                    {/*4. product details */}
-                    <div className="flex md:flex-row flex-col gap-3">
-                      <Image 
-                      src={item.product.gallery_image[0]}
-                      className="h-20 w-20 bg-gray-200"
-                      classNameImg="w-full h-full object-contain"
-                      />
-                      <div className="flex flex-col">
-                        <h6 className="">
-                          {item.product.product_name}
-                        </h6>
-                        <div className="flex gap-2 items-center">
-                         <b className="text-sm">
-                          Sub Total :
-                         </b>
-                         <span className="">
-                         {order.order_total.sub_total}
-                         </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
+              <Separator />
+              <div className="text-sm">No Refund Available</div>
+              <div className="text-sm">No Return Policy, Know More</div>
             </div>
           ))}
-
-          {/* ----- end of first row-------- */}
         </div>
 
-        {/* Second row */}
-        <div className="lg:w-[40%] w-full bg-white">
-      <div className="sticky top-4">
-        <OrderStatusStepper order={order} />
+        <div className="lg:w-[30%] w-full bg-white">
+          <div className="sticky top-4">
+            {/* <OrderStatusStepper order={orders} /> */}
+       
+            <OrderStatusStepper orderDetails={orders} refetch={refetch}/>
+          </div>
+        </div>
       </div>
-    </div>
-      </div>
+
       <div className="mt-20 sticky bottom-0 bg-white pb-5">
         <Separator />
-
-        {/* footer starts */}
-
         <div className="flex justify-between my-5 gap-2 flex-wrap">
-          <button
-            type="button"
-            className="text-sm text-gray-500 hover:underline"
-          >
+          <button type="button" className="text-sm text-gray-500 hover:underline">
             Create Order
           </button>
           <div className="flex sm:items-center sm:gap-4 gap-2 flex-wrap">
-            {/* == */}
             <button className="underline underline-offset-4 text-sm">
               Chat with us
             </button>
-            {/* === */}
+
             <AyButton
               title="Rate & review this product"
-              onClick={() => {
-                handleClick(`${window.location.pathname}/review/4353453453453`);
-              }}
+              onClick={() => handleClick(`${window.location.pathname}/review/4353453453453`)}
               variant="outlined"
               outLineColor="#CACACA"
               sx={{
@@ -173,7 +174,7 @@ export default function SingleOrderPage() {
                 ml: onlyWidth > 768 ? "2rem" : "",
               }}
             />
-            {/* == */}
+
             <AyButton
               title="Invoice"
               variant="outlined"
@@ -187,176 +188,8 @@ export default function SingleOrderPage() {
             />
           </div>
         </div>
-
-        {/* footer ends */}
       </div>
     </SettingsLayout>
   );
 }
-// <div className="" key={index}>
-//   {/* order id ========= */}
-//   <span className="sm:text-sm text-xs">{decodedId}</span>
 
-//   {/* ===== Address Starts  */}
-//   <div className="flex flex-col sm:gap-3 gap-2">
-//     <span className="sm:text-sm text-xs text-black">
-//       Delivery Address
-//     </span>
-//     <div className="flex flex-col">
-//       <span className="sm:text-sm text-xs text-black">Name</span>
-//       <span className="sm:text-sm text-xs">Address</span>
-//       <span className="sm:text-sm text-xs">Email: </span>
-//       <span className="tsm:text-sm text-xs text-black">
-//         Phone Number: +91-12253464
-//       </span>
-//     </div>
-//   </div>
-//   {/* ===== Address Ends  */}
-
-//   <Separator />
-//   <span className="sm:text-sm text-xs">
-//     No Refund Available <br />
-//     No Return Policy, Know More
-//   </span>
-//   <Separator />
-
-//   {/* Products Details ======= starts*/}
-//   <div className="flex gap-3">
-//     <img
-//       src="/img/products/Group 710.jpg"
-//       alt="Order Prod-img | ayaaboo"
-//       className="w-20 rounded-md shadow-md border "
-//     />
-
-//     <div className="">
-//       <p>{order.productName}</p>
-//       <div className="flex gap-1 items-center">
-//         <span className="sm:text-sm text-xs">Subtotel:</span>
-//         <span className="sm:text-sm text-xs text-black">
-//           {order.subtotal}Rs
-//         </span>
-//       </div>
-//       {/* ------------- */}
-//     </div>
-//   </div>
-//   <div className="flex flex-col gap-3">
-//     {order.itemQuantity.map((item, i) => (
-//       <div key={i} className="flex  gap-2 items-center">
-//         <div
-//           className=""
-//           style={{
-//             backgroundColor: item.color,
-//             borderRadius: "50%",
-//             width: "12px",
-//             height: "12px",
-//             display: "inline-block",
-//           }}
-//         />
-//         <span className="text-black sm:text-sm text-xs">
-//           {item.size} x
-//         </span>
-//         <span className="sm:text-sm text-xs">{item.count}</span>
-//         <span className="sm:text-sm text-xs">times</span>
-//       </div>
-//     ))}
-//   </div>
-
-//   {/* ==== price and Gst List starts ===== */}
-//   <div className="flex w-full">
-//     <p>Total:</p>
-
-//     <GstDropDown />
-//   </div>
-//   {/* ==== price and Gst List Ends ===== */}
-
-//   <div className="flex flex-col gap-4">
-//     {/* No:1 */}
-//     <div className="flex md:flex-row flex-col gap-3 md:items-center justify-between">
-//       <span className="w-auto whitespace-nowrap">
-//         Shipping Partner Name
-//       </span>
-//       <Input
-//         type="text"
-//         placeholder="Name"
-//         className="bg-gray-100 md:w-3/4 w-full rounded-xl"
-//       />
-//     </div>
-
-//     {/* No:2 */}
-//     <div className="flex md:flex-row flex-col gap-3 md:items-center justify-between">
-//       <span className="w-auto whitespace-nowrap">LR No.</span>
-//       <Input
-//         type="text"
-//         placeholder="Name"
-//         className="bg-gray-100 md:w-3/4 w-full  rounded-xl"
-//       />
-//     </div>
-//     {/* No:3 */}
-//     <div className="flex md:flex-row flex-col gap-3 md:items-center justify-between">
-//       <span className="w-auto whitespace-nowrap">LR Photo</span>
-//       {/* --- */}
-//       <div className="md:w-3/4 w-full flex items-start ">
-//         <a
-//           href={"/Invoice_INV1482989614215502 (16).pdf"}
-//           target="_blank"
-//           rel="noopener noreferrer"
-//           className="relative"
-//         >
-//           {/* <p>Uploaded File: {uploadedFile.name}</p> */}
-
-//           <PdfFile
-//             fileURL={"/Invoice_INV1482989614215502 (16).pdf"}
-//             className="h-16 w-16"
-//           />
-//           <div className="absolute h-16 w-16 bg-black/50 top-0 rounded-md flex items-center justify-center ">
-//             <Icon
-//               icon="solar:eye-bold"
-//               fontSize={25}
-//               color="#fff"
-//             />
-//           </div>
-//         </a>
-//       </div>
-//       {/* --- */}
-//     </div>
-//     {/* No:4 */}
-//     <div className="flex md:flex-row flex-col gap-3 md:items-center justify-between">
-//       <span className="w-auto whitespace-nowrap">
-//         Return bill pdf
-//       </span>
-//       <div className="md:w-3/4 w-full flex items-start ">
-//         <a
-//           href={"/Invoice_INV1482989614215502 (16).pdf"}
-//           target="_blank"
-//           rel="noopener noreferrer"
-//           className="relative"
-//         >
-//           {/* <p>Uploaded File: {uploadedFile.name}</p> */}
-
-//           <PdfFile
-//             fileURL={"/Invoice_INV1482989614215502 (16).pdf"}
-//             className="h-16 w-16"
-//           />
-//           <div className="absolute h-16 w-16 bg-black/50 top-0 rounded-md flex items-center justify-center ">
-//             <Icon
-//               icon="solar:eye-bold"
-//               fontSize={25}
-//               color="#fff"
-//             />
-//           </div>
-//         </a>
-//       </div>
-//     </div>
-//     {/* No:5 */}
-//     <div className="flex md:flex-row flex-col gap-3 md:items-center justify-between">
-//       <span className="w-auto whitespace-nowrap">Date</span>
-//       <Input
-//         type="text"
-//         placeholder="Date"
-//         className="bg-gray-100 md:w-3/4 w-full  rounded-xl"
-//       />
-//     </div>
-//   </div>
-
-//   {/* footer lists */}
-// </div>

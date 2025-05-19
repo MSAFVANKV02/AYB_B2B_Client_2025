@@ -1,0 +1,86 @@
+.step-line::after{
+    @apply content-[''] bg-slate-200 absolute h-full w-[4px] sm:-translate-x-1/2 left-1/2 -translate-x-[85%]
+}
+
+.step{
+    @apply  sm:w-6 w-4 h-4 sm:h-6 relative rounded-full bg-slate-200 flex items-center justify-center z-20
+}
+.step::after {
+    @apply content-[''] absolute w-full h-full rounded-full border-green-400 border-2 opacity-0;
+  }
+  .active .step::after {
+    @apply animate-wave;
+  } 
+.active .step{
+    @apply bg-gray-400
+}
+.active .stepDot{
+    @apply bg-white
+}
+.complete .step{
+    @apply bg-green-600
+}
+
+.icon{
+    @apply text-gray-300
+}
+.complete .icon{
+    @apply text-black
+}
+.label{
+  @apply text-gray-300 sm:text-sm text-xs
+}
+.complete .label{
+  @apply text-black
+}
+.complete:not(:last-child)::after{
+    @apply  bg-green-600
+}
+/* Ensure no line after the final step */
+.final-step::after {
+  content: none !important;
+}
+.final-step .step::after{
+  content: none !important;
+}
+/* Add a condition to apply a green border to the final step when completed */
+.complete.final-step .step {
+  background-color: green !important;
+}
+
+
+@keyframes waves {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  
+    50% {
+      opacity: 1;
+    }
+  
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+
+  .css-8t49rw-MuiStepConnector-line{
+    border: none !important;
+    min-height: 0 !important;
+  }
+
+  span .css-8t49rw-MuiStepConnector-line{
+    border: none !important;
+    min-height: 0 !important;
+  }
+
+  .MuiStepConnector-lineVertical{
+    border: none !important;
+    min-height: 0 !important;
+  }
+.css-vgb7rt{
+  border: none !important;
+  min-height: 0 !important;
+}
+ 

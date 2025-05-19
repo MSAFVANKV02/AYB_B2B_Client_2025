@@ -75,9 +75,9 @@ import { useState } from "react";
 import { IOrders, IOrdersType } from "@/types/orderTypes";
 import { Icon } from "@iconify/react";
 import Image from "@/components/global/image";
-import { AddToSessionStorage, SessionStorageAllPaths } from "@/hooks/use-sessioStorage";
 import { encodeId } from "@/utils/encorder";
 import { API } from "@/services/user_side_api/auth/route_url";
+import VerifiedLabel from "@/components/global/verivied-label";
 
 type Props = {
   orders: IOrdersType;
@@ -87,15 +87,13 @@ type Props = {
 export default function OrderTab({ orders, filteredOrder }: Props) {
   const [showRawJson, setShowRawJson] = useState(false);
 
-  const {orders:ordersSession} = SessionStorageAllPaths()
-
   const handleDelete = () => {
     const id = window.prompt("Enter the Order ID to delete:");
     if (id) {
-      if(id ==="all"){
-        return    API.delete(`/api/order/orders`, {
+      if (id === "all") {
+        return API.delete(`/api/order/orders`, {
           withCredentials: true,
-        })
+        });
       }
       API.delete(`/api/order/orders`, {
         params: { id },
@@ -116,15 +114,19 @@ export default function OrderTab({ orders, filteredOrder }: Props) {
           onClick={() => setShowRawJson(!showRawJson)}
           className="text-sm bg-gray-100 px-3 py-1 rounded hover:bg-gray-200 transition"
         >
-          <Icon icon={showRawJson ? "lucide:chevron-up" : "lucide:chevron-down"} className="inline mr-1" />
+          <Icon
+            icon={showRawJson ? "lucide:chevron-up" : "lucide:chevron-down"}
+            className="inline mr-1"
+          />
           {showRawJson ? "Hide" : "Show"} Raw Orders
         </button>
       </div>
 
-      <button className=""
-      onClick={()=>{
-        handleDelete()
-      }}
+      <button
+        className=""
+        onClick={() => {
+          handleDelete();
+        }}
       >
         delete
       </button>
@@ -139,52 +141,51 @@ export default function OrderTab({ orders, filteredOrder }: Props) {
         <div
           // to={`/my-account/my-orders/${order._id}`}
           key={order._id}
-          className="border  p-2  shadow-sm flex  flex-col justify-between"
+          className="  shadow-sm flex  flex-col justify-between"
         >
-          <div>
+          {/* <div>
             <p className="text-sm ">Order ID: {order.order_id}</p>
-            {/* <p className="text-sm font-medium">ID: {order._id}</p> */}
+            <p className="text-sm font-medium">ID: {order._id}</p>
 
             <p className="text-xs text-gray-500">
               Status: {order.payment_status} | Created: {new Date(order.createdAt).toLocaleDateString()}
             </p>
-          </div>
-         <div className="pt-3 ">
-         {
-            order.store_orders.map((store)=>{
-              return(
-                <div className="h-fit w-full border flex flex-col justify-between gap-3"
-                onClick={()=>{
-                  AddToSessionStorage(ordersSession,order)
-                }}
-                >
-                  <div className="flex gap-2">
-                    <Image
-                    src={store.store_info.avatar}
-                    className="h-7 w-7 bg-gray-200"
-                    classNameImg="w-full h-full object-contain"
-                    />
-                    <span>
-                      {store.store_info?.name}
-                    </span>
+          </div> */}
+          <div className="pt-3 space-y-4">
+            {order.store_orders.map((store) => {
+              return (
+                <div className="h-fit w-full p-2 border flex flex-col justify-between gap-3">
+                  <VerifiedLabel {...store.store_info} />
+
+                  <div>
+                    <p className="text-sm ">Order ID: {store.store_order_id}</p>
+
+                    <p className="text-xs text-gray-500">
+                      Status: {order.payment_status} | Created:{" "}
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </p>
                   </div>
-                  <div className="flex gap-3 p-3">
-                    {store.items.map((items)=>{
-                      return(
-                        <Image
-                        src={items.product.variations[0].image}
-                        link={`/my-account/my-orders/${encodeId(order.order_id)}`}
-                        className="h-16 w-16 bg-gray-200"
-                        classNameImg="w-full h-full object-contain"
-                        />
-                      )
+
+                  <div className="flex gap-3">
+                    {store.items.map((items) => {
+                      return (
+                        <div className="">
+                          {/* 2. */}
+
+                          <Image
+                            src={items.product.variations[0].image}
+                            link={`/my-account/my-orders/${encodeId(order.order_id)}/${encodeId(items.product_order_id)}`}
+                            className="h-16 w-16 bg-gray-200"
+                            classNameImg="w-full h-full object-contain"
+                          />
+                        </div>
+                      );
                     })}
                   </div>
                 </div>
-              )
-            })
-          }
-         </div>
+              );
+            })}
+          </div>
         </div>
       ))}
     </section>

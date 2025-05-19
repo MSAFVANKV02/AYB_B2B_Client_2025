@@ -3,8 +3,47 @@ export type IOrderItem = {
   count: number; // Quantity of the product
   color: string; // Color of the product as a string (e.g., "red")
 };
-export type OrderStatus = "Pending" | "Confirmed" | "Shipped" | "Delivered"
-export type PaymentStatus = "Pending" | "Confirmed" 
+
+export type IFlatOrderItem = StoreItem & {
+  store: StoreOrder;
+  order: IOrders;
+  showVerifiedLabel: boolean;
+};
+
+export const OrderStatusEnum = {
+  PENDING: "pending",
+  PROCESSING: "processing",
+  READYTOPICK: "ready_to_pickup",
+  SHIPPED: "shipped",
+  OUTFORDELIVERY: "out_for_delivery",
+  DELIVERED: "delivered",
+  CANCELLED: "cancelled",
+  RETURNED: "returned",
+};
+
+export type IOrderStatus =
+  | "pending"
+  | "processing"
+  | "ready_to_pickup"
+  | "shipped"
+  | "out_for_delivery"
+  | "delivered"
+  | "cancelled"
+  | "returned";
+
+export type IReturnMode = "none" | "requested" | "replace" | "refund";
+
+export type IReturnStatus =
+  | "none"
+  | "approved"
+  | "rejected"
+  | "cancelled"
+  | "customer_return_initiated"
+  | "recieved"
+  | "refunded"
+  | "replaced";
+
+export type PaymentStatus = "Pending" | "Confirmed";
 export type IFilterOrders =
   | "page"
   | "limit"
@@ -19,19 +58,18 @@ export type IFilterOrders =
 
 import { Store } from "./final-product-types";
 
-
-export type IOrder = {
-  id: number; // Unique identifier for the order
-  slug:string; // Order
-  productName: string; // Name of the product
-  subtotal: number; // Total amount for the product
-  orderDate: string; // Date when the order was placed
-  deliveryDate: string; // Date when the order was delivered
-  OrderStatus: OrderStatus;
-  deliveryStatus: "Delivered" | "Pending" | "Cancelled"; // Status of the delivery
-  paymentStatus: PaymentStatus; // Status of the payment
-  itemQuantity: IOrderItem[]; // Array of items in the order with details
-};
+// export type IOrder = {
+//   id: number; // Unique identifier for the order
+//   slug:string; // Order
+//   productName: string; // Name of the product
+//   subtotal: number; // Total amount for the product
+//   orderDate: string; // Date when the order was placed
+//   deliveryDate: string; // Date when the order was delivered
+//   OrderStatus: OrderStatus;
+//   deliveryStatus: "Delivered" | "Pending" | "Cancelled"; // Status of the delivery
+//   paymentStatus: PaymentStatus; // Status of the payment
+//   itemQuantity: IOrderItem[]; // Array of items in the order with details
+// };
 // ======================================================
 // ======================================================
 export type IOrdersType = {
@@ -77,17 +115,38 @@ type OrderTotal = {
 type StoreOrder = {
   _id: string;
   main_order_id: string;
+  store_order_id: string;
   customer_id: string;
-  store_info: Store
-  order_status: string;
-  return_mode: string;
-  refund_replace_status: string;
-  createdAt: string;
-  updatedAt: string;
+  store_info: Store;
+  order_status: IOrderStatus;
+  return_mode: IReturnMode;
+  refund_replace_status: IReturnStatus;
+
   __v: number;
   order_total: OrderTotal;
   parcel_details: ParcelDetails;
+
   items: StoreItem[];
+
+  return_reason: string;
+  rejection_reason: string;
+  refund_id: string;
+  return_id: string;
+  return_status_updated_at: Date;
+  return_request_date: Date;
+  return_action_date: Date;
+  customer_returned_date: Date;
+  recieved_date: Date;
+  refunded_replaced_date: Date;
+  cancelled_date: Date;
+
+  ready_to_pick_date: Date;
+  shipped_date: Date;
+  out_for_delivery_date: Date;
+  delivery_date: Date;
+
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 type ParcelDetails = {
@@ -102,7 +161,7 @@ type ParcelDetails = {
 
 type StoreItem = {
   _id: string;
-  store_order_id: string;
+  product_order_id: string;
   product_id: string;
   stock_id: string;
   stock_sku: string;
