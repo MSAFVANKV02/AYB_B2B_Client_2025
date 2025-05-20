@@ -3,7 +3,7 @@ import { format } from "date-fns";
 
 export const formatOrderDate = (orderDate: string | Date | undefined) => {
     if (!orderDate) {
-      return "Invalid date"; // Handle invalid dates appropriately
+      return "Expecting date"; // Handle invalid dates appropriately
     }
     const date =
       typeof orderDate === "string" ? new Date(orderDate) : orderDate;
@@ -27,6 +27,6 @@ export const formatOrderDate = (orderDate: string | Date | undefined) => {
   
   export const safeFormatDate = (dateValue: string | Date | undefined | null): string => {
     const parsedDate = safeParseDate(dateValue);
-    return parsedDate ? format(parsedDate, "PPP") : "Invalid Date";
+    return parsedDate ? format(parsedDate, "PPP") : "Expecting Date";
   };
   

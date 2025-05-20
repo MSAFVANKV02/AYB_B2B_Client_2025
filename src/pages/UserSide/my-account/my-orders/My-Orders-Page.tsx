@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
+
 import SettingsLayout from "../layout";
-import { useState } from "react";
 import OrderTab from "./OrderTab";
-import {  IOrders, IOrdersType } from "@/types/orderTypes";
+import { IOrders, IOrdersType } from "@/types/orderTypes";
 import { useQueryData } from "@/hooks/useQueryData";
 import { getAllOrdersAction } from "@/action/checkout/checkoutAction";
 import { useSearchFn } from "@/hooks/useSeach-Fn";
@@ -10,25 +9,23 @@ import Loader from "@/components/global/loader";
 import { Input } from "@/components/ui/input";
 import OrderTabPagination from "@/components/orders/order-tab-pagination";
 import { useSearchParams } from "react-router-dom";
+import MyPageTab from "@/components/myUi/MyTab";
 
-type IOrderTabs = "Order" | "Replace";
-
+// type IOrderTabs = "Order" | "Replace";
 
 export default function MyOrdersPage() {
-  const [switchOrderTabs, setSwitchOrderTab] = useState<IOrderTabs>("Order");
 
   const [searchParams] = useSearchParams();
-
-  const pageQ = searchParams.get("page")??"1";
+  const pageQ = searchParams.get("page") ?? "1";
 
   const { data: fetchedBannerImages, isFetching } = useQueryData(
-    ["banner-images",pageQ],
-    () => getAllOrdersAction([
-      {key:"page", value: pageQ},
-      
-      // {key:"limit", value: "1"},
-    ]),
-    {disableRefetch:true}
+    ["banner-images", pageQ],
+    () =>
+      getAllOrdersAction([
+        { key: "page", value: pageQ },
+        // {key:"limit", value: "1"},
+      ]),
+    { disableRefetch: true }
   );
 
   const { data: fetchedOrdersData } = (fetchedBannerImages ?? {}) as {
@@ -41,7 +38,6 @@ export default function MyOrdersPage() {
   const {
     filteredData: filteredOrders,
     handleSearch,
-    handleStatusFilter,
   } = useSearchFn<IOrders>(orderList);
 
   if (isFetching) {
@@ -57,76 +53,60 @@ export default function MyOrdersPage() {
   if (!fetchedOrdersData) return null;
   return (
     <SettingsLayout>
-      <div className="flex gap-4">
-        <Button
-          variant="link"
-          className={`p-0 ${switchOrderTabs === "Order" ? "font-bold text-black" : "text-gray-500"} `}
-          onClick={() => setSwitchOrderTab("Order")}
-        >
-          My Orders
-        </Button>
-        <Button
-          variant="link"
-          className={`p-0 ${switchOrderTabs === "Replace" ? "font-bold text-black" : "text-gray-500"} `}
-          onClick={() => setSwitchOrderTab("Replace")}
-        >
-          Replace Orders
-        </Button>
-      </div>
-
-      {/* <pre className="text-xs">
-        {JSON.stringify(fetchedOrdersData, null, 4)}
-      </pre> */}
-
       {/* Search & Filter Controls */}
-      <div className="flex items-center sm:gap-4 my-5">
-        <div className="flex items-center w-full border rounded-md">
+      
+      <div className="flex lg:items-center lg:flex-row flex-col justify-between sm:gap-4 ">
+        <div className="w-1/2">
+          <h4 className="text-2xl">
+            My Orders
+          </h4>
+        </div>
+        <div className="flex items-center w-1/2 border rounded-[10px] overflow-hidden">
           <Input
             type="search"
             placeholder="Fast Search..."
             onChange={handleSearch}
-            className="border  text-xs sm:rounded-md rounded-l-md   flex-grow focus:outline-none border-none"
+            className="border  text-xs rounded-xl   flex-grow focus:outline-none border-none"
           />
-          {/* <button className="flex items-center gap-2 bg-bgHardSoft text-textMain sm:px-5 px-2 sm:text-sm text-xs sm:py-2 py-3 sm:rounded-md rounded-l-md ">
-            <Icon
-              icon={"hugeicons:search-01"}
-              fontSize={20}
-              className="sm:block hidden"
-            />
-            Search Order
-          </button> */}
         </div>
-
-        <select
-          className="border px-4 sm:py-2 py-[0.70rem] sm:rounded-md rounded-r-md sm:text-sm text-xs"
-          onChange={(e) => handleStatusFilter(e.target.value)}
-        >
-          <option value="">All</option>
-          <option value="Delivered">Delivered</option>
-          <option value="Pending">Pending</option>
-          <option value="Cancelled">Cancelled</option>
-        </select>
       </div>
 
-      {/* Tab Content */}
+      <MyPageTab
+        tabsListCss="border-b-2 rounded-none border-gray-300 w-fit p-0 bg-transparent"
+        triggerActiveCss="relative text-black border-none shadow-none data-[state=active]:shadow-none data-[state=active]:bg-[#F9F9F9] font-semibold after:content-[''] after:absolute after:bottom-[-1px] after:left-0 after:h-[2px] after:w-full after:bg-black"
+        triggerDefaultCss="text-gray-500 border-none shadow-none"
+        tabs={[
+          {
+            title: "All",
+            url: "/my-account/my-orders?type=all",
+            value: "all",
+            // TriggerCss:
+            //   "bg-transparent rounded-none data-[state=active]:text-black min-w-4 px-0 text-start data-[state=active]:bg-red-300 data-[state=active]:shadow-none py-0 ",
+            // tabCss:
+            //   "bg-transparent text-sm px-0 border-none md:rounded-none rounded-none bg-red-300 space-x-4",
+            children: (
+              <div className="bg-white">
+                <OrderTab
+                  orders={fetchedOrdersData}
+                  filteredOrder={filteredOrders}
+                />
+              </div>
+            ),
+          },
+          {
+            title: "Order on process ",
+            url: "/my-account/my-orders?type=pending",
+            value: "pending",
+            children: <div>asa</div>,
+          },
+        ]}
+      />
 
-      {switchOrderTabs === "Order" ? (
-        <div className="">
-          <OrderTab orders={fetchedOrdersData} filteredOrder={filteredOrders} />
-        </div>
-      ) : (
-        <>
-          {/* <ReplaceOrderTab
-        orders={orders}
-        searchTerm={searchTerm}
-        filterStatus={filterStatus}
-      /> */}
-        </>
+
+
+      {fetchedOrdersData.total > fetchedOrdersData.limit && (
+        <OrderTabPagination order={fetchedOrdersData} />
       )}
-
-      { fetchedOrdersData.total > fetchedOrdersData.limit &&
-        <OrderTabPagination order={fetchedOrdersData}/>
-      }
     </SettingsLayout>
   );
 }

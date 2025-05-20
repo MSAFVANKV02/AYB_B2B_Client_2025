@@ -192,12 +192,14 @@ import { Button, SxProps, Theme } from "@mui/material";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import "@/assets/css/preloader.css";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 type Props = {
   onClick?: () => void;
   title?: string;
   sx?: SxProps<Theme>;
   variant?: "contained" | "outlined" | "cancel" | "delete";
+  className?:string
   outLineColor?: string;
   icon?: string;
   iconSize?: number;
@@ -206,6 +208,7 @@ type Props = {
   disabled?: boolean;
   show?: boolean;
   children?: React.ReactNode;
+  // reverse?: boolean; 
 };
 
 export default function AyButton({
@@ -221,6 +224,8 @@ export default function AyButton({
   disabled = false,
   show = true,
   children,
+  // reverse=false,
+  className
 }: Props) {
   const buttonStyles: SxProps<Theme> = {
     textTransform: "capitalize",
@@ -263,7 +268,7 @@ export default function AyButton({
   };
 
   const content = (
-    <>
+    <div className={cn("flex items-center",className) }>
       {!disabled && loading ? (
         <div className="flex items-center">
           <span className="loader mr-2 text-white font-semibold space-x-1">
@@ -279,7 +284,7 @@ export default function AyButton({
         </>
       )}
       {children}
-    </>
+    </div>
   );
 
   return show ? (

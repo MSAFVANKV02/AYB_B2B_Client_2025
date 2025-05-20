@@ -8,14 +8,16 @@ import { styled } from "@mui/material";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import "@/assets/css/Order.css";
 // import { IoBagCheckOutline } from "react-icons/io5";
-import { addDays, format } from "date-fns";
+import { addDays } from "date-fns";
 import { useWindowWidth } from "@react-hook/window-size";
-import { formatOrderDate, safeFormatDate, safeParseDate } from "../global/elementses/FormateTime";
+import {
+  formatOrderDate,
+  safeFormatDate,
+  safeParseDate,
+} from "../global/elementses/FormateTime";
 import { IFlatOrderItem } from "@/types/orderTypes";
 
 // order_status and IOrder types
-
-
 
 interface OrderStatusProps {
   orderDetails: IFlatOrderItem[];
@@ -95,7 +97,6 @@ const MAX_RETURN_DAYS = 10;
 
 export const OrderStatusStepper: React.FC<OrderStatusProps> = ({
   orderDetails,
-
 }) => {
   // Determine the active step based on the order_status
   const [currentStep, setCurrentStep] = useState<number>(1);
@@ -112,11 +113,15 @@ export const OrderStatusStepper: React.FC<OrderStatusProps> = ({
       // Check the order status and update the state accordingly
       const { order_status, refund_replace_status } = orderDetails[0].store; // Assuming the first product is of interest
       setIsCancelled(order_status === "cancelled");
-      setIsReturned(
-        refund_replace_status !== "none"
-      );
+      setIsReturned(refund_replace_status !== "none");
       setCurrentStep(
-        order_status === "delivered" ? 4 : order_status === "pending" ? 1 : 2
+        order_status === "out_for_delivery"
+          ? 4
+          : order_status === "delivered"
+            ? 5
+            : order_status === "pending"
+              ? 1
+              : 2
       ); // Example logic
     }
   }, [orderDetails]);
@@ -144,18 +149,17 @@ export const OrderStatusStepper: React.FC<OrderStatusProps> = ({
   const orderProcessingLabel = (status: number) => {
     if (status === 1 || status < 1) {
       return "Order Processing...";
-    } 
-     if (status !== 1 || status > 1) {
+    }
+    if (status !== 1 || status > 1) {
       return "Order Processed";
     }
   };
 
-
   const orderProcessingLabelShip = (status: number) => {
-    if (status === 2 ) {
+    if (status === 2) {
       return "Shipping Processing...";
-    } else if (status < 2){
-      return "Shipping.";
+    } else if (status < 2) {
+      return "waiting for the package";
     } else {
       return "Order Shipped";
     }
@@ -182,16 +186,31 @@ export const OrderStatusStepper: React.FC<OrderStatusProps> = ({
       label: "shipped",
       title: `${orderProcessingLabelShip(currentStep)}`,
       icon: "mdi:truck-fast-outline",
+      description: ` 
+      ${formatOrderDate(orderDetails[0].store.shipped_date)}`,
     },
-    ...(orderDetails[0].store.order_status !== "delivered"
+    ...(orderDetails[0].store.order_status === "out_for_delivery"
       ? [
           {
             id: 4,
+            label: "out_for_delivery",
+            title: `Order is out for delivery`,
+            icon: "mdi:truck-fast-outline",
+          },
+        ]
+      : []),
+    ...(orderDetails[0].store.order_status !== "delivered"
+      ? [
+          {
+            id: 5,
             label: "deliveryTime",
             title: `Delivery Expected By ${
               orderDetails[0].order.createdAt
                 ? formatOrderDate(
-                    addDays(new Date(orderDetails[0].order.createdAt), MAX_RETURN_DAYS)
+                    addDays(
+                      new Date(orderDetails[0].order.createdAt),
+                      MAX_RETURN_DAYS
+                    )
                   )
                 : "Unknown Date"
             }`,
@@ -217,30 +236,30 @@ export const OrderStatusStepper: React.FC<OrderStatusProps> = ({
     //     ]
     //   : []),
     ...(orderDetails[0].store.order_status === "delivered"
-        ? [
-            {
-              id: 5,
-              label: "delivered",
-              title: (() => {
-                // Safely parse the dates
-                const changedAt = safeParseDate(orderDetails[0].store.delivery_date);
-                const limitDate = safeParseDate(orderDetails[0].order.createdAt);
-      
-                if (changedAt && limitDate) {
-                  const maxReturnDate = addDays(limitDate, MAX_RETURN_DAYS);
-                  return changedAt < maxReturnDate
-                    ? `Delivered early ${safeFormatDate(changedAt)}`
-                    : `Delivered ${safeFormatDate(changedAt)}`;
-                }
-      
-                return "Delivered";
-              })(),
-              icon: "hugeicons:package-delivered",
-            },
-          ]
-        : [])
-      
-    
+      ? [
+          {
+            id: 6,
+            label: "delivered",
+            title: (() => {
+              // Safely parse the dates
+              const changedAt = safeParseDate(
+                orderDetails[0].store.delivery_date
+              );
+              const limitDate = safeParseDate(orderDetails[0].order.createdAt);
+
+              if (changedAt && limitDate) {
+                const maxReturnDate = addDays(limitDate, MAX_RETURN_DAYS);
+                return changedAt < maxReturnDate
+                  ? `Delivered early ${safeFormatDate(changedAt)}`
+                  : `Delivered ${safeFormatDate(changedAt)}`;
+              }
+
+              return "Delivered";
+            })(),
+            icon: "hugeicons:package-delivered",
+          },
+        ]
+      : []),
   ];
 
   const statusesCancelled = [
@@ -256,8 +275,9 @@ export const OrderStatusStepper: React.FC<OrderStatusProps> = ({
       id: 7,
 
       label: "cancelled",
-      title: `Your Order cancelled ${safeFormatDate(orderDetails[0].store.cancelled_date)
-      }`,
+      title: `Your Order cancelled ${safeFormatDate(
+        orderDetails[0].store.cancelled_date
+      )}`,
       icon: "ix:cancelled",
       description: ` 
       ${safeFormatDate(orderDetails[0].store.cancelled_date)}`,
@@ -286,20 +306,22 @@ export const OrderStatusStepper: React.FC<OrderStatusProps> = ({
   const stepperChanges = isCancelled
     ? statusesCancelled
     : isReturned
-    ? statusesReturned
-    : steps;
+      ? statusesReturned
+      : steps;
 
   return (
     <Box sx={{ maxWidth: 400 }}>
       <Stepper activeStep={currentStep} orientation="vertical" className="">
         {stepperChanges.map((step, index) => (
-          <Step key={step.label}
-          sx={{
-            "& .MuiStepConnector-root": {
-              borderLeft: "none", // Remove the unwanted border
-            },
-          }}
-          className="relative space-x- h-[70px]">
+          <Step
+            key={step.label}
+            sx={{
+              "& .MuiStepConnector-root": {
+                borderLeft: "none", // Remove the unwanted border
+              },
+            }}
+            className="relative space-x- h-[70px]"
+          >
             {/* {currentStep} */}
             <StepLabel
               StepIconComponent={() => (

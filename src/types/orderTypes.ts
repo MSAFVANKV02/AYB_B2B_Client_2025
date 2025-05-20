@@ -5,7 +5,7 @@ export type IOrderItem = {
 };
 
 export type IFlatOrderItem = StoreItem & {
-  store: StoreOrder;
+  store: IStoreOrder;
   order: IOrders;
   showVerifiedLabel: boolean;
 };
@@ -56,6 +56,7 @@ export type IFilterOrders =
   | "sort_by"
   | "sort_order";
 
+import { IAddressType } from "./address-types";
 import { Store } from "./final-product-types";
 
 // export type IOrder = {
@@ -88,6 +89,7 @@ export type IOrders = {
     name: string;
   };
   coupon_code: string | null;
+  shipping_address:IAddressType;
   coupon: any;
   payment_method: string;
   payment_status: string;
@@ -97,7 +99,7 @@ export type IOrders = {
   __v: number;
   payment_details: any;
   order_total: OrderTotal;
-  store_orders: StoreOrder[];
+  store_orders: IStoreOrder[];
 };
 
 type OrderTotal = {
@@ -112,8 +114,9 @@ type OrderTotal = {
   total_amount: number;
 };
 
-type StoreOrder = {
+export type IStoreOrder = {
   _id: string;
+  invoice:string
   main_order_id: string;
   store_order_id: string;
   customer_id: string;

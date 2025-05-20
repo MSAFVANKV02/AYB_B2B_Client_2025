@@ -41,7 +41,9 @@ export const checkoutOrderAction = async (
     const payload = new FormData();
 
     if (formData.address) {
-      payload.append("shipping_address", JSON.stringify(formData.address));
+      Object.entries(formData.address).forEach(([key, value]) => {
+        payload.append(`shipping_address[${key}]`, String(value));
+      });
     }
 
     //   if (formData.shipping_info) {

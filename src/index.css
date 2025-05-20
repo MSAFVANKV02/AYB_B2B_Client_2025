@@ -1,21 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Catamaran:wght@100..900&family=Nunito:ital,wght@0,300;1,300&display=swap');
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* @import url("https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"); */
 
-/* html {
-  font-family: "Jost", serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-} */
 * {
   /* font-family: "Jost", serif;
   font-optical-sizing: auto; */
-  font-family: "Nunito", serif;
+  font-family: "Catamaran", sans-serif;
   font-optical-sizing: auto;
-  font-weight: 400;
+  font-weight: 300;
   font-style: normal;
 }
 

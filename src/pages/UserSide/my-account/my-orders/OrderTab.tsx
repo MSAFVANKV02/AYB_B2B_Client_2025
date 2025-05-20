@@ -1,112 +1,61 @@
-// import { useState } from "react";
-// import { IOrders, IOrdersType } from "@/types/orderTypes";
-// import { Link } from "react-router-dom";
-// import { Icon } from "@iconify/react";
-
-// type Props = {
-//   orders: IOrdersType;
-//   filteredOrder: IOrders[];
-// };
-
-// export default function OrderTab({ orders, filteredOrder }: Props) {
-//   const [openJsonIndexes, setOpenJsonIndexes] = useState<number[]>([]);
-
-//   const toggleJsonView = (index: number) => {
-//     setOpenJsonIndexes((prev) =>
-//       prev.includes(index)
-//         ? prev.filter((i) => i !== index)
-//         : [...prev, index]
-//     );
-//   };
-
-//   return (
-//     <div className="space-y-6">
-//       <div className="text-sm font-medium text-gray-700">
-//         Total Orders: {orders.orders.length} | Filtered: {filteredOrder.length}
-//       </div>
-
-//       {orders.orders.map((order, index) => (
-//         <div key={order._id} className="border rounded p-4 bg-white shadow-sm space-y-2">
-//           <div className="flex items-center justify-between">
-//             <div>
-//               <p className="text-sm font-semibold">{order.order_id}</p>
-//               <p className="text-xs text-gray-500">
-//                 Customer: {order.customer_id?.name} | Created: {new Date(order.createdAt).toLocaleString()}
-//               </p>
-//             </div>
-//             <button
-//               onClick={() => toggleJsonView(index)}
-//               className="text-xs flex items-center gap-1 text-blue-600 hover:underline"
-//             >
-//               <Icon icon={openJsonIndexes.includes(index) ? "lucide:chevron-up" : "lucide:chevron-down"} />
-//               {openJsonIndexes.includes(index) ? "Hide" : "Show"} JSON
-//             </button>
-//           </div>
-
-//           {openJsonIndexes.includes(index) && (
-//             <pre className="text-xs bg-gray-100 p-2 rounded max-h-80 overflow-auto">
-//               {JSON.stringify(order, null, 2)}
-//             </pre>
-//           )}
-//         </div>
-//       ))}
-
-//       <hr className="my-6" />
-
-//       <div className="text-sm font-medium text-gray-700">Filtered Orders</div>
-
-//       {filteredOrder.map((order) => (
-//         <Link
-//           to={`/my-account/my-orders/${order._id}`}
-//           key={order._id}
-//           className="block border p-3 rounded bg-gray-50 hover:bg-gray-100 transition"
-//         >
-//           <p className="text-sm font-semibold">Order ID: {order.order_id}</p>
-//           <p className="text-xs text-gray-500">
-//             Payment: {order.payment_status} | Delivery: {order.deliveryStatus ?? "N/A"}
-//           </p>
-//         </Link>
-//       ))}
-//     </div>
-//   );
-// }
-
-import { useState } from "react";
-import { IOrders, IOrdersType } from "@/types/orderTypes";
-import { Icon } from "@iconify/react";
+import {  IOrders, IOrdersType } from "@/types/orderTypes";
 import Image from "@/components/global/image";
 import { encodeId } from "@/utils/encorder";
-import { API } from "@/services/user_side_api/auth/route_url";
 import VerifiedLabel from "@/components/global/verivied-label";
+import MyClock from "@/components/myUi/MyClock";
+import { Separator } from "@/components/ui/separator";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { Link } from "react-router-dom";
+
+import TrackInvoiceBtn from "@/components/orders/order-buttons/track-invoice-btn";
+import InvoicePdf from "@/components/global/invoice";
 
 type Props = {
   orders: IOrdersType;
   filteredOrder: IOrders[];
 };
 
-export default function OrderTab({ orders, filteredOrder }: Props) {
-  const [showRawJson, setShowRawJson] = useState(false);
+export default function OrderTab({ orders,filteredOrder }: Props) {
+  // const [showRawJson, setShowRawJson] = useState(false);
 
-  const handleDelete = () => {
-    const id = window.prompt("Enter the Order ID to delete:");
-    if (id) {
-      if (id === "all") {
-        return API.delete(`/api/order/orders`, {
-          withCredentials: true,
-        });
-      }
-      API.delete(`/api/order/orders`, {
-        params: { id },
-        withCredentials: true,
-      })
-        .then(() => alert("Order deleted successfully."))
-        .catch(() => alert("Failed to delete the order."));
-    }
-  };
+  // const handleDelete = () => {
+  //   const id = window.prompt("Enter the Order ID to delete:");
+  //   if (id) {
+  //     if (id === "all") {
+  //       return API.delete(`/api/order/orders`, {
+  //         withCredentials: true,
+  //       });
+  //     }
+  //     API.delete(`/api/order/orders`, {
+  //       params: { id },
+  //       withCredentials: true,
+  //     })
+  //       .then(() => alert("Order deleted successfully."))
+  //       .catch(() => alert("Failed to delete the order."));
+  //   }
+  // };
+
+  const supports = [
+    {
+      id: 1,
+      title: "Product Support",
+      link: "",
+    },
+    {
+      id: 2,
+      title: "Leave Seller Feedback",
+      link: "",
+    },
+    {
+      id: 3,
+      title: "Rate & Review this product",
+      link: "",
+    },
+  ];
 
   return (
-    <section className="space-y-2">
-      <div className="flex items-center justify-between">
+    <section className="space-y-2 bg-[#F9F9F9]">
+      {/* <div className="flex items-center justify-between">
         <h3 className="text-sm underline">
           Showing {filteredOrder.length} of {orders.orders.length} orders
         </h3>
@@ -120,9 +69,9 @@ export default function OrderTab({ orders, filteredOrder }: Props) {
           />
           {showRawJson ? "Hide" : "Show"} Raw Orders
         </button>
-      </div>
+      </div> */}
 
-      <button
+      {/* <button
         className=""
         onClick={() => {
           handleDelete();
@@ -135,53 +84,198 @@ export default function OrderTab({ orders, filteredOrder }: Props) {
         <div className="bg-gray-50 p-4 rounded border text-xs overflow-auto max-h-96 whitespace-pre-wrap">
           <pre>{JSON.stringify(orders, null, 2)}</pre>
         </div>
-      )}
+      )} */}
+         <div className="bg-gray-50 p-4 rounded border text-xs overflow-auto max-h-96 whitespace-pre-wrap">
+          <pre>{JSON.stringify(orders, null, 2)}</pre>
+        </div>
 
       {filteredOrder.map((order) => (
-        <div
-          // to={`/my-account/my-orders/${order._id}`}
-          key={order._id}
-          className="  shadow-sm flex  flex-col justify-between"
-        >
-          {/* <div>
-            <p className="text-sm ">Order ID: {order.order_id}</p>
-            <p className="text-sm font-medium">ID: {order._id}</p>
-
-            <p className="text-xs text-gray-500">
-              Status: {order.payment_status} | Created: {new Date(order.createdAt).toLocaleDateString()}
-            </p>
-          </div> */}
+        <div key={order._id} className="  flex  flex-col justify-between">
           <div className="pt-3 space-y-4">
             {order.store_orders.map((store) => {
+              const totalQty = store.items.reduce((sum, item) => {
+                const itemQty = item.product.variations.reduce(
+                  (varSum, variation) => {
+                    return (
+                      varSum +
+                      variation.details.reduce(
+                        (detSum, detail) => detSum + detail.quantity,
+                        0
+                      )
+                    );
+                  },
+                  0
+                );
+                return sum + itemQty;
+              }, 0);
+              // const filteredStoreItems: IFlatOrderItem[] = filteredOrder.flatMap((order) =>
+              //   order.store_orders.flatMap((store2) => {
+              //     if (store2.store_order_id !== store.store_order_id) return [];
+              //     return store2.items.map((item, index) => ({
+              //       ...item,
+              //       store: store2,
+              //       order: order,
+              //       showVerifiedLabel: index === 0,
+              //     }));
+              //   })
+              // );
+              
+
               return (
-                <div className="h-fit w-full p-2 border flex flex-col justify-between gap-3">
-                  <VerifiedLabel {...store.store_info} />
+                <div className="h-fit w-full p-4  flex flex-col rounded-lg justify-between gap-5 bg-white">
+                  {/* 1. */}
+                  <div className="flex flex-col ">
+                    <div className="w-full flex justify-between items-center ">
+                      <div className="">
+                        <h5 className="font-semibold text-[#344054] text-xl ">
+                          Order Id: {store.store_order_id}
+                        </h5>
+                      </div>
 
-                  <div>
-                    <p className="text-sm ">Order ID: {store.store_order_id}</p>
+                      {/* 2 */}
+                      <TrackInvoiceBtn 
+                      orders={order}
+                      storeOrders={store}
+                      />
+                    </div>
 
-                    <p className="text-xs text-gray-500">
-                      Status: {order.payment_status} | Created:{" "}
-                      {new Date(order.createdAt).toLocaleDateString()}
-                    </p>
+                    {/* 1.2 */}
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-1 border-r pr-2">
+                        <span className=" text-[#667085] text-xs ">
+                          Order Date :
+                        </span>
+
+                        <MyClock
+                          className="text-xs text-black"
+                          date={order.createdAt}
+                          showSeconds={false}
+                          showTime={false}
+                          use12Hour
+                        />
+                      </div>
+
+                      {store.order_status === "delivered" ? (
+                        <div className="text-black flex items-center gap-1">
+                          <Icon icon="hugeicons:package-delivered" />
+
+                          <span className="text-black">
+                            Delivered in :{" "}
+                            <MyClock
+                              className="text-black"
+                              addDays={10}
+                              date={store.delivery_date}
+                              showSeconds={false}
+                              showTime={false}
+                              use12Hour
+                            />
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="text-green-500 flex items-center gap-1">
+                          <Icon icon="hugeicons:delivery-truck-01" />
+
+                          <span className="text-green-500">
+                            Estimated delivery:{" "}
+                            <MyClock
+                              className="text-green-500"
+                              addDays={10}
+                              date={order.createdAt}
+                              showSeconds={false}
+                              showTime={false}
+                              use12Hour
+                            />
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  <div className="flex gap-3">
+                  {/* 2. */}
+
+                  <Separator />
+
+                  {/* 3 . */}
+
+                  <VerifiedLabel {...store.store_info} version="v2" />
+
+                  <div className="flex flex-col gap-3 max-h-[200px] overflow-auto ">
                     {store.items.map((items) => {
                       return (
-                        <div className="">
-                          {/* 2. */}
+                        <div className="flex gap-3 justify-between w-full">
+                          {/* 4. */}
 
-                          <Image
-                            src={items.product.variations[0].image}
-                            link={`/my-account/my-orders/${encodeId(order.order_id)}/${encodeId(items.product_order_id)}`}
-                            className="h-16 w-16 bg-gray-200"
-                            classNameImg="w-full h-full object-contain"
-                          />
+                          <div className="flex gap-3">
+                            <Image
+                              src={items.product.variations[0].image}
+                              link={`/my-account/my-orders/${encodeId(order.order_id)}/${encodeId(items.product_order_id)}`}
+                              className="h-16 w-16 bg-gray-200 rounded-lg"
+                              classNameImg="w-full h-full object-contain"
+                            />
+
+                            <div className="flex flex-col gap-1">
+                              <span className="capitalize tex-sm text-black overflow-hidden truncate">
+                                {items.product.product_name}
+                              </span>
+                              <span className="text-xs text-black ">
+                                Total Quantity : {totalQty}{" "}
+                              </span>
+                              {store.order_status === "delivered" && (
+                                <span className="text-xs text-black ">
+                                  Return window closed on :{" "}
+                                  <MyClock
+                                    className=" text-xs"
+                                    addDays={10}
+                                    date={store.delivery_date}
+                                    showSeconds={false}
+                                    showTime={false}
+                                    use12Hour
+                                  />
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          {/* 5. */}
+                          {store.order_status === "delivered" && (
+                            <div className="flex items-center gap-1">
+                              {supports.map((support, index) => (
+                                <Link
+                                  to=""
+                                  key={index}
+                                  className="border text-xs p-2 rounded-full bg-[#F9F9F9] text-[#4E4E4E] "
+                                >
+                                  {support.title}
+                                </Link>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
                   </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+
+
+
+
+{filteredOrder.map((order) => (
+        <div key={order._id} className="  flex  flex-col justify-between">
+          <div className="pt-3 space-y-4">
+            {order.store_orders.map((store) => {
+            
+
+              return (
+                <div className="h-fit w-full  flex flex-col rounded-lg justify-between gap-5 bg-white">
+          
+                  <InvoicePdf 
+                      orders={order}
+                      storeOrders={store}
+                      />
                 </div>
               );
             })}

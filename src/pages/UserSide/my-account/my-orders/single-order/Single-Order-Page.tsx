@@ -100,11 +100,11 @@ export default function SingleOrderPage() {
 
   return (
     <SettingsLayout>
-      <div className="flex h-fit lg:flex-row gap-5 flex-col justify-between">
-        <div className="flex flex-col gap-4 lg:w-[70%] w-full">
-          <div className="bg-gray-50 p-4 rounded border text-xs overflow-auto max-h-96 whitespace-pre-wrap">
+      <div className="flex h-fit lg:flex-row min-h-[80dvh] gap-5 flex-col justify-between">
+        <div className="flex flex-col gap-4 lg:w-[70%] w-full bg-white">
+          {/* <div className="bg-gray-50 p-4 rounded border text-xs overflow-auto max-h-96 whitespace-pre-wrap">
             <pre>{JSON.stringify(orders[0].store.delivery_date, null, 2)}</pre>
-          </div>
+          </div> */}
 
           <MyBackBtn icon={"bx:arrow-back"} />
 
@@ -142,7 +142,7 @@ export default function SingleOrderPage() {
           ))}
         </div>
 
-        <div className="lg:w-[30%] w-full bg-white">
+        <div className="lg:w-[30%] w-full ">
           <div className="sticky top-4">
             {/* <OrderStatusStepper order={orders} /> */}
        
@@ -155,7 +155,7 @@ export default function SingleOrderPage() {
         <Separator />
         <div className="flex justify-between my-5 gap-2 flex-wrap">
           <button type="button" className="text-sm text-gray-500 hover:underline">
-            Create Order
+            Cancel Order
           </button>
           <div className="flex sm:items-center sm:gap-4 gap-2 flex-wrap">
             <button className="underline underline-offset-4 text-sm">

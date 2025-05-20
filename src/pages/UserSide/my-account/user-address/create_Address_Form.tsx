@@ -100,10 +100,10 @@ function CreateAddressForm() {
   }[] = [
     {
       id: 1,
-      label: "Address Name",
+      label: "Building / Shop Name",
       name: "address.name",
       type: "text",
-      placeholder: "Enter your Address Name",
+      placeholder: "Enter your Building / Shop Name",
       required: true,
     },
     {

@@ -55,7 +55,7 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
     <>
       <div className=" space-y-6 md:py-5 section_container_dash mx-auto ">
-        <div className="flex  flex-col space-y-4   lg:flex-row lg:space-x-12 lg:space-y-0">
+        <div className="flex  flex-col space-y-4   lg:flex-row lg:space-x-7 lg:space-y-0">
           <aside className="xl:-mx-4 lg:w-[18%] lg:h-[70vh] bg-bgHardSoft sticky z-[1000] top-10  rounded-2xl sm:p-3 p-1 md:mt-0 mt-4 lg:flex hidden flex-col justify-between h-[80%]">
             <SidebarNav items={sidebarNavItems} />
 
@@ -76,7 +76,7 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
               />
             </div>
           </aside>
-          <div className="flex-grow h-fit">{children}</div>
+          <div className="flex-grow h-fit bg-[#F9F9F9] lg:p-10">{children}</div>
         </div>
       </div>
     </>
