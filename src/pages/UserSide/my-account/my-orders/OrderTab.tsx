@@ -8,7 +8,6 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { Link } from "react-router-dom";
 
 import TrackInvoiceBtn from "@/components/orders/order-buttons/track-invoice-btn";
-import InvoicePdf from "@/components/global/invoice";
 
 type Props = {
   orders: IOrdersType;
@@ -263,7 +262,7 @@ export default function OrderTab({ orders,filteredOrder }: Props) {
 
 
 
-{filteredOrder.map((order) => (
+{/* {filteredOrder.map((order) => (
         <div key={order._id} className="  flex  flex-col justify-between">
           <div className="pt-3 space-y-4">
             {order.store_orders.map((store) => {
@@ -281,7 +280,7 @@ export default function OrderTab({ orders,filteredOrder }: Props) {
             })}
           </div>
         </div>
-      ))}
+      ))} */}
     </section>
   );
 }

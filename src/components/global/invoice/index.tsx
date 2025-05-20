@@ -35,7 +35,7 @@ const InvoicePdf = ({ orders, storeOrders }: Props) => {
       >
         Invoice
       </AyButton>
-      <div ref={contentRef} className="printConten p-4 flex flex-col gap-7">
+      <div ref={contentRef} className="printContent p-4 flex flex-col gap-7">
         <div className="flex justify-between">
           <Logo />
 
