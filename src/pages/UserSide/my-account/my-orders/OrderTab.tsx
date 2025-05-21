@@ -8,6 +8,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { Link } from "react-router-dom";
 
 import TrackInvoiceBtn from "@/components/orders/order-buttons/track-invoice-btn";
+import InvoicePdf from "@/components/global/invoice";
 
 type Props = {
   orders: IOrdersType;
@@ -262,25 +263,26 @@ export default function OrderTab({ orders,filteredOrder }: Props) {
 
 
 
-{/* {filteredOrder.map((order) => (
-        <div key={order._id} className="  flex  flex-col justify-between">
-          <div className="pt-3 space-y-4">
-            {order.store_orders.map((store) => {
-            
-
-              return (
-                <div className="h-fit w-full  flex flex-col rounded-lg justify-between gap-5 bg-white">
-          
-                  <InvoicePdf 
-                      orders={order}
-                      storeOrders={store}
-                      />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ))} */}
+{filteredOrder.map((order) => (
+  <div key={order._id} className="flex flex-col justify-between">
+    <div className="pt-3 space-y-4">
+      {order.store_orders.map((store, index) => {
+        if (index === 0) {
+          return (
+            <div
+              key={store._id}
+              className="h-fit w-full flex flex-col rounded-lg justify-between gap-5 bg-white"
+            >
+              <InvoicePdf orders={order} storeOrders={store} />
+            </div>
+          );
+        }
+        return null; // Don't forget this to avoid warnings
+      })}
+    </div>
+  </div>
+))
+}
     </section>
   );
 }
