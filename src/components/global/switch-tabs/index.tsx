@@ -1,11 +1,11 @@
-import React from 'react'
+// import React from 'react'
 
-type Props = {}
+// type Props = {}
 
-const SwitchTabs = (props: Props) => {
-  return (
-    <div>SwitchTabs</div>
-  )
-}
+// const SwitchTabs = (props: Props) => {
+//   return (
+//     <div>SwitchTabs</div>
+//   )
+// }
 
-export default SwitchTabs
+// export default SwitchTabs

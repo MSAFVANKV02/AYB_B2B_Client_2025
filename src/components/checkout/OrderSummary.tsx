@@ -111,7 +111,7 @@ export default function OrderSummary({
             {itemSubTotal >= 0 && (
               <div className="flex justify-between text-gray-600 sm:text-sm text-xs">
                 <span>Item subtotal</span>
-                <span>₹ {itemSubTotal.toFixed(2)}</span>
+                <span>₹ {itemSubTotal?.toFixed(2)}</span>
               </div>
             )}
 
@@ -119,7 +119,7 @@ export default function OrderSummary({
             {shippingCharge >= 0 && (
               <div className="flex justify-between text-gray-600 sm:text-sm text-xs">
                 <span>Shipping charge</span>
-                <span>₹ {shippingCharge.toFixed(2)}</span>
+                <span>₹ {shippingCharge?.toFixed(2)}</span>
               </div>
             )}
 
@@ -127,14 +127,14 @@ export default function OrderSummary({
             {discount >= 0 && (
               <div className="flex justify-between text-gray-600 sm:text-sm text-xs">
                 <span>Discount</span>
-                <span>₹ {discount.toFixed(2)}</span>
+                <span>₹ {discount?.toFixed(2)}</span>
               </div>
             )}
             {/* SubTotal === .4*/}
             {subTotal >= 0 && (
               <div className="flex justify-between text-gray-600 sm:text-sm text-xs">
                 <span>Subtotal excl. tax</span>
-                <span>₹ {subTotal.toFixed(2)}</span>
+                <span>₹ {subTotal?.toFixed(2)}</span>
               </div>
             )}
 
@@ -142,7 +142,7 @@ export default function OrderSummary({
             {gstValue >= 0 && (
               <div className="flex justify-between text-gray-600 sm:text-sm text-xs">
                 <span>GST(IGST/SGST/CGST)</span>
-                <span>₹ {gstValue.toFixed(2)}</span>
+                <span>₹ {gstValue?.toFixed(2)}</span>
               </div>
             )}
 
@@ -151,7 +151,7 @@ export default function OrderSummary({
               cess >= 0 && (
                 <div className="flex justify-between text-gray-600 sm:text-sm text-xs">
                   <span>Cess</span>
-                  <span>₹ {cess.toFixed(2)}</span>
+                  <span>₹ {cess?.toFixed(2)}</span>
                 </div>
               )
             }
@@ -165,7 +165,7 @@ export default function OrderSummary({
             <div className="flex justify-between text-gray-600 mt-2 mb-4">
               <span className="text-lg font-bold">Total Amount </span>
               <span className="text-lg font-bold">
-                ₹ {totalPrice.toFixed(2)}
+                ₹ {totalPrice?.toFixed(2)}
               </span>
             </div>
           </AccordionDetails>

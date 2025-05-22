@@ -1,4 +1,5 @@
-import { ShippingInfoType } from "@/providers/redux/userSide/checkout-slice";
+import { dispatch } from "@/providers/redux/hook";
+import { resetCheckoutState, ShippingInfoType } from "@/providers/redux/userSide/checkout-slice";
 import { verify_Razorpay_Order_Api } from "@/services/user_side_api/checkout/route";
 import { IAddressType } from "@/types/address-types";
 import { makeToastError } from "@/utils/toaster";
@@ -39,6 +40,9 @@ export const RazorPay = async ({
             razorpay_signature: response.razorpay_signature,
           };
 
+          // console.log(shipping_info, "shipping_info");
+          
+
           try {
             const verifyRes = await verify_Razorpay_Order_Api({
               ...verificationData,
@@ -53,8 +57,11 @@ export const RazorPay = async ({
               resolve({ success: true });
             }
 
-          } catch  {
+          } catch(error)  {
             // console.error("Verification failed ", error);
+            if(error){
+              dispatch(resetCheckoutState({ checkoutStatus: "nill" }));
+            }
             // makeToastError("Payment verification failed in backend.");
             resolve({ success: false });
           }

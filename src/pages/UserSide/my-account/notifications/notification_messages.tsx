@@ -23,7 +23,7 @@ function NotificationMessages() {
 
   if (isFetching) {
     return (
-      <div className="h-full flex flex-col items-center justify-center bg-slate-50 animate-pulse shadow-inner gap-3">
+      <div className="h-[70dvh] flex flex-col  items-center justify-center bg-white animate-pulse shadow-inner gap-3">
         <Loader color="black" state={isFetching} />
       </div>
     );
@@ -33,31 +33,31 @@ function NotificationMessages() {
 
   return (
     <div className="h-full overflow-auto scrollbar-thin">
-      <div className="">
-        <h5>User Notifications</h5>
-      </div>
       {/* <pre>
         {JSON.stringify(notification,null,4)}
     </pre> */}
       {notification.length > 0 ? (
         <MyPageTab
           hiddenTabList={false}
+          tabsListCss="bg-gray-50 border-none shadow-xl"
+          triggerActiveCss="data-[state=active]:bg-gray-100 text-xs min-w-36 font-bold w-auto py-3 data-[state=active]:text-black data-[state=active]:rounded-full "
           tabs={[
             {
               title: "New",
               url: "/my-account/notifications?type=new",
               value: "new",
-              tabCss: "bg-gray-50 border-none shadow.xl",
-              TriggerCss:
-                "data-[state=active]:bg-gray-100 text-xs min-w-36 font-bold w-auto py-3 data-[state=active]:text-black data-[state=active]:rounded-full ",
+
               children: (
-                <div>
+                <div className="bg-white p-5 min-h-[70dvh] max-h-[70dvh] space-y-5 overflow-auto">
+                  <div className="">
+                    <h5>User Notifications</h5>
+                  </div>
                   <ul className="flex flex-col gap-3">
                     {/* {notification.filter((item)=>!item.isRead).map((item, index) =>  ( */}
                     {notification.map((item, index) => (
                       <li
                         key={index}
-                        className="p-3 w-full bg-gray-50 cursor-pointer text-black
+                        className="p-3 w-full bg-gray-50 cursor-pointer text-black rounded-md
                     hover:shadow-md duration-150 transition-all flex justify-between flex-wrap"
                         onClick={() => {
                           if (item.isRead) {

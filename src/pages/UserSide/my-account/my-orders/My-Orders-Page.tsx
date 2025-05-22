@@ -85,7 +85,7 @@ export default function MyOrdersPage() {
             // tabCss:
             //   "bg-transparent text-sm px-0 border-none md:rounded-none rounded-none bg-red-300 space-x-4",
             children: (
-              <div className="bg-white">
+              <div className="bg-white mt-5">
                 <OrderTab
                   orders={fetchedOrdersData}
                   filteredOrder={filteredOrders}

@@ -111,9 +111,9 @@ export const OrderStatusStepper: React.FC<OrderStatusProps> = ({
   useEffect(() => {
     if (orderDetails) {
       // Check the order status and update the state accordingly
-      const { order_status, refund_replace_status } = orderDetails[0].store; // Assuming the first product is of interest
+      const { order_status, is_returned } = orderDetails[0].store; // Assuming the first product is of interest
       setIsCancelled(order_status === "cancelled");
-      setIsReturned(refund_replace_status !== "none");
+      setIsReturned(is_returned);
       setCurrentStep(
         order_status === "out_for_delivery"
           ? 4
@@ -135,8 +135,7 @@ export const OrderStatusStepper: React.FC<OrderStatusProps> = ({
     if (orderDetails[0].store.order_status === "cancelled") {
       setIsCancelled(true);
     } else if (
-      orderDetails[0].store.refund_replace_status &&
-      orderDetails[0].store.order_status === "returned"
+      orderDetails[0].store.is_returned 
     ) {
       setIsReturned(true);
       setCurrentStep(statusIndex + 1);

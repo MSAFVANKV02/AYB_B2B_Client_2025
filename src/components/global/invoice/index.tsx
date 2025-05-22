@@ -1,5 +1,5 @@
 import AyButton from "@/components/myUi/AyButton";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import "./style.css";
 import { IOrders, IStoreOrder } from "@/types/orderTypes";
@@ -7,8 +7,8 @@ import Logo from "@/components/landings/navbar_Sec/Logo";
 import { Separator } from "@/components/ui/separator";
 import MyClock from "@/components/myUi/MyClock";
 import { useAppSelector } from "@/providers/redux/hook";
-import { useNumToWord } from "@/hooks/usable-hooks/num-to-word";
 import InvoiceTable from "./invoice-table";
+import HsnSacTable from "./hsn-sac-table";
 
 type Props = {
   orders: IOrders;
@@ -18,7 +18,6 @@ type Props = {
 const InvoicePdf = ({ orders, storeOrders }: Props) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const { userKyc } = useAppSelector((state) => state.auth);
-  const { convert } = useNumToWord();
 
   const reactToPrintFn = useReactToPrint({ contentRef });
 
@@ -44,7 +43,7 @@ const InvoicePdf = ({ orders, storeOrders }: Props) => {
 
       <div
         ref={contentRef}
-        className="printConten p-10 overflow-hidden flex min-h-[297mm] w-[210mm] bg-slate-50 flex-col relative "
+        className="printContent p-10 overflow-hidden flex min-h-[297mm] w-[210mm] bg-slate-50 flex-col justify-between relative "
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45 flex gap-10">
           {Array.from({ length: 4 }, () => (
@@ -159,10 +158,12 @@ const InvoicePdf = ({ orders, storeOrders }: Props) => {
             <InvoiceTable orders={orders} storeOrders={storeOrders} />
             {/* product table ends */}
 
+            {/* hsn / sac table starts */}
+            <HsnSacTable orders={orders} storeOrders={storeOrders} />
           </div>
         </div>
 
-        <footer className="mt-auto flex h-full justify-end flex-col">
+        <footer className="mt-10 flex h-full justify-end flex-col">
           <div className="  grid grid-cols-2">
             <div className="text-sm p-5">
               Declaration: <br />
@@ -186,4 +187,4 @@ const InvoicePdf = ({ orders, storeOrders }: Props) => {
   );
 };
 
-export default InvoicePdf;
+export default memo(InvoicePdf);

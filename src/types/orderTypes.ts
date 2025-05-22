@@ -29,7 +29,6 @@ export type IOrderStatus =
   | "out_for_delivery"
   | "delivered"
   | "cancelled"
-  | "returned";
 
 export type IReturnMode = "none" | "requested" | "replace" | "refund";
 
@@ -56,6 +55,7 @@ export type IFilterOrders =
   | "sort_by"
   | "sort_order";
 
+import { TransactionDetails } from "@/providers/redux/userSide/checkout-slice";
 import { IAddressType } from "./address-types";
 import { Store } from "./final-product-types";
 
@@ -81,6 +81,34 @@ export type IOrdersType = {
   orders: IOrders[];
 };
 
+export type ICouponCode = {
+  _id: string;
+  code: string
+  discountType: "PERCENTAGE"|"FIXED_AMOUNT"|""
+  discountValue: number
+  maxDiscountAmount: number
+  minOrderAmount: number
+  expiryDate:  Date
+  startDate:  Date
+  usageLimit: number
+  isActive: boolean
+  applicableToAll: boolean
+  applicableStores: string[]
+  applicableSellers: string[]
+  applicableCategories: string[]
+  applicableProducts: string[];
+  applicableBrands: string[];
+  applicablePurchaseType: "ALL"|"FIRST_PURCHASE"|"REPEAT_CUSTOMER"|"BULK_PURCHASE"
+  minPurchaseCount: number
+  minPurchaseAmountThreshold: number
+  maxUsagePerUser: number
+  createdBy: string
+  dbModel: string
+  coupon_owner: string
+  createdAt: string
+  updatedAt: string
+}
+
 export type IOrders = {
   _id: string;
   order_id: string;
@@ -88,16 +116,16 @@ export type IOrders = {
     _id: string;
     name: string;
   };
-  coupon_code: string | null;
+  coupon_code: ICouponCode | null; 
   shipping_address:IAddressType;
-  coupon: any;
-  payment_method: string;
+  coupon: string;
+  payment_method: "cod"|"razorpay"|"offline_payment";
   payment_status: string;
   createdAt: string;
   updatedAt: string;
   payment_status_updated_at: string;
   __v: number;
-  payment_details: any;
+  payment_details: TransactionDetails;
   order_total: OrderTotal;
   store_orders: IStoreOrder[];
 };
@@ -122,9 +150,9 @@ export type IStoreOrder = {
   customer_id: string;
   store_info: Store;
   order_status: IOrderStatus;
-  return_mode: IReturnMode;
-  refund_replace_status: IReturnStatus;
-
+  // return_mode: IReturnMode;
+  // refund_replace_status: IReturnStatus;
+  is_returned:boolean;
   __v: number;
   order_total: OrderTotal;
   parcel_details: ParcelDetails;
@@ -171,6 +199,7 @@ type StoreItem = {
   mrp: number;
   discount_type: string;
   product: Product;
+
 };
 
 type Product = {
@@ -192,6 +221,7 @@ type Product = {
     _id: string;
     name: string;
   };
+  gst_rate:number
   tax_details: TaxDetails;
   gallery_image: string[];
   thumbnails: string[];
@@ -236,7 +266,7 @@ type Product = {
 
 type TaxDetails = {
   hsn_sac_number: string;
-  non_gst_goods: string;
+  non_gst_goods: "yes"|"no";
   calculation_types: string;
   on_items_rate_details: {
     greaterThan: number | null;

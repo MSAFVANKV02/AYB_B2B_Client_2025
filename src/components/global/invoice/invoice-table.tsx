@@ -12,15 +12,15 @@ const InvoiceTable = ({ storeOrders }: Props) => {
   const { convert } = useNumToWord();
 
   return (
-    <table className="border border-black w-full text-sm text-left">
+    <table className="border border-black w-full text-sm text-left border-t-0">
       <thead>
         <tr className=" bg-gray-100">
-          <th className="p-2 border border-black">SI No</th>
-          <th className="p-2 border border-black">Product Name</th>
-          <th className="p-2 border border-black">Size</th>
-          <th className="p-2 border border-black">Qty</th>
-          <th className="p-2 border border-black">Rate</th>
-          <th className="p-2 border border-black">Amount</th>
+          <th className="p-2 border-t-0 border border-black">SI No</th>
+          <th className="p-2 border-t-0 border border-black">Product Name</th>
+          <th className="p-2 border-t-0 border border-black">Size</th>
+          <th className="p-2 border-t-0 border border-black">Qty</th>
+          <th className="p-2 border-t-0 border border-black">Rate</th>
+          <th className="p-2 border-t-0 border border-black">Amount</th>
         </tr>
       </thead>
       <tbody className="">
@@ -116,7 +116,7 @@ const InvoiceTable = ({ storeOrders }: Props) => {
                 sizeMap[detail.size].amount +=
                   detail.quantity * detail.taxable_amount;
                 sizeMap[detail.size].taxableAmount += detail.taxable_amount;
-                sizeMap[detail.size].totalAmount += 6;
+                // sizeMap[detail.size].totalAmount += 6;
               });
             });
 

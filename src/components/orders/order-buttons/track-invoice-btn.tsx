@@ -10,7 +10,7 @@ type Props = {
 const TrackInvoiceBtn = ({ orders, storeOrders }: Props) => {
   return (
     <div className="flex gap-4">
-      {/* <InvoicePdf orders={orders} storeOrders={storeOrders} /> */}
+      <InvoicePdf orders={orders} storeOrders={storeOrders} />
       <AyButton
         iconSize={15}
         className="flex-row-reverse flex gap-2"

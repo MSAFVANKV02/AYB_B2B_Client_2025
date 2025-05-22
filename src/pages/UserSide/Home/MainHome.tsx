@@ -16,6 +16,8 @@ import { useWindowSize, useWindowWidth } from "@react-hook/window-size";
 import "@/assets/css/slick-slider.css"
 
 import { useEffect, useState } from "react";
+import { generateToken, getDeviceToken, messaging } from "@/lib/firebase";
+import { onMessage } from "firebase/messaging";
 
 function MainHome() {
   const [width] = useWindowSize();
@@ -91,11 +93,12 @@ function MainHome() {
   // console.log(platform)
 
   useEffect(() => {
-    // getDeviceToken();
-    // onMessage(messaging, (payload) => {
-    //   console.log("Received a message:", payload);
-    //   // ...
-    // });
+    getDeviceToken();
+    generateToken();
+    onMessage(messaging, (payload) => {
+      console.log("Received a message:", payload);
+      // ...
+    });
     dispatch(getRecentViewRedux());
   }, []);
 
