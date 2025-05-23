@@ -75,7 +75,9 @@ const OrderDetailsSummary = ({ orders }: Props) => {
       <Separator />
 
       {/* details 4.*/}
-      <div className="grid grid-cols-3">
+      {
+        orders.order.order_total.cart_discount > 0 || orders.order.order_total.coupon_discount > 0 && (
+           <div className="grid grid-cols-3">
         <span className="text-green-500 capitalize font-semibold text-lg">
           you Saved
         </span>
@@ -86,6 +88,9 @@ const OrderDetailsSummary = ({ orders }: Props) => {
             (orders.order.order_total.coupon_discount ?? 0)}{" "}
         </span>
       </div>
+        )
+      }
+     
       {/* details 5.*/}
       <div className="grid grid-cols-3">
         <span className="text-black font-semibold text-lg">Total</span>

@@ -74,9 +74,10 @@ function VerifiedLabel({ avatar, name, createdAt, version="v1" }: Store & Props)
     </pre> */}
         </Link>
       ) : (
-        <div className="flex items-center gap-4 h-fit">
-          <span className="text-base text-black uppercase">{name}</span>
+        <div className="flex lg:flex-row flex-col lg:items-center sm:gap-4 gap-2 h-fit">
+          <span className="sm:text-base text-black uppercase">{name}</span>
 
+          <div className="flex sm:gap-4 gap-2 flex-wrap">
           {IconBadge.map((item, index) => (
             <div
               className={cn(
@@ -101,6 +102,7 @@ function VerifiedLabel({ avatar, name, createdAt, version="v1" }: Store & Props)
               </span>
             </div>
           ))}
+          </div>
         </div>
       )}
     </>

@@ -11,7 +11,6 @@ import { Link } from "react-router-dom";
 import TrackInvoiceBtn from "@/components/orders/order-buttons/track-invoice-btn";
 import useNavigateClicks from "@/hooks/useClicks";
 import AyButton from "@/components/myUi/AyButton";
-import { API } from "@/services/user_side_api/auth/route_url";
 
 type Props = {
   orders: IOrdersType;
@@ -21,22 +20,22 @@ type Props = {
 export default function OrderTab({  filteredOrder }: Props) {
   // const [showRawJson, setShowRawJson] = useState(false);
 
-  const handleDelete = () => {
-    const id = window.prompt("Enter the Order ID to delete:");
-    if (id) {
-      if (id === "all") {
-        return API.delete(`/api/order/orders`, {
-          withCredentials: true,
-        });
-      }
-      API.delete(`/api/order/orders`, {
-        params: { id },
-        withCredentials: true,
-      })
-        .then(() => alert("Order deleted successfully."))
-        .catch(() => alert("Failed to delete the order."));
-    }
-  };
+  // const handleDelete = () => {
+  //   const id = window.prompt("Enter the Order ID to delete:");
+  //   if (id) {
+  //     if (id === "all") {
+  //       return API.delete(`/api/order/orders`, {
+  //         withCredentials: true,
+  //       });
+  //     }
+  //     API.delete(`/api/order/orders`, {
+  //       params: { id },
+  //       withCredentials: true,
+  //     })
+  //       .then(() => alert("Order deleted successfully."))
+  //       .catch(() => alert("Failed to delete the order."));
+  //   }
+  // };
 
   const { handleClick } = useNavigateClicks();
 
@@ -84,14 +83,14 @@ export default function OrderTab({  filteredOrder }: Props) {
         </div>
       )} */}
 
-      <button
+      {/* <button
         className=""
         onClick={() => {
           handleDelete();
         }}
       >
         delete
-      </button>
+      </button> */}
       {filteredOrder.map((order) => (
         <div className=" space-y-4" key={order._id}>
           {order.store_orders.map((store) => {
@@ -123,12 +122,12 @@ export default function OrderTab({  filteredOrder }: Props) {
             // );
 
             return (
-              <div className="h-fit w-full p-4  flex flex-col rounded-lg justify-between gap-5 bg-white">
+              <div className="h-fit w-full sm:p-4 p-2  flex flex-col rounded-lg justify-between sm:gap-5 gap-3 bg-white">
                 {/* 1. */}
-                <div className="flex flex-col ">
-                  <div className="w-full flex justify-between items-center ">
+                <div className="flex flex-col gap-3">
+                  <div className="w-full flex md:flex-row flex-col justify-between md:items-center gap-3 ">
                     <div className="">
-                      <h5 className="font-semibold text-[#344054] text-xl ">
+                      <h5 className="font-semibold text-[#344054] sm:text-xl text-lg ">
                         Order Id: {store.store_order_id}
                       </h5>
                     </div>
@@ -138,8 +137,8 @@ export default function OrderTab({  filteredOrder }: Props) {
                   </div>
 
                   {/* 1.2 */}
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1 border-r pr-2">
+                  <div className="flex items-center sm:flex-row flex-col gap-3">
+                    <div className="flex items-center gap-1 sm:border-r sm:pr-2">
                       <span className=" text-[#667085] text-xs ">
                         Order Date :
                       </span>
@@ -256,13 +255,17 @@ export default function OrderTab({  filteredOrder }: Props) {
                   <AyButton
                     variant="outlined"
                     outLineColor="gray"
+                    sx={{
+                      fontSize:"0.7rem",
+                      color:"black"
+                    }}
                     onClick={() => {
                       handleClick(
                         `/my-account/my-orders/${encodeId(order.order_id)}/${encodeId(store.store_order_id)}`
                       );
                     }}
                   >
-                    AllOrders
+                   View Orders
                   </AyButton>
                 </div>
               </div>

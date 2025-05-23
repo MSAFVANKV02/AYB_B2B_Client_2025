@@ -323,6 +323,7 @@ import { Separator } from "@/components/ui/separator";
 import VerifiedLabel from "@/components/global/verivied-label";
 import DetailedProductOverview from "@/components/orders/single-order-widgets/detailed-product-overview";
 import OrderSummary from "@/components/orders/single-order-widgets/order-detials-summary";
+import MyBackBtn from "@/components/myUi/myBackBtn";
 
 export default function SingleOrderPage() {
   const { orderId, storeOrderId } = useParams();
@@ -388,8 +389,10 @@ export default function SingleOrderPage() {
   return (
     <SettingsLayout>
       <div className="flex h-fit lg:flex-row min-h-[80dvh] gap-5 flex-col justify-between">
-        <div className="flex flex-col gap-4 lg:w-[70%] w-full">
-          <div className="w-full flex justify-between">
+     
+        <div className="flex flex-col sm:gap-4 gap-3 lg:w-[70%] w-full">
+        <MyBackBtn icon={"bx:arrow-back"} /> 
+          <div className="w-full flex sm:flex-row flex-col gap-3 justify-between">
             <h5 className="text-xl font-semibold">Order Details</h5>
             <SingleOrderActionBtn orders={orders[0]} />
           </div>
@@ -415,10 +418,10 @@ export default function SingleOrderPage() {
               <div className="flex flex-col gap-4" key={index}>
                 {/* Shipping + Payment Info */}
                 {index === 0 && (
-                  <div className="bg-white p-3 rounded-lg grid lg:grid-cols-2 grid-cols-1">
-                    <div className="flex flex-col gap-2">
+                  <div className="bg-white p-3 rounded-lg flex md:flex-row flex-col md:gap-0 gap-3">
+                    <div className="flex flex-col gap-2 md:w-1/2 w-full break-words whitespace-pre-line">
                       <span className="font-semibold text-sm">Ship to:</span>
-                      <div className="w-3/4 flex flex-col">
+                      <div className="md:w-3/4 w-full flex flex-col">
                         <span>{order.shipping_address.name}</span>
                         <span>{order.shipping_address.street}</span>
                         <span>
@@ -427,15 +430,15 @@ export default function SingleOrderPage() {
                         </span>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 md:w-1/2 w-full">
                       <span className="font-semibold text-sm">
-                        Payment method
+                        Payment Details
                       </span>
                       <div>
                         {order.payment_method === "offline_payment" ? (
                           <div className="flex flex-col">
                             <span>
-                              <b className="text-black">Payment Method: </b>
+                              <b className="text-black">Payment Method : </b>
                               Offline Payment
                             </span>
                             <span>
@@ -460,11 +463,11 @@ export default function SingleOrderPage() {
                 <div className="bg-white p-3 rounded-lg flex flex-col gap-3">
                   {index === 0 && (
                     <div className="flex flex-col">
-                      <h5 className="font-semibold text-[#344054] text-xl">
+                      <h5 className="font-semibold text-[#344054] sm:text-xl ">
                         Order Id: {store.store_order_id}
                       </h5>
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-1 border-r pr-2">
+                      <div className="flex sm:items-center sm:flex-row flex-col gap-3">
+                        <div className="flex items-center gap-1 sm:border-r sm:pr-2">
                           <span className=" text-[#667085] text-xs ">
                             Order Date :
                           </span>

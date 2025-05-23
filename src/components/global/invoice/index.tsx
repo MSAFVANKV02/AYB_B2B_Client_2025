@@ -34,6 +34,10 @@ const InvoicePdf = ({ orders, storeOrders }: Props) => {
           fontSize: "12px",
           height: "41px",
           borderRadius: "6px",
+          width: {
+            xs: "100%",
+            sm: "auto",
+          },
         }}
       >
         Invoice

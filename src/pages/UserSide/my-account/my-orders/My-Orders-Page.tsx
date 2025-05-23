@@ -10,10 +10,13 @@ import { Input } from "@/components/ui/input";
 import OrderTabPagination from "@/components/orders/order-tab-pagination";
 import { useSearchParams } from "react-router-dom";
 import MyPageTab from "@/components/myUi/MyTab";
+import { useWindowWidth } from "@react-hook/window-size";
 
 // type IOrderTabs = "Order" | "Replace";
 
 export default function MyOrdersPage() {
+
+ const onlyWidth = useWindowWidth()
 
   const [searchParams] = useSearchParams();
   const pageQ = searchParams.get("page") ?? "1";
@@ -55,13 +58,13 @@ export default function MyOrdersPage() {
     <SettingsLayout>
       {/* Search & Filter Controls */}
       
-      <div className="flex lg:items-center lg:flex-row flex-col justify-between sm:gap-4 ">
-        <div className="w-1/2">
-          <h4 className="text-2xl">
+      <div className="flex lg:items-center lg:flex-row flex-col justify-between sm:gap-4 gap-2 ">
+        <div className="sm:w-1/2">
+          <h4 className="sm:text-2xl text-xl">
             My Orders
           </h4>
         </div>
-        <div className="flex items-center w-1/2 border rounded-[10px] overflow-hidden">
+        <div className="flex items-center sm:w-1/2 border rounded-[10px] overflow-hidden">
           <Input
             type="search"
             placeholder="Fast Search..."
@@ -72,8 +75,10 @@ export default function MyOrdersPage() {
       </div>
 
       <MyPageTab
+      hiddenTabList={onlyWidth < 640 === false}
         tabsListCss="border-b-2 rounded-none border-gray-300 w-fit p-0 bg-transparent"
-        triggerActiveCss="relative text-black border-none shadow-none data-[state=active]:shadow-none data-[state=active]:bg-[#F9F9F9] font-semibold after:content-[''] after:absolute after:bottom-[-1px] after:left-0 after:h-[2px] after:w-full after:bg-black"
+        triggerActiveCss="relative text-black border-none shadow-none data-[state=active]:shadow-none data-[state=active]:bg-[#F9F9F9] font-semibold after:content-[''] after:absolute
+         after:bottom-[-1px] after:left-0 after:h-[2px] after:w-full after:bg-black"
         triggerDefaultCss="text-gray-500 border-none shadow-none"
         tabs={[
           {

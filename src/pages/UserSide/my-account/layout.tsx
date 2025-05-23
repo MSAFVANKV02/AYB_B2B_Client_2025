@@ -34,6 +34,10 @@ const sidebarNavItems = [
     title: "Credit Request",
     href: "/my-account/credit-request",
   },
+  // {
+  //   title: "wallet",
+  //   href: "/my-account/wallet",
+  // },
 ];
 
 interface SettingsLayoutProps {
@@ -54,11 +58,11 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
   }
   return (
     <>
-      <div className=" space-y-6 md:py-5  mx-auto ">
+      <div className=" space-y-6 md:py-5 mb-10  mx-auto ">
         {/* <div className="flex  flex-col space-y-4   lg:flex-row lg:space-x-7 lg:space-y-0"> */}
-        <div className="grid lg:grid-cols-12 xl:space-x-10 lg:space-x-5">
+        <div className="grid lg:grid-cols-12 grid-cols-1 xl:space-x-10 lg:space-x-5">
 
-          <aside className="xl:-mx-4 xl:col-span-2 col-span-3 flex-grow-0 lg:h-[70vh] bg-bgHardSoft sticky z-[1000] top-10  rounded-2xl sm:p-3 p-1 md:mt-0 mt-4 lg:flex hidden flex-col justify-between h-[80%]">
+          <aside className="xl:-mx-4 xl:col-span-2 lg:col-span-3 flex-grow-0 lg:h-[70vh] bg-bgHardSoft sticky z-[1000] top-10  rounded-2xl sm:p-3 p-1 md:mt-0 mt-4 lg:flex hidden flex-col justify-between h-[80%]">
             <SidebarNav items={sidebarNavItems} />
 
             <div className="mt-4">
@@ -78,7 +82,7 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
               />
             </div>
           </aside>
-          <div className="flex-grow xl:col-span-10 col-span-9 h-fit bg-[#F9F9F9] xl:p-10 p-5">{children}</div>
+          <div className="flex-grow xl:col-span-10 lg:col-span-9 h-fit bg-[#F9F9F9] xl:p-10 sm:p-5 p-1">{children}</div>
         </div>
       </div>
     </>

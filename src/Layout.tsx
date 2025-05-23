@@ -9,6 +9,8 @@ import Navbar from "./components/landings/navbar_Sec/Navbar";
 // import { NavigationMenuBar } from "./components/landings/navbar_Sec/NavigationMenuBar";
 import useNavbarItems from "./components/landings/navbar_Sec/navbarItems";
 import NavigationMenuBar from "./components/landings/navbar_Sec/NavigationMenuBar";
+import { generateToken, getDeviceToken, messaging } from "./lib/firebase";
+import { onMessage } from "firebase/messaging";
 function AppLayout() {
   const location = useLocation();
   const { navItems } = useNavbarItems();
@@ -24,6 +26,15 @@ function AppLayout() {
       localStorage.removeItem("otp-finished");
     }
   }, [auth]);
+
+  useEffect(()=>{
+    getDeviceToken();
+    generateToken();
+    onMessage(messaging, (payload) => {
+      console.log("Received a message:", payload);
+      // ...
+    });
+  },[])
 
   return (
     <>

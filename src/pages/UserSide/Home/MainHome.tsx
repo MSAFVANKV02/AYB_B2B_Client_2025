@@ -16,8 +16,7 @@ import { useWindowSize, useWindowWidth } from "@react-hook/window-size";
 import "@/assets/css/slick-slider.css"
 
 import { useEffect, useState } from "react";
-import { generateToken, getDeviceToken, messaging } from "@/lib/firebase";
-import { onMessage } from "firebase/messaging";
+
 
 function MainHome() {
   const [width] = useWindowSize();
@@ -93,12 +92,7 @@ function MainHome() {
   // console.log(platform)
 
   useEffect(() => {
-    getDeviceToken();
-    generateToken();
-    onMessage(messaging, (payload) => {
-      console.log("Received a message:", payload);
-      // ...
-    });
+   
     dispatch(getRecentViewRedux());
   }, []);
 
@@ -193,6 +187,12 @@ function MainHome() {
         ))}
       </BannerWrapper> */}
       {/* --------------------- Section 03 : Banner2 ---------------------== ending */}
+      {/* <h1 className="font-yahei text-xl">Hello with Microsoft YaHei UI</h1>
+
+      <h1 className="f text-xl">中文 中文中文</h1> */}
+      {/* <h1 className="font-yahei  text-xl">中文 中文中文</h1> */}
+
+
 
       {/* ======= Section 04 :  Products ========= starting */}
       {todaysDeals.length > 0 && (

@@ -48,7 +48,7 @@ const DetailedProductOverview = ({ orders, totalQty, index }: Props) => {
       )}
 
       {/* Variations Grid */}
-      <div className="grid grid-cols-2 gap-4 w-full ml-5">
+      <div className="grid md:grid-cols-2 gap-4 w-full sm:ml-5">
         {orders.product.variations.map((variation, vIndex) => (
           <div key={vIndex} className="flex gap-5 w-full">
             {/* Color Image Box */}
