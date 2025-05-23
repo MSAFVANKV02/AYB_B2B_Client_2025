@@ -14,7 +14,7 @@ import {
   formatOrderDate,
   safeFormatDate,
   safeParseDate,
-} from "../global/elementses/FormateTime";
+} from "../../global/elementses/FormateTime";
 import { IFlatOrderItem } from "@/types/orderTypes";
 
 // order_status and IOrder types

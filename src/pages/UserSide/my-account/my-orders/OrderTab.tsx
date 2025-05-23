@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import TrackInvoiceBtn from "@/components/orders/order-buttons/track-invoice-btn";
 import useNavigateClicks from "@/hooks/useClicks";
 import AyButton from "@/components/myUi/AyButton";
+import OrderStepperOne from "@/components/orders/orders-steppers/order_stepper_one";
 
 type Props = {
   orders: IOrdersType;
@@ -58,7 +59,8 @@ export default function OrderTab({  filteredOrder }: Props) {
   ];
 
   return (
-    <section className="space-y-2 bg-[#F9F9F9]">
+    <section className="space-y-2  bg-[#F9F9F9]">
+       <OrderStepperOne />
       {/* <div className="flex items-center justify-between">
         <h3 className="text-sm underline">
           Showing {filteredOrder.length} of {orders.orders.length} orders
@@ -122,8 +124,10 @@ export default function OrderTab({  filteredOrder }: Props) {
             // );
 
             return (
-              <div className="h-fit w-full sm:p-4 p-2  flex flex-col rounded-lg justify-between sm:gap-5 gap-3 bg-white">
+              <div className="h-fit w-full sm:p-4 p-2 relative flex flex-col rounded-lg justify-between sm:gap-5 gap-3 bg-white">
                 {/* 1. */}
+               
+                {/* ==== */}
                 <div className="flex flex-col gap-3">
                   <div className="w-full flex md:flex-row flex-col justify-between md:items-center gap-3 ">
                     <div className="">

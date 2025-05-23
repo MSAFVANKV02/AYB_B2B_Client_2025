@@ -1,5 +1,6 @@
 import InvoicePdf from "@/components/global/invoice";
 import AyButton from "@/components/myUi/AyButton";
+import { useModal } from "@/providers/context/modal-context";
 import { IOrders, IStoreOrder } from "@/types/orderTypes";
 
 type Props = {
@@ -8,6 +9,7 @@ type Props = {
 };
 
 const TrackInvoiceBtn = ({ orders, storeOrders }: Props) => {
+  const { dispatchModal } = useModal();
   return (
     <div className="flex flex-col sm:flex-row sm:w-auto w-full gap-2 sm:gap-4">
     <div className="w-full sm:w-auto">
@@ -16,6 +18,9 @@ const TrackInvoiceBtn = ({ orders, storeOrders }: Props) => {
     <div className="w-full sm:w-auto">
       <AyButton
         iconSize={15}
+        onClick={()=>{
+          dispatchModal({ type: "OPEN_MODAL",modalType:"order-tracker-one",payload:{...orders,...storeOrders} })
+        }}
         className="flex-row-reverse flex gap-2"
         sx={{
           fontSize: "12px",

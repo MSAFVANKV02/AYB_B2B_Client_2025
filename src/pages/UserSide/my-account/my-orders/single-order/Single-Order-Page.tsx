@@ -315,7 +315,7 @@ import { useQueryData } from "@/hooks/useQueryData";
 import { getAllOrdersAction } from "@/action/checkout/checkoutAction";
 
 import Loader from "@/components/global/loader";
-import { OrderStatusStepper } from "@/components/orders/order_stepper";
+import { OrderStatusStepper } from "@/components/orders/orders-steppers/order_stepper";
 import SingleOrderActionBtn from "@/components/orders/single-order-widgets/single-order-action-btn";
 import MyClock from "@/components/myUi/MyClock";
 import { Icon } from "@iconify/react";
