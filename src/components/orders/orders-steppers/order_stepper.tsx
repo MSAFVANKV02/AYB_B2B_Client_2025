@@ -217,23 +217,7 @@ export const OrderStatusStepper: React.FC<OrderStatusProps> = ({
           },
         ]
       : []),
-    // Show delivered status if the order is delivered
-    // ...(orderDetails[0].store.order_status === "delivered"
-    //   ? [
-    //       {
-    //         id: 5,
-    //         label: "delivered",
-    //         title: `Delivered ${
-    //           orderDetails[0].store.delivery_date
-    //             ? formatOrderDate(
-    //                 orderDetails[0].store.delivery_date ?? ""
-    //               )
-    //             : "Unknown Date"
-    //         }`,
-    //         icon: "hugeicons:package-delivered",
-    //       },
-    //     ]
-    //   : []),
+    
     ...(orderDetails[0].store.order_status === "delivered"
       ? [
           {

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 function Footer() {
   return (
     <footer
+    id="footer"
       className="bg-black "
       style={{
         backgroundImage: `url('img/Background Images/bg-cloth-particles.svg')`,

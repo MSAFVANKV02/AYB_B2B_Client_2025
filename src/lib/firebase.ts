@@ -20,8 +20,8 @@ export const messaging = getMessaging(app);
 // const analytics = getAnalytics(app);
 
 export const generateToken = async ()=> {
-   const permission = await Notification.requestPermission();
-  console.log(permission,'permission');
+  //  const permission = await Notification.requestPermission();
+  // console.log(permission,'permission');
   // console.log(import.meta.env.VITE_FIREBASE_PUSH_NOTIFICATION_VAPID_KEY,'env');
 
   await getToken(messaging, {
@@ -39,7 +39,7 @@ export async function getDeviceToken() {
         vapidKey: import.meta.env.VITE_FIREBASE_PUSH_NOTIFICATION_VAPID_KEY,
       });
       if (currentToken) {
-        console.log("Device Token:", currentToken);
+        // console.log("Device Token:", currentToken);
         return currentToken;
       } else {
         console.warn("No registration token available.");

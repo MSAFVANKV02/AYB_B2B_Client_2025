@@ -10,7 +10,7 @@ export const getAllAddedCoverImages = async (
     // const route = banner_type === "todays-deal" ? get_TodaysDeals_Products_Api(filters): get_All_Banner_Image_Api(banner_type);
 
     const { data, status } = await get_All_Banner_Image_Api(banner_type);
-    console.log(data);
+    // console.log(data);
 
     if (status === 200) {
       // if(banner_type === ""){

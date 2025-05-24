@@ -23,25 +23,28 @@ const InvoicePdf = ({ orders, storeOrders }: Props) => {
 
   return (
     <div>
-      <AyButton
-        onClick={reactToPrintFn}
-        icon="solar:file-text-broken"
-        iconSize={15}
-        variant="outlined"
-        outLineColor="#D0D5DD"
-        sx={{
-          color: "#667085",
-          fontSize: "12px",
-          height: "41px",
-          borderRadius: "6px",
-          width: {
-            xs: "100%",
-            sm: "auto",
-          },
-        }}
-      >
-        Invoice
-      </AyButton>
+      {storeOrders.order_status === "delivered" && (
+        <AyButton
+          onClick={reactToPrintFn}
+          icon="solar:file-text-broken"
+          iconSize={15}
+          variant="outlined"
+          outLineColor="#D0D5DD"
+          sx={{
+            color: "#667085",
+            fontSize: "12px",
+            height: "41px",
+            borderRadius: "6px",
+            width: {
+              xs: "100%",
+              sm: "auto",
+            },
+          }}
+        >
+          Invoice
+        </AyButton>
+      )}
+
       {/* ====-======== pdf contents starts here ============
       ======================================================== */}
 

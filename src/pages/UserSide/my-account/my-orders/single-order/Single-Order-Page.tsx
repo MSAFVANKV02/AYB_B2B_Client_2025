@@ -317,13 +317,14 @@ import { getAllOrdersAction } from "@/action/checkout/checkoutAction";
 import Loader from "@/components/global/loader";
 import { OrderStatusStepper } from "@/components/orders/orders-steppers/order_stepper";
 import SingleOrderActionBtn from "@/components/orders/single-order-widgets/single-order-action-btn";
-import MyClock from "@/components/myUi/MyClock";
-import { Icon } from "@iconify/react";
+
 import { Separator } from "@/components/ui/separator";
 import VerifiedLabel from "@/components/global/verivied-label";
 import DetailedProductOverview from "@/components/orders/single-order-widgets/detailed-product-overview";
 import OrderSummary from "@/components/orders/single-order-widgets/order-detials-summary";
 import MyBackBtn from "@/components/myUi/myBackBtn";
+
+import OrderDateLabel from "@/components/orders/order-date-label";
 
 export default function SingleOrderPage() {
   const { orderId, storeOrderId } = useParams();
@@ -389,9 +390,8 @@ export default function SingleOrderPage() {
   return (
     <SettingsLayout>
       <div className="flex h-fit lg:flex-row min-h-[80dvh] gap-5 flex-col justify-between">
-     
         <div className="flex flex-col sm:gap-4 gap-3 lg:w-[70%] w-full">
-        <MyBackBtn icon={"bx:arrow-back"} /> 
+          <MyBackBtn icon={"bx:arrow-back"} />
           <div className="w-full flex sm:flex-row flex-col gap-3 justify-between">
             <h5 className="text-xl font-semibold">Order Details</h5>
             <SingleOrderActionBtn orders={orders[0]} />
@@ -466,51 +466,8 @@ export default function SingleOrderPage() {
                       <h5 className="font-semibold text-[#344054] sm:text-xl ">
                         Order Id: {store.store_order_id}
                       </h5>
-                      <div className="flex sm:items-center sm:flex-row flex-col gap-3">
-                        <div className="flex items-center gap-1 sm:border-r sm:pr-2">
-                          <span className=" text-[#667085] text-xs ">
-                            Order Date :
-                          </span>
-                          <MyClock
-                            className="text-xs text-black"
-                            date={order.createdAt}
-                            showSeconds={false}
-                            showTime={false}
-                            use12Hour
-                          />
-                        </div>
-                        {store.order_status === "delivered" ? (
-                          <div className="text-black flex items-center gap-1">
-                            <Icon icon="hugeicons:package-delivered" />
-                            <span className="text-black">
-                              Delivered in:{" "}
-                              <MyClock
-                                className="text-black"
-                                addDays={10}
-                                date={store.delivery_date}
-                                showSeconds={false}
-                                showTime={false}
-                                use12Hour
-                              />
-                            </span>
-                          </div>
-                        ) : (
-                          <div className="text-green-500 flex items-center gap-1">
-                            <Icon icon="hugeicons:delivery-truck-01" />
-                            <span className="text-green-500">
-                              Estimated delivery:{" "}
-                              <MyClock
-                                className="text-green-500"
-                                addDays={10}
-                                date={order.createdAt}
-                                showSeconds={false}
-                                showTime={false}
-                                use12Hour
-                              />
-                            </span>
-                          </div>
-                        )}
-                      </div>
+                      {/* dates started */}
+                      <OrderDateLabel store={store} order={order} />
                     </div>
                   )}
 
@@ -533,12 +490,11 @@ export default function SingleOrderPage() {
                 {}
 
                 {/* 3. order summary */}
-                <OrderSummary 
-                index={index}
-                orders={firstItem}
-                totalQty={totalQty}
-
-                /> 
+                <OrderSummary
+                  index={index}
+                  orders={firstItem}
+                  totalQty={totalQty}
+                />
               </div>
             );
           })}

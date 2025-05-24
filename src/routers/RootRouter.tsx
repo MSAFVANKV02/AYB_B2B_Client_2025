@@ -57,7 +57,6 @@ import SellerRegisterForm from "@/pages/seller/seller_register_form";
 import AllKindProducts from "@/pages/UserSide/Prod_pages/all_pages/all-kind-products";
 import NotificationsPage from "@/pages/UserSide/my-account/notifications/notifications-page";
 import PurchasePage from "@/pages/UserSide/cart/checkout/page";
-import MyWallet from "@/pages/wallet/my-wallet";
 // import PreloaderPage from "@/preloader-page";
 
 // import withAuth from "@/middlewares/WithAuth";
@@ -238,7 +237,7 @@ const rootRouter = createBrowserRouter(
             // { path: "return", element: <UseReturnPage /> },
             { path: "notifications", element: <NotificationsPage /> },
             { path: "credit-request", element: <PageOnBuild /> },
-            { path: "wallet", element: <MyWallet /> },
+            // { path: "wallet", element: <MyWallet /> },
 
           ],
         },

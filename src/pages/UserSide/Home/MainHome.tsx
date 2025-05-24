@@ -16,6 +16,7 @@ import { useWindowSize, useWindowWidth } from "@react-hook/window-size";
 import "@/assets/css/slick-slider.css"
 
 import { useEffect, useState } from "react";
+import { useVoiceCommands } from "@/hooks/usable-hooks/useVoiceCommands";
 
 
 function MainHome() {
@@ -105,6 +106,8 @@ function MainHome() {
     width > 1280 ? recentView.slice(0, 5) : recentView.slice(0, 4);
 
   // console.log(todaysDeals, "todaysDeals");
+  useVoiceCommands(recentViewProducts);
+
 
   return (
     <div className="min-h-screen sm:space-y-8 space-y-2 py-3">

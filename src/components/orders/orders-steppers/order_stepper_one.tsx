@@ -1,29 +1,26 @@
-import { useModal } from '@/providers/context/modal-context';
-import  { useEffect, useRef } from 'react'
-import Tracker from './tracker';
+import { useModal } from "@/providers/context/modal-context";
+import { useEffect, useRef } from "react";
+import Tracker from "./tracker";
 
-type Props = {}
 
-const OrderStepperOne = (props: Props) => {
-  const {  modalState, dispatchModal } = useModal();
+
+const OrderStepperOne = () => {
+  const { modalState, dispatchModal } = useModal();
   const currentRef = useRef<HTMLDivElement | null>(null);
 
-
-  console.log("modalState", modalState);
-  
+  // console.log("modalState", modalState);
 
   useEffect(() => {
     if (modalState.type === "order-tracker-one") {
       // Disable scroll
       document.body.style.overflow = "hidden";
     }
-  
+
     return () => {
       // Re-enable scroll on unmount
       document.body.style.overflow = "auto";
     };
   }, [modalState.type]);
-  
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -41,21 +38,18 @@ const OrderStepperOne = (props: Props) => {
     };
   }, [dispatchModal]);
 
-    if(modalState.type !== "order-tracker-one") return null 
+  if (modalState.type !== "order-tracker-one") return null;
 
   return (
-    <div
-    className='absolute top-0 bottom-0  left-0 w-full h-full bg-black/25 z-[10001] flex items-center justify-center'
-    >
-        <div className="bg-white h-[300px] 2xl:w-[60%] md:w-[80%] w-[96%] md:rotate-0 rotate-90 sm:rounded-lg p-4 flex items-center justify-center"
+    <div className="absolute top-0 bottom-0  left-0 w-full h-full bg-black/25 z-[10001] flex items-center justify-center">
+      <div
+        className="bg-white md:h-[300px] h-full 2xl:w-[60%] lg:w-[90%] w-full md:rotate-0  sm:rounded-lg lg:p-4 flex items-center justify-center"
         ref={currentRef}
-        >
-
-          <Tracker />
-            
-        </div>
+      >
+        <Tracker />
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default OrderStepperOne
+export default OrderStepperOne;

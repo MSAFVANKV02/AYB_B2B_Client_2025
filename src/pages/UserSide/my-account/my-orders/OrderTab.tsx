@@ -4,7 +4,6 @@ import { encodeId } from "@/utils/encorder";
 import VerifiedLabel from "@/components/global/verivied-label";
 import MyClock from "@/components/myUi/MyClock";
 import { Separator } from "@/components/ui/separator";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import { Link } from "react-router-dom";
 // import InvoicePdf from "@/components/global/invoice"
 
@@ -13,12 +12,14 @@ import useNavigateClicks from "@/hooks/useClicks";
 import AyButton from "@/components/myUi/AyButton";
 import OrderStepperOne from "@/components/orders/orders-steppers/order_stepper_one";
 
+import OrderDateLabel from "@/components/orders/order-date-label";
+
 type Props = {
   orders: IOrdersType;
   filteredOrder: IOrders[];
 };
 
-export default function OrderTab({  filteredOrder }: Props) {
+export default function OrderTab({ filteredOrder }: Props) {
   // const [showRawJson, setShowRawJson] = useState(false);
 
   // const handleDelete = () => {
@@ -60,7 +61,7 @@ export default function OrderTab({  filteredOrder }: Props) {
 
   return (
     <section className="space-y-2  bg-[#F9F9F9]">
-       <OrderStepperOne />
+      <OrderStepperOne />
       {/* <div className="flex items-center justify-between">
         <h3 className="text-sm underline">
           Showing {filteredOrder.length} of {orders.orders.length} orders
@@ -126,7 +127,7 @@ export default function OrderTab({  filteredOrder }: Props) {
             return (
               <div className="h-fit w-full sm:p-4 p-2 relative flex flex-col rounded-lg justify-between sm:gap-5 gap-3 bg-white">
                 {/* 1. */}
-               
+
                 {/* ==== */}
                 <div className="flex flex-col gap-3">
                   <div className="w-full flex md:flex-row flex-col justify-between md:items-center gap-3 ">
@@ -141,55 +142,7 @@ export default function OrderTab({  filteredOrder }: Props) {
                   </div>
 
                   {/* 1.2 */}
-                  <div className="flex items-center sm:flex-row flex-col gap-3">
-                    <div className="flex items-center gap-1 sm:border-r sm:pr-2">
-                      <span className=" text-[#667085] text-xs ">
-                        Order Date :
-                      </span>
-
-                      <MyClock
-                        className="text-xs text-black"
-                        date={order.createdAt}
-                        showSeconds={false}
-                        showTime={false}
-                        use12Hour
-                      />
-                    </div>
-
-                    {store.order_status === "delivered" ? (
-                      <div className="text-black flex items-center gap-1">
-                        <Icon icon="hugeicons:package-delivered" />
-
-                        <span className="text-black">
-                          Delivered in :{" "}
-                          <MyClock
-                            className="text-black"
-                            addDays={10}
-                            date={store.delivery_date}
-                            showSeconds={false}
-                            showTime={false}
-                            use12Hour
-                          />
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="text-green-500 flex items-center gap-1">
-                        <Icon icon="hugeicons:delivery-truck-01" />
-
-                        <span className="text-green-500">
-                          Estimated delivery:{" "}
-                          <MyClock
-                            className="text-green-500"
-                            addDays={10}
-                            date={order.createdAt}
-                            showSeconds={false}
-                            showTime={false}
-                            use12Hour
-                          />
-                        </span>
-                      </div>
-                    )}
-                  </div>
+                  <OrderDateLabel store={store} order={order} />
                 </div>
 
                 {/* 2. */}
@@ -260,8 +213,8 @@ export default function OrderTab({  filteredOrder }: Props) {
                     variant="outlined"
                     outLineColor="gray"
                     sx={{
-                      fontSize:"0.7rem",
-                      color:"black"
+                      fontSize: "0.7rem",
+                      color: "black",
                     }}
                     onClick={() => {
                       handleClick(
@@ -269,7 +222,7 @@ export default function OrderTab({  filteredOrder }: Props) {
                       );
                     }}
                   >
-                   View Orders
+                    View Orders
                   </AyButton>
                 </div>
               </div>
