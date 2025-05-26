@@ -75,7 +75,7 @@ function AllKindProducts() {
   });
 
   const [filter, setFilter] = useState<ProductState>(getInitialFilterState);
-  console.log(mapToBackendFilter(filter),'mapToBackendFilter');
+  // console.log(mapToBackendFilter(filter),'mapToBackendFilter');
   const debouncedUrlUpdate = useMemo(
     () =>
       debounce((updatedFilter: ProductState) => {

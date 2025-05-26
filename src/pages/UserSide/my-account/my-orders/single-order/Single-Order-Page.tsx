@@ -394,7 +394,9 @@ export default function SingleOrderPage() {
           <MyBackBtn icon={"bx:arrow-back"} />
           <div className="w-full flex sm:flex-row flex-col gap-3 justify-between">
             <h5 className="text-xl font-semibold">Order Details</h5>
-            <SingleOrderActionBtn orders={orders[0]} />
+            {/* <SingleOrderActionBtn orders={orders[0]} /> */}
+            <SingleOrderActionBtn />
+
           </div>
 
           {groupedOrders.map((group, index) => {

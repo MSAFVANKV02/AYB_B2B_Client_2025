@@ -11,11 +11,10 @@ import useNavbarItems from "./components/landings/navbar_Sec/navbarItems";
 import NavigationMenuBar from "./components/landings/navbar_Sec/NavigationMenuBar";
 import { generateToken, getDeviceToken, messaging } from "./lib/firebase";
 import { onMessage } from "firebase/messaging";
-import { useVoiceCommands } from "./hooks/usable-hooks/useVoiceCommands";
 function AppLayout() {
   const location = useLocation();
   const { navItems } = useNavbarItems();
-  useVoiceCommands();
+  // useVoiceCommands();
   // const homePath = location.pathname === "/";
   // const accPath = location.pathname === "/my-account";
 

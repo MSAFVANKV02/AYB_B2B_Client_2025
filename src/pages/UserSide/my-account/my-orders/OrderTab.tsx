@@ -129,8 +129,8 @@ export default function OrderTab({ filteredOrder }: Props) {
                 {/* 1. */}
 
                 {/* ==== */}
-                <div className="flex flex-col gap-3">
-                  <div className="w-full flex md:flex-row flex-col justify-between md:items-center gap-3 ">
+                <div className="flex flex-col sm:gap-3">
+                  <div className="w-full flex md:flex-row flex-col justify-between md:items-center sm:gap-3 ">
                     <div className="">
                       <h5 className="font-semibold text-[#344054] sm:text-xl text-lg ">
                         Order Id: {store.store_order_id}

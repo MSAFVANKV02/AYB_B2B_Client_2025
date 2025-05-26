@@ -1,12 +1,12 @@
 import AyButton from "@/components/myUi/AyButton";
-import { IFlatOrderItem } from "@/types/orderTypes";
+// import { IFlatOrderItem } from "@/types/orderTypes";
 
-type Props = {
-  orders: IFlatOrderItem;
-};
+// type Props = {
+//   orders: IFlatOrderItem;
+// };
 
-const SingleOrderActionBtn = ({ orders }: Props) => {
-  console.log(orders);
+const SingleOrderActionBtn = () => {
+  // console.log(orders);
   
   return (
     <div className="flex sm:gap-3">

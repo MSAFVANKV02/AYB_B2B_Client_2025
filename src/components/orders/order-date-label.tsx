@@ -10,7 +10,7 @@ type Props = {
 
 const OrderDateLabel = ({ store, order }: Props) => {
   return (
-    <div className="flex items-center sm:flex-row flex-col gap-3">
+    <div className="flex sm:items-center sm:flex-row flex-col gap-3">
       <div className="flex items-center gap-1 sm:border-r sm:pr-2">
         <span className=" text-[#667085] text-xs ">Order Date :</span>
 

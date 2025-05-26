@@ -58,17 +58,26 @@ function PaymentMethods() {
 
   return (
     <div>
-      <div className="flex sm:flex-row flex-col sm:gap-4 gap-2 select-none">
+      <div className="flex sm:flex-row flex-col sm:gap-4  select-none">
         {paymentMethods
           .filter((item) => item.isEnabled)
           .map((pay, index) => (
             <div
               key={index}
-              className={`flex gap-1 sm:flex-col items-center px-2 sm:py-2 py-1 sm:w-auto text-sm ${
-                pay.value === formData.payment_method
-                  ? "text-textMain border border-[#5F08B1] bg-bgSoft"
-                  : "text-black border border-black"
-              } rounded-md cursor-pointer`}
+              // className={`flex gap-1 sm:flex-col items-center px-2 sm:py-2 py-1 sm:w-auto text-sm ${
+              //   pay.value === formData.payment_method
+              //     ? "text-textMain border  border-[#5F08B1] bg-bgSoft"
+              //     : "text-black border border-black"
+              // } sm:rounded-md cursor-pointer`}
+              className={`flex gap-1 sm:flex-col items-center px-2 sm:py-2 py-1 sm:w-auto text-sm 
+                ${
+                  pay.value === formData.payment_method
+                    ? `text-textMain border border-[#5F08B1] bg-bgSoft ${
+                        index === 1 ? "sm:border-b border-b-0 sm:border-t border-t-0" : ""
+                      }`
+                    : `text-black border ${index === 1 ? "sm:border-b border-b-0 sm:border-t border-t-0" : ""} border-black`
+                } sm:rounded-md cursor-pointer`}
+              
               onClick={() => {
                 if(pay.value !== "offline_payment"){
                   dispatch(resetPaymentDetails())

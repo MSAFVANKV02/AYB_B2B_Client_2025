@@ -311,12 +311,18 @@ export default function CartDetails({
               {/* Store Header */}
               {items.map((store) => (
                 <div className="flex flex-col">
-                  <div className="flex items-center justify-between mb-2">
-                    <VerifiedLabel key={store.store._id} {...store.store} />
+                  <div className="flex sm:items-center justify-between mb-2">
+                    <VerifiedLabel
+                      key={store.store._id}
+                      {...store.store}
+                      version="v2"
+                    />
 
                     {isCollapsible && (
                       <div className="flex items-center">
-                        <span className="text-sm text-gray-400">{title}</span>
+                        <span className="sm:text-sm text-xs text-gray-400">
+                          {title}
+                        </span>
                         <IconButton
                           onClick={() => toggleCollapse(storeCollapseKey)}
                         >

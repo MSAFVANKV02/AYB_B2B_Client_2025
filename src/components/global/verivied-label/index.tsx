@@ -21,8 +21,8 @@ function VerifiedLabel({ avatar, name, createdAt, version="v1" }: Store & Props)
       icon: "stash:shield-check",
       className:
         " bg-[#FFDD80] ",
-      iconClass: "",
-      titleClass:"text-xs ",
+      iconClass: "sm:text-sm text-[12px] ",
+      titleClass:"sm:text-xs text-[10px] ",
       onClick: () => {},
     },
     {
@@ -30,8 +30,8 @@ function VerifiedLabel({ avatar, name, createdAt, version="v1" }: Store & Props)
       title: "Verified Manufacture",
       icon: "stash:shield-check",
       className: "bg-textSoft",
-      iconClass: "",
-      titleClass:"text-xs ",
+      iconClass: "sm:text-sm text-[12px] ",
+      titleClass:"sm:text-xs text-[10px] ",
       onClick: () => {},
     },
     {
@@ -40,8 +40,8 @@ function VerifiedLabel({ avatar, name, createdAt, version="v1" }: Store & Props)
       icon: "carbon:chat-bot",
       className:
         "border border-textMain overflow-hidden bg-white cursor-pointer group hover:bg-textSoft",
-      iconClass: "text-black group-hover:text-textMain",
-      titleClass:"text-xs text-black group-hover:text-textMain",
+      iconClass: "sm:text-sm text-[12px] text-black group-hover:text-textMain",
+      titleClass:"sm:text-xs text-[10px] text-black group-hover:text-textMain",
       onClick: () => {
         navigate("/my-account/chat")
       },
@@ -74,14 +74,14 @@ function VerifiedLabel({ avatar, name, createdAt, version="v1" }: Store & Props)
     </pre> */}
         </Link>
       ) : (
-        <div className="flex lg:flex-row flex-col lg:items-center sm:gap-4 gap-2 h-fit">
-          <span className="sm:text-base text-black uppercase">{name}</span>
+        <div className="flex lg:flex-row flex-col lg:items-center sm:gap-4 gap-1 h-fit">
+          <span className="sm:text-base text-xs text-black uppercase">{name}</span>
 
-          <div className="flex sm:gap-4 gap-2 flex-wrap">
+          <div className="flex sm:gap-4 gap-1 flex-wrap">
           {IconBadge.map((item, index) => (
             <div
               className={cn(
-                "flex items-center gap-2  h-7 w-fit px-3 rounded-full",
+                "flex items-center gap-2  sm:h-7 h-5 w-fit sm:px-3 px-1.5 rounded-full",
                 item.className
               )}
               key={index}

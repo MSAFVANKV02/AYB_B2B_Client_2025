@@ -71,16 +71,16 @@ function ShippingMethod({ storeId }: Props) {
 
   return (
     <div className="md:ml-6">
-      <div className="flex flex-wrap gap-4 select-none">
+      <div className="flex  sm:gap-4 select-none">
         {shippingMethods.map((ship, index) => (
-          <div className="flex flex-col gap-1" key={index}>
+          <div className="flex flex-col gap-1 sm:w-auto w-full" key={index}>
             <div
-              className={`flex gap-1 items-center min-w-[150px] px-2 py-2 text-sm ${
+              className={`flex gap-1 items-center sm:w-[150px] w-full px-2 py-2 text-sm ${
                 ship.value ===
                 (formData.shipping_info?.[storeId]?.shipping_method ?? "")
                   ? "text-textMain border border-[#5F08B1] bg-bgSoft"
                   : "text-black border border-black"
-              } rounded-md cursor-pointer`}
+              } sm:rounded-md cursor-pointer`}
               onClick={() => handleSelectShippingMethod(ship)}
             >
               <Icon
