@@ -17,7 +17,7 @@ type Props = {
 
 const InvoicePdf = ({ orders, storeOrders }: Props) => {
   const contentRef = useRef<HTMLDivElement>(null);
-  const { userKyc } = useAppSelector((state) => state.auth);
+  const { userKyc,user } = useAppSelector((state) => state.auth);
 
   const reactToPrintFn = useReactToPrint({ contentRef });
 
@@ -97,16 +97,16 @@ const InvoicePdf = ({ orders, storeOrders }: Props) => {
           <div className="">
             {/* 3. address details starts */}
             <div className="grid grid-cols-2 border border-black bg-white">
-              <div className="border-r border-r-black p-3 flex flex-col leading-3">
-                <h5 className="">Ship From:</h5>
-                <span className="text-sm font-bold text-black capitalize">
+              <div className="border-r border-r-black p-1 flex flex-col leading-3">
+                <span className="text-sm">Bill From:</span>
+                <span className="text-xs font-bold text-black capitalize">
                   {storeOrders.store_info.name}
                 </span>
-                <span className="text-sm text-black w-[50%]">
+                <span className="text-xs text-black w-[50%]">
                   {storeOrders.store_info.Address}
                 </span>
 
-                <span className="text-sm text-black">
+                <span className="text-xs text-black">
                   {!storeOrders.store_info.Address.toLowerCase().includes(
                     storeOrders.store_info.state.toLowerCase()
                   ) && (
@@ -129,36 +129,57 @@ const InvoicePdf = ({ orders, storeOrders }: Props) => {
                   ) && storeOrders.store_info.pinCode}
                 </span>
 
-                <span className="text-sm text-black">
+                <span className="text-xs text-black">
                   GSTIN/UIN: {storeOrders.store_info.gstNumber}
                 </span>
               </div>
               {/* 3. shipped to */}
-              <div className=" p-3 flex flex-col gap-0 leading-3">
-                <h5 className="">Ship To:</h5>
-                <span className="text-sm font-bold text-black capitalize">
+              <div className=" p-1 flex flex-col gap-0 leading-3">
+                <span className="text-sm">Ship To:</span>
+                <span className="text-xs font-bold text-black capitalize">
                   {orders.shipping_address.name}
                 </span>
-                <span className="text-sm text-black w-[50%]">
+                <span className="text-xs text-black w-[50%]">
                   Building : {orders.shipping_address.building}
                 </span>
-                <span className="text-sm text-black w-[50%]">
+                <span className="text-xs text-black w-[50%]">
                   email : {orders.shipping_address.email}
                 </span>
-                <span className="text-sm text-black w-[50%]">
+                <span className="text-xs text-black w-[50%]">
                   mobile : {orders.shipping_address.mobile}
                 </span>
-                <span className="text-sm text-black w-[50%]">
+                <span className="text-xs text-black w-[50%]">
                   {orders.shipping_address.city},{" "}
                   {orders.shipping_address.state},{" "}
                   {orders.shipping_address.country},{" "}
                   {orders.shipping_address.zip}
                 </span>
-                <span className="text-sm text-black">
+               
+              </div>
+            </div>
+            <div className=" p-1 flex flex-col gap-0 leading-3 border border-t-0 border-black bg-white">
+                <span className="text-sm">Bill To:</span>
+                <span className="text-sm font-bold text-black capitalize">
+                  {userKyc?.businessName}
+                </span>
+                <span className="text-xs text-black w-[50%]">
+                  Building : {userKyc?.buildingName}
+                </span>
+                <span className="text-xs text-black w-[50%]">
+                  email : {userKyc?.emailId}
+                </span>
+                <span className="text-xs text-black w-[50%]">
+                  mobile : {user?.mobile}
+                </span>
+                <span className="text-xs text-black w-[50%]">
+                  {userKyc?.state},{" "}
+                  {userKyc?.country},{" "}
+                  {userKyc?.pinCode}
+                </span>
+                <span className="text-xs text-black">
                   GSTIN/UIN: {userKyc?.gstNumber ?? "Not Provided"}
                 </span>
               </div>
-            </div>
             {/* ========================= */}
             {/* <Separator /> */}
             {/* product table start */}

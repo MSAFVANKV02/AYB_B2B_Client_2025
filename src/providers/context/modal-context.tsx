@@ -57,7 +57,10 @@ type ModalType =
   | "NewAddress"
   | "shipping"
   | "offlinePay"
-  | "order-tracker-one";
+  | "order-tracker-one"
+  | "cancel-order"
+  | "return-order";
+
 
 type ModalState = {
   isOpen: boolean;

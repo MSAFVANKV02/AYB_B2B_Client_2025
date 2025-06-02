@@ -41,22 +41,17 @@ import ShoppingCart from "@/pages/UserSide/cart/page";
 
 import ConfirmOrder from "@/components/checkout/Confirm-Order";
 import SettingsProfilePage from "@/pages/UserSide/my-account/my-profile-page";
-import MyOrdersPage from "@/pages/UserSide/my-account/my-orders/My-Orders-Page";
 import SingleOrderPage from "@/pages/UserSide/my-account/my-orders/single-order/Single-Order-Page";
-import ChatPage from "@/pages/UserSide/my-account/chat/Chat-Page";
-import WishlistPage from "@/pages/UserSide/my-account/wishlist/wishlist-page";
-import UseReviewPage from "@/pages/UserSide/my-account/reviews/use-review-page";
 import { Suspense } from "react";
 import PreloaderPage from "@/preloader-page";
-import PageOnBuild from "@/components/myUi/PageOnBuild";
 import { MyAccountLayout, StoreLayout } from "@/layouts/Sidbar_Layout";
 import StoreRegisterPage from "@/pages/UserSide/auth/store/store-register-page";
 import StoreRegisterForm from "@/pages/UserSide/auth/store/store_register_form";
 import SellerRegisterPage from "@/pages/seller/seller-register-page";
 import SellerRegisterForm from "@/pages/seller/seller_register_form";
 import AllKindProducts from "@/pages/UserSide/Prod_pages/all_pages/all-kind-products";
-import NotificationsPage from "@/pages/UserSide/my-account/notifications/notifications-page";
 import PurchasePage from "@/pages/UserSide/cart/checkout/page";
+import MyAccountPages from "@/pages/UserSide/my-account/my-account-pages";
 // import PreloaderPage from "@/preloader-page";
 
 // import withAuth from "@/middlewares/WithAuth";
@@ -93,9 +88,9 @@ const rootRouter = createBrowserRouter(
         // {
         //   path: "/saloon",
         //   element: (
-          
+
         //       <SaloonLandingPage />
-            
+
         //   ),
         // },
         // {
@@ -226,19 +221,24 @@ const rootRouter = createBrowserRouter(
           element: <MyAccountLayout />, // Parent layout for Sales
           children: [
             { path: "", element: <SettingsProfilePage /> },
-            { path: "my-orders", element: <MyOrdersPage /> },
-            { path: "my-orders/:orderId/:storeOrderId", element: <SingleOrderPage /> },
+            { path: ":page", element: <MyAccountPages /> },
+            // { path: "my-orders", element: <MyOrdersPage /> },
             {
-              path: "my-orders/:slug/review/:orderId",
-              element: <UseReviewPage />,
+              path: "my-orders/:orderId/:storeOrderId",
+              element: <SingleOrderPage />,
             },
-            { path: "chat", element: <ChatPage /> },
-            { path: "my-wishlist", element: <WishlistPage /> },
-            // { path: "return", element: <UseReturnPage /> },
-            { path: "notifications", element: <NotificationsPage /> },
-            { path: "credit-request", element: <PageOnBuild /> },
-            // { path: "wallet", element: <MyWallet /> },
+            // { path: "my-orders/return", element: <ReturnOrderPage /> },
 
+            // {
+            //   path: "my-orders/:slug/review/:orderId",
+            //   element: <UseReviewPage />,
+            // },
+            // { path: "chat", element: <ChatPage /> },
+            // { path: "my-wishlist", element: <WishlistPage /> },
+            // // { path: "return", element: <UseReturnPage /> },
+            // { path: "notifications", element: <NotificationsPage /> },
+            // { path: "credit-request", element: <PageOnBuild /> },
+            // { path: "wallet", element: <MyWallet /> },
           ],
         },
       ],
@@ -255,7 +255,6 @@ const rootRouter = createBrowserRouter(
               <SellerRegisterPage />{" "}
             </ProtectedRoute>
           ),
-        
         },
         {
           path: "seller/register/:token",
@@ -319,7 +318,7 @@ const rootRouter = createBrowserRouter(
 
     //   element: <AdmLayout />,
     //   children: [
-    
+
     //     {
     //       path: "dashboard",
     //       element: <DashboardLayoutBasic />, // Loads at "/admin/dashboard"

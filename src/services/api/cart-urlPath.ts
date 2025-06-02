@@ -22,5 +22,5 @@ export const REMOVE_COUPON_URL = '/api/order/cart/remove-coupon'
 export const SUBMIT_ORDER_URL = '/api/order/orders'
 export const SUBMIT_RAZORPAY_ORDER_URL = '/api/order/orders/razorpay/verify'
 
-export const GET_ALL_ORDERS_URL = '/api/order/orders/user'
+
 

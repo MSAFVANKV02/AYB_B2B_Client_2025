@@ -1,7 +1,15 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState } from "react";
+import OptionItems from "./more_options/option_items";
+import { IFinalProductTypes, Product } from "@/types/final-product-types";
 
-function ProductImages({ images }: { images: string[] }) {
+type Props = {
+  item: Product | null;
+  stockData?: IFinalProductTypes[];
+  images: string[]
+};
+
+function ProductImages({ images, item,stockData }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // const handlePrev = () => {
@@ -33,6 +41,13 @@ function ProductImages({ images }: { images: string[] }) {
 
   return (
     <div className="h-full p-2">
+      <div className="absolute top-3 right-3 z-20 h-full pointer-events-none w-fit ">
+          <div className={` pointer-events-auto`}
+      
+          >
+            <OptionItems item={item} stockData={stockData} />
+          </div>
+        </div>
       <div className="flex flex-col gap- h-full">
         {/* Main Image */}
         <div className="relative  flex items-center  justify-center h-[50vh] md:h-[65vh]">

@@ -2,7 +2,6 @@ import { Separator } from "@/components/ui/separator";
 import SettingsLayout from "./layout";
 import PersonalInformationForm from "./Profile-form";
 import ProfileKycDetails from "./Profile-Kyc-Details";
-import { UseContextPage } from "@/providers/context/context";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 
 import AddressList from "../../../components/checkout/AddressList";
@@ -13,18 +12,23 @@ import AyButton from "@/components/myUi/AyButton";
 import Modal from "react-modal";
 import CreateAddressForm from "./user-address/create_Address_Form";
 import { useAppSelector } from "@/providers/redux/hook";
+import { useModal } from "@/providers/context/modal-context";
 Modal.setAppElement("#root");
 
 export default function SettingsProfilePage() {
-  const {
-    isOpenModal,
-    handleOpenModal,
-    addAddress,
-    handleCloseModal,
-  } = UseContextPage();
+  const { dispatchModal, modalState } = useModal();
 
   const { address } = useAppSelector((state) => state.auth);
 
+  const handleCloseModal = () => {
+    if (modalState.type === "NewAddress") {
+      dispatchModal({ type: "OPEN_MODAL", modalType: "address" });
+    } else {
+      dispatchModal({ type: "CLOSE_MODAL" });
+    }
+
+    // setIsOpenModal(false); // if you use this in context
+  };
 
   return (
     <SettingsLayout>
@@ -47,7 +51,7 @@ export default function SettingsProfilePage() {
         <div className="">
           <Separator className="my-5" />
           <Modal
-            isOpen={isOpenModal}
+            isOpen={modalState.isOpen}
             onRequestClose={handleCloseModal}
             shouldCloseOnOverlayClick={true}
             overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
@@ -59,39 +63,34 @@ export default function SettingsProfilePage() {
             >
               <CloseOutlinedIcon />
             </IconButton>
-            {addAddress ? (
+            {modalState.type === "NewAddress" ? (
               <>
                 {/* <AddressForm addAddress={addAddress} /> d*/}
                 <CreateAddressForm />
               </>
-            ) : (
-              <AddressList
-         
-              />
-            )}
+            ) : modalState.type === "address" ? (
+              <AddressList />
+            ) : null}
           </Modal>
 
           <div className="flex justify-between items-center ">
-            {
-              address?.filter((filter)=>filter.isDefault).map((add,index)=>(
-                <div className="flex flex-col jc"
-                key={index}
-                >
-                <h6>Default Shipping Address</h6>
-                <span className="text-sm text-gray-600">{add.name}</span>
-                <span className="text-sm text-gray-600">
-                 {add.street}
-                </span>
-                <span className="text-sm text-gray-600">
-                  Phone Number: {add.mobile}
-                </span>
-              </div>
-              ))
-            }
-         
+            {address
+              ?.filter((filter) => filter.isDefault)
+              .map((add, index) => (
+                <div className="flex flex-col jc" key={index}>
+                  <h6>Default Shipping Address</h6>
+                  <span className="text-sm text-gray-600">{add.name}</span>
+                  <span className="text-sm text-gray-600">{add.street}</span>
+                  <span className="text-sm text-gray-600">
+                    Phone Number: {add.mobile}
+                  </span>
+                </div>
+              ))}
 
             <AyButton
-              onClick={handleOpenModal}
+              onClick={() => {
+                dispatchModal({ type: "OPEN_MODAL", modalType: "address" });
+              }}
               title="change"
               variant="outlined"
               outLineColor="black"

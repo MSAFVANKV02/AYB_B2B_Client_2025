@@ -2,7 +2,6 @@ import SettingsLayout from "../layout";
 import OrderTab from "./OrderTab";
 import { IOrders, IOrdersType } from "@/types/orderTypes";
 import { useQueryData } from "@/hooks/useQueryData";
-import { getAllOrdersAction } from "@/action/checkout/checkoutAction";
 import { useSearchFn } from "@/hooks/useSeach-Fn";
 import Loader from "@/components/global/loader";
 import { Input } from "@/components/ui/input";
@@ -13,6 +12,7 @@ import { useWindowWidth } from "@react-hook/window-size";
 import OrderSideBar from "@/components/orders/order-sidebar";
 import NoOrders from "@/components/orders/no-order";
 import { useMemo } from "react";
+import { getAllOrdersAction } from "@/action/orders/odrerAction";
 
 // type IOrderTabs = "Order" | "Replace";
 
@@ -23,7 +23,7 @@ export default function MyOrdersPage() {
   const pageQ = searchParams.get("page") ?? "1";
   const type = searchParams.get("type") ?? "pending";
 
-  const { data: fetchedBannerImages, isFetching } = useQueryData(
+  const { data: fetchedAllOrders, isFetching } = useQueryData(
     ["all-orders",pageQ,type],
     () =>
       getAllOrdersAction([
@@ -34,12 +34,12 @@ export default function MyOrdersPage() {
     { disableRefetch: true }
   );
 
-  const { data: fetchedOrdersData } = (fetchedBannerImages ?? {}) as {
+  const { data: fetchedOrdersData } = (fetchedAllOrders ?? {}) as {
     status?: number;
     data?: IOrdersType;
   };
 
-  console.log(fetchedOrdersData, "fetchedOrdersData");
+  // console.log(fetchedOrdersData, "fetchedOrdersData");
 
   // const orderList = fetchedOrdersData?.orders ?? [];
   const orderList = useMemo(() => {

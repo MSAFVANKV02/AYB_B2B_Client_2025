@@ -8,11 +8,10 @@ import {
   TransactionDetails,
 } from "@/providers/redux/userSide/checkout-slice";
 import {
-  get_All_Order_Api,
   submit_Order_Api,
 } from "@/services/user_side_api/checkout/route";
 import { IAddressType } from "@/types/address-types";
-import { IFilterOrders } from "@/types/orderTypes";
+
 import { AxiosError } from "axios";
 
 export type OrderSummaryType = {
@@ -175,26 +174,3 @@ export const checkoutOrderAction = async (
   }
 };
 
-// 2 get orders ===================
-export const getAllOrdersAction = async (
-  filter?: { key: IFilterOrders; value: string }[]
-) => {
-  try {
-    const { data, status } = await get_All_Order_Api(filter);
-    if (status === 200 || status === 201) {
-      return {
-        data: data.data,
-        message: data.message,
-        status: status,
-      };
-    }
-  } catch (error) {
-    const err = error as AxiosError<{ message: string }>;
-    return {
-      data: [],
-      status: 500,
-      message:
-        err.response?.data?.message || err.message || "Something went wrong",
-    };
-  }
-};

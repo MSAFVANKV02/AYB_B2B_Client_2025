@@ -77,7 +77,7 @@ const PersonalInformationForm: React.FC = () => {
                   placeholder="Name"
                   {...field}
                   readOnly={!updatePersonalData}
-                  className="w-full p-3 border border-gray-300 rounded-md bg-gray-50 text-sm
+                  className="w-full p-3 border border-gray-300 rounded-md bg-white text-sm
                    active:right-0 active:outline-none  focus:ring-1"
                 />
               </FormControl>
@@ -101,7 +101,7 @@ const PersonalInformationForm: React.FC = () => {
                   placeholder="Shop name"
                   {...field}
                   readOnly={!updatePersonalData}
-                  className="w-full p-3 border border-gray-300 rounded-md bg-gray-50 text-sm
+                  className="w-full p-3 border border-gray-300 rounded-md bg-white text-sm
                    active:right-0 active:outline-none  focus:ring-1"
                 />
               </FormControl>
@@ -123,7 +123,7 @@ const PersonalInformationForm: React.FC = () => {
                   placeholder="Email"
                   {...field}
                   readOnly={!updatePersonalData}
-                  className="w-full p-3 border border-gray-300 rounded-md bg-gray-50 text-sm
+                  className="w-full p-3 border border-gray-300 rounded-md bg-white text-sm
                    active:right-0 active:outline-none  focus:ring-1"
                 />
               </FormControl>
@@ -147,7 +147,7 @@ const PersonalInformationForm: React.FC = () => {
                   placeholder="Mobile number"
                   {...field}
                   readOnly={!updatePersonalData}
-                  className="w-full p-3 border border-gray-300 rounded-md bg-gray-50 text-sm
+                  className="w-full p-3 border border-gray-300 rounded-md bg-white text-sm
                    active:right-0 active:outline-none  focus:ring-1"
                 />
               </FormControl>

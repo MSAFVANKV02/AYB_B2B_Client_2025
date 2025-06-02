@@ -49,6 +49,8 @@ function MainHome() {
     data?: IBannerImageTypes[];
   };
 
+  
+
   const [bannerData, setBannerData] = useState({
     FLASH_BANNERS: [] as IBannerImageTypes[],
     HOME_SLIDER_1: [] as IBannerImageTypes[],
@@ -59,7 +61,9 @@ function MainHome() {
     LOGIN_PAGE: [] as IBannerImageTypes[],
   });
 
-  // console.log(bannerData,'bannerData');
+  console.log(bannerData,'bannerData');
+  // console.log(banners, "banners");
+
 
   useEffect(() => {
     if (banners && banners.length > 0) {
@@ -140,12 +144,12 @@ function MainHome() {
             />
           ))}
         </BannerWrapper>
-
+        {/* === window.location.href */}
         {/* Ensure same height for AdvertiseBanner */}
         <div className="flex-grow rounded-md md:h-[360px] sm:h-[200px] h-[100px] overflow-hidden w-[100px]">
           {/* <AdvertiseBanner /> */}
           {bannerData.ADS.filter(
-            (ad) => ad.context === window.location.href
+            (ad) => ad.context 
           ).map((ads, index) => (
             <Image
               link={ads.redirectUrl}

@@ -23,7 +23,7 @@ export default function ProductsPage() {
 
   const { isFetching } = ProductData([
     {
-      key: ("product" as IGetAllFilterKey) ,
+      key: "product" as IGetAllFilterKey,
       value: slug ?? "",
     },
   ]);
@@ -42,9 +42,7 @@ export default function ProductsPage() {
     <>
       {isFetching ? (
         <div className="my-10">
-          <ProductDetailSkelton 
-          
-          />
+          <ProductDetailSkelton />
         </div>
       ) : (
         <div className="min-h-screen flex flex-col section_container_dash space-y-10 my-10">
@@ -52,7 +50,11 @@ export default function ProductsPage() {
           <div className="flex flex-col lg:flex-row gap-6 w-full   h-full">
             {/* Product Image Section */}
             <div className="lg:w-[50%] lg:sticky lg:top-0 rounded-lg border min-h-[50vh] lg:h-[80vh] bg-white/10 filter backdrop-blur-lg">
-              <ProductImages images={product.gallery_image} />
+              <ProductImages
+                item={product}
+                stockData={products}
+                images={product.gallery_image}
+              />
             </div>
 
             {/* Product Details Section */}
@@ -70,9 +72,9 @@ export default function ProductsPage() {
           {/* Product Features tabs */}
           <div className="">
             <ProductTabs
-              // productFeatures={product?.productFeatures ?? ""}
-              // specialFeatures={product?.specialFeatures ?? ""}
-              // careGuide={product?.careGuide ?? ""}
+            // productFeatures={product?.productFeatures ?? ""}
+            // specialFeatures={product?.specialFeatures ?? ""}
+            // careGuide={product?.careGuide ?? ""}
             />
           </div>
 

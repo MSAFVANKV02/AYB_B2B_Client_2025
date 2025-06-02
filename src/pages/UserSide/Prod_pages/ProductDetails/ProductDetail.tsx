@@ -1,17 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import ProductDrawer from "./ProductDrawer";
-import { useMemo, useState } from "react";
-import { IconButton } from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
-import ShareSocial from "@/components/ui/share-social";
+import {  useState } from "react";
+
 import { Divider } from "@mui/joy";
 import useNavigateClicks from "@/hooks/useClicks";
 import { IFinalProductTypes, Product } from "@/types/final-product-types";
-import { AddWishlistRedux } from "@/providers/redux/userSide/product_Slice";
-import { dispatch, useAppSelector } from "@/providers/redux/hook";
 import VerifiedLabel from "@/components/global/verivied-label";
 
 type Props = {
@@ -26,8 +20,8 @@ function ProductDetail({ product, stockData }: Props) {
   const { handleClick } = useNavigateClicks();
   const [drawerOpen, setDrawerOpen] = useState(false);
   // const [favorite, setFavorite] = useState(false);
-  const [showShareOptions, setShowShareOptions] = useState(false);
-  const { wishlist } = useAppSelector((state) => state.products);
+  // const [showShareOptions, setShowShareOptions] = useState(false);
+  // const { wishlist } = useAppSelector((state) => state.products);
 
   // const {  size } = details[0];
 
@@ -42,15 +36,15 @@ function ProductDetail({ product, stockData }: Props) {
 
   // console.log(stockData,'stockData');
 
-  const isFavorite = useMemo(() => {
-    return (
-      wishlist && wishlist.some((item) => item._id === stockData?.[0]?._id)
-    );
-  }, [wishlist, stockData]);
+  // const isFavorite = useMemo(() => {
+  //   return (
+  //     wishlist && wishlist.some((item) => item._id === stockData?.[0]?._id)
+  //   );
+  // }, [wishlist, stockData]);
 
-  const toggleShareOptions = () => {
-    setShowShareOptions((prev) => !prev);
-  };
+  // const toggleShareOptions = () => {
+  //   setShowShareOptions((prev) => !prev);
+  // };
 
   const colors = [
     ...new Set(product.variations.flatMap((variant) => variant.colorName)),
@@ -59,12 +53,12 @@ function ProductDetail({ product, stockData }: Props) {
 
   return (
     <div className="sm:px-4  h-full flex flex-col">
-      <div className=" space-y-5">
+      <div className=" space-y-3">
         <div className="relative">
-          <div className=" md:w-3/4 w-[80%] flex flex-col">
-            <div className=" bg-pink-50 w-full">
+          <div className=" flex flex-col gap-2">
+            <div className=" w-full">
               {stockData?.map((store) => (
-                <VerifiedLabel key={store.store._id} {...store.store} />
+                <VerifiedLabel key={store.store._id} {...store.store} version="v2" />
               ))}
             </div>
             <span className="md:text-[20px] font-bold">
@@ -84,7 +78,7 @@ function ProductDetail({ product, stockData }: Props) {
             )}
           </div>
 
-          <div className="flex flex-col absolute top-0 right-0">
+          {/* <div className="flex flex-col absolute top-0 right-0">
             <IconButton
               onClick={() =>
                 dispatch(AddWishlistRedux(stockData?.[0]._id ?? ""))
@@ -112,7 +106,7 @@ function ProductDetail({ product, stockData }: Props) {
                 </div>
               )}
             </div>
-          </div>
+          </div> */}
           {/* <Icon */}
         </div>
 
@@ -129,7 +123,7 @@ function ProductDetail({ product, stockData }: Props) {
                     )
                   }
                 </pre> */}
-              <p className="text-textGray text-sm">
+              <p className="text-textGray text-xs">
                 {variant.maxPiece === undefined ||
                 variant.maxPiece === Infinity ? (
                   <>
@@ -143,7 +137,7 @@ function ProductDetail({ product, stockData }: Props) {
                 &nbsp; pieces
               </p>
 
-              <span className="text-xl text-black font-semibold">
+              <span className="text-sm text-black font-semibold">
                 ₹{variant?.purchase_Amount?.toFixed(2)}
               </span>
             </div>
@@ -152,14 +146,14 @@ function ProductDetail({ product, stockData }: Props) {
         <Divider sx={{}} />
 
         {/* Variations */}
-        <h2 className="text-lg ">Variations</h2>
+        <h2 className="text-sm ">Variations</h2>
 
         <div className="flex gap-2 ">
-          <span className="text-[16px]">Colors: {colors.length}</span>
-          {/* <span className="text-[16px]">Colors: {product.variations.length}</span> */}
+          <span className="text-sm">Colors: {colors.length}</span>
+          {/* <span className="text-sm">Colors: {product.variations.length}</span> */}
 
-          {/* <span className="text-[16px]">Colors: {colors.join(", ")}</span> */}
-          <span className="text-[16px]">Size: {details.length}</span>
+          {/* <span className="text-sm">Colors: {colors.join(", ")}</span> */}
+          <span className="text-sm">Size: {details.length}</span>
         </div>
 
         {/* Color Variations */}

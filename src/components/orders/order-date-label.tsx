@@ -66,7 +66,7 @@ const OrderDateLabel = ({ store, order }: Props) => {
             <MyClock
               className="text-[#991B1B]"
               addDays={10}
-              date={store.return_action_date}
+              date={store.cancelled_date}
               showSeconds={false}
               showTime={false}
               use12Hour

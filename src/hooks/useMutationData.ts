@@ -12,7 +12,7 @@ import {
 export const useMutationData = (
   mutationKey: MutationKey,
   mutationFn: MutationFunction<any, any>,
-  queryKey?: string,
+  queryKey?: MutationKey,
   // onSuccess?: () => void,
   onSuccess?: (data: any) => void,
   setHaveError?: (value: boolean) => void
@@ -74,8 +74,8 @@ export const useMutationData = (
     },
     onSettled: async () => {
       return await client.invalidateQueries({
-        queryKey: [queryKey],
-        exact: true,
+        queryKey: queryKey,
+        refetchType: "active",
       });
     },
   });

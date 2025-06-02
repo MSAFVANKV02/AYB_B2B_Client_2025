@@ -1,6 +1,5 @@
 import {
   APPLY_COUPON_URL,
-  GET_ALL_ORDERS_URL,
   REMOVE_COUPON_URL,
   SUBMIT_ORDER_URL,
   SUBMIT_RAZORPAY_ORDER_URL,
@@ -9,7 +8,6 @@ import { API } from "../auth/route_url";
 
 import { ShippingInfoType } from "@/providers/redux/userSide/checkout-slice";
 import { IAddressType } from "@/types/address-types";
-import { IFilterOrders } from "@/types/orderTypes";
 
 // 1. Coupon Apply
 export const apply_Coupon_Api = async (coupon: string) =>
@@ -29,18 +27,7 @@ export const remove_Coupon_Api = async () =>
 
 
 
-export const get_All_Order_Api = async ( filter?: { key: IFilterOrders; value: string }[]) =>
- {
-  const params: Record<string, string> = {};
 
-  if (filter) {
-    filter.forEach((filter) => {
-      params[filter.key] = filter.value; // ✅ Convert array to query parameters
-    });
-  }
-
-  return  await API.get(GET_ALL_ORDERS_URL, {params, withCredentials: true });
- }
 
 // ======= checkout section ========= ///
 // 1. Coupon Apply

@@ -312,7 +312,6 @@ import "@/assets/css/remover.css";
 import { useParams } from "react-router-dom";
 import { decodeId } from "@/utils/encorder";
 import { useQueryData } from "@/hooks/useQueryData";
-import { getAllOrdersAction } from "@/action/checkout/checkoutAction";
 
 import Loader from "@/components/global/loader";
 import { OrderStatusStepper } from "@/components/orders/orders-steppers/order_stepper";
@@ -325,6 +324,7 @@ import OrderSummary from "@/components/orders/single-order-widgets/order-detials
 import MyBackBtn from "@/components/myUi/myBackBtn";
 
 import OrderDateLabel from "@/components/orders/order-date-label";
+import { getAllOrdersAction } from "@/action/orders/odrerAction";
 
 export default function SingleOrderPage() {
   const { orderId, storeOrderId } = useParams();
@@ -358,8 +358,8 @@ export default function SingleOrderPage() {
         return { status: res.status, data: filteredItems };
       }
       return { status: 500, data: [] };
-    },
-    { disableRefetch: true }
+    }
+    // { disableRefetch: true }
   );
 
   const orders: IFlatOrderItem[] = fetchedOrders?.data ?? [];
@@ -395,8 +395,12 @@ export default function SingleOrderPage() {
           <div className="w-full flex sm:flex-row flex-col gap-3 justify-between">
             <h5 className="text-xl font-semibold">Order Details</h5>
             {/* <SingleOrderActionBtn orders={orders[0]} /> */}
-            <SingleOrderActionBtn />
-
+            {orders.length > 0 && (
+              <SingleOrderActionBtn
+                order={orders[0].order}
+                store={orders[0].store}
+              />
+            )}
           </div>
 
           {groupedOrders.map((group, index) => {
@@ -419,6 +423,7 @@ export default function SingleOrderPage() {
             return (
               <div className="flex flex-col gap-4" key={index}>
                 {/* Shipping + Payment Info */}
+
                 {index === 0 && (
                   <div className="bg-white p-3 rounded-lg flex md:flex-row flex-col md:gap-0 gap-3">
                     <div className="flex flex-col gap-2 md:w-1/2 w-full break-words whitespace-pre-line">
@@ -492,11 +497,16 @@ export default function SingleOrderPage() {
                 {}
 
                 {/* 3. order summary */}
-                <OrderSummary
+                {
+                  orders.length > 0 && (
+                     <OrderSummary
                   index={index}
                   orders={firstItem}
                   totalQty={totalQty}
                 />
+                  )
+                }
+               
               </div>
             );
           })}
