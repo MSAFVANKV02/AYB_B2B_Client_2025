@@ -325,11 +325,14 @@ import MyBackBtn from "@/components/myUi/myBackBtn";
 
 import OrderDateLabel from "@/components/orders/order-date-label";
 import { getAllOrdersAction } from "@/action/orders/odrerAction";
+import { useModal } from "@/providers/context/modal-context";
+import ReturnOrderActionPage from "./return/page";
 
 export default function SingleOrderPage() {
   const { orderId, storeOrderId } = useParams();
   const decodedOrderId = decodeId(orderId ?? "");
   const decodedStoreOrderId = decodeId(storeOrderId ?? "");
+  const {  modalState } = useModal();
 
   const {
     data: fetchedOrders,
@@ -389,115 +392,118 @@ export default function SingleOrderPage() {
 
   return (
     <SettingsLayout>
-      <div className="flex h-fit lg:flex-row min-h-[80dvh] gap-5 flex-col justify-between">
-        <div className="flex flex-col sm:gap-4 gap-3 lg:w-[70%] w-full">
-          <MyBackBtn icon={"bx:arrow-back"} />
-          <div className="w-full flex sm:flex-row flex-col gap-3 justify-between">
-            <h5 className="text-xl font-semibold">Order Details</h5>
-            {/* <SingleOrderActionBtn orders={orders[0]} /> */}
-            {orders.length > 0 && (
-              <SingleOrderActionBtn
-                order={orders[0].order}
-                store={orders[0].store}
-              />
-            )}
-          </div>
+      {modalState.type === "return-order" ? (
+        <ReturnOrderActionPage orders={orders} />
+      ) : (
+        <div className="flex h-fit lg:flex-row min-h-[80dvh] gap-5 flex-col justify-between">
+          <div className="flex flex-col sm:gap-4 gap-3 lg:w-[70%] w-full">
+            <MyBackBtn icon={"bx:arrow-back"} />
+            <div className="w-full flex sm:flex-row flex-col gap-3 justify-between">
+              <h5 className="text-xl font-semibold">Order Details</h5>
+              {/* <SingleOrderActionBtn orders={orders[0]} /> */}
+              {orders.length > 0 && (
+                <SingleOrderActionBtn
+                  order={orders[0].order}
+                  store={orders[0].store}
+                />
+              )}
+            </div>
 
-          {groupedOrders.map((group, index) => {
-            const firstItem = group[0];
-            const { order, store } = firstItem;
+            {groupedOrders.map((group, index) => {
+              const firstItem = group[0];
+              const { order, store } = firstItem;
 
-            const totalQty = group.reduce((sum, item) => {
-              const itemQty = item.product.variations.reduce(
-                (varSum, variation) =>
-                  varSum +
-                  variation.details.reduce(
-                    (detSum, detail) => detSum + detail.quantity,
-                    0
-                  ),
-                0
-              );
-              return sum + itemQty;
-            }, 0);
+              const totalQty = group.reduce((sum, item) => {
+                const itemQty = item.product.variations.reduce(
+                  (varSum, variation) =>
+                    varSum +
+                    variation.details.reduce(
+                      (detSum, detail) => detSum + detail.quantity,
+                      0
+                    ),
+                  0
+                );
+                return sum + itemQty;
+              }, 0);
 
-            return (
-              <div className="flex flex-col gap-4" key={index}>
-                {/* Shipping + Payment Info */}
+              return (
+                <div className="flex flex-col gap-4" key={index}>
+                  {/* Shipping + Payment Info */}
 
-                {index === 0 && (
-                  <div className="bg-white p-3 rounded-lg flex md:flex-row flex-col md:gap-0 gap-3">
-                    <div className="flex flex-col gap-2 md:w-1/2 w-full break-words whitespace-pre-line">
-                      <span className="font-semibold text-sm">Ship to:</span>
-                      <div className="md:w-3/4 w-full flex flex-col">
-                        <span>{order.shipping_address.name}</span>
-                        <span>{order.shipping_address.street}</span>
-                        <span>
-                          {order.shipping_address.state},{" "}
-                          {order.shipping_address.country}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-2 md:w-1/2 w-full">
-                      <span className="font-semibold text-sm">
-                        Payment Details
-                      </span>
-                      <div>
-                        {order.payment_method === "offline_payment" ? (
-                          <div className="flex flex-col">
-                            <span>
-                              <b className="text-black">Payment Method : </b>
-                              Offline Payment
-                            </span>
-                            <span>
-                              <b className="text-black">Payment Type: </b>
-                              {order.payment_details.payment_type}
-                            </span>
-                          </div>
-                        ) : (
-                          <div className="flex flex-col">
-                            <span className="capitalize">
-                              <b className="text-black">Payment Method: </b>
-                              {order.payment_method}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Order Overview */}
-                <div className="bg-white p-3 rounded-lg flex flex-col gap-3">
                   {index === 0 && (
-                    <div className="flex flex-col">
-                      <h5 className="font-semibold text-[#344054] sm:text-xl ">
-                        Order Id: {store.store_order_id}
-                      </h5>
-                      {/* dates started */}
-                      <OrderDateLabel store={store} order={order} />
+                    <div className="bg-white p-3 rounded-lg flex md:flex-row flex-col md:gap-0 gap-3">
+                      <div className="flex flex-col gap-2 md:w-1/2 w-full break-words whitespace-pre-line">
+                        <span className="font-semibold text-sm">Ship to:</span>
+                        <div className="md:w-3/4 w-full flex flex-col">
+                          <span>{order.shipping_address.name}</span>
+                          <span>{order.shipping_address.street}</span>
+                          <span>
+                            {order.shipping_address.state},{" "}
+                            {order.shipping_address.country}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-2 md:w-1/2 w-full">
+                        <span className="font-semibold text-sm">
+                          Payment Details
+                        </span>
+                        <div>
+                          {order.payment_method === "offline_payment" ? (
+                            <div className="flex flex-col">
+                              <span>
+                                <b className="text-black">Payment Method : </b>
+                                Offline Payment
+                              </span>
+                              <span>
+                                <b className="text-black">Payment Type: </b>
+                                {order.payment_details.payment_type}
+                              </span>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col">
+                              <span className="capitalize">
+                                <b className="text-black">Payment Method: </b>
+                                {order.payment_method}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   )}
 
-                  <Separator />
+                  {/* Order Overview */}
+                  <div className="bg-white p-3 rounded-lg flex flex-col gap-3">
+                    {index === 0 && (
+                      <div className="flex flex-col">
+                        <h5 className="font-semibold text-[#344054] sm:text-xl ">
+                          Order Id: {store.store_order_id}
+                        </h5>
+                        {/* dates started */}
+                        <OrderDateLabel store={store} order={order} />
+                      </div>
+                    )}
 
-                  {firstItem.showVerifiedLabel && (
-                    <VerifiedLabel {...store.store_info} version="v2" />
-                  )}
+                    {index === 0 && <Separator />}
 
-                  {/* Grouped Variations */}
-                  {group.map((variationItem, vi) => (
-                    <DetailedProductOverview
-                      key={vi}
-                      index={vi}
-                      totalQty={totalQty}
-                      orders={variationItem}
-                    />
-                  ))}
-                </div>
-                {}
+                    {firstItem.showVerifiedLabel && (
+                      <VerifiedLabel {...store.store_info} version="v2" />
+                    )}
 
-                {/* 3. order summary */}
-                {
+                    {/* Grouped Variations */}
+                    {group.map((variationItem, vi) => (
+                      <DetailedProductOverview
+                        key={vi}
+                        index={vi}
+                        totalQty={totalQty}
+                        orders={variationItem}
+                      />
+                    ))}
+                  </div>
+                  {}
+
+                  {/* 3. order summary */}
+                  {/* {
                   orders.length > 0 && (
                      <OrderSummary
                   index={index}
@@ -505,19 +511,34 @@ export default function SingleOrderPage() {
                   totalQty={totalQty}
                 />
                   )
-                }
-               
-              </div>
-            );
-          })}
-        </div>
+                } */}
+                </div>
+              );
+            })}
 
-        <div className="lg:w-[30%] w-full">
-          <div className="sticky top-4 bg-white p-3 rounded-lg shadow-sm">
-            <OrderStatusStepper orderDetails={orders} refetch={refetch} />
+            <OrderSummary
+              index={0}
+              orders={orders[0]}
+              totalQty={orders.reduce((sum, item) => {
+                return (
+                  sum +
+                  item.product.variations.reduce((vSum, v) => {
+                    return (
+                      vSum + v.details.reduce((dSum, d) => dSum + d.quantity, 0)
+                    );
+                  }, 0)
+                );
+              }, 0)}
+            />
+          </div>
+
+          <div className="lg:w-[30%] w-full">
+            <div className="sticky top-4 bg-white p-3 rounded-lg shadow-sm">
+              <OrderStatusStepper orderDetails={orders} refetch={refetch} />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </SettingsLayout>
   );
 }
