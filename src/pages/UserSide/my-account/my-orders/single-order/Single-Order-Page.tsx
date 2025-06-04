@@ -370,7 +370,7 @@ export default function SingleOrderPage() {
   if (isFetching) {
     return (
       <SettingsLayout>
-        <div className="h-[80dvh] flex justify-center items-center">
+        <div className="h-[80dvh] flex justify-center items-center ">
           <Loader state={isFetching} color="gray" />
         </div>
       </SettingsLayout>
@@ -391,9 +391,14 @@ export default function SingleOrderPage() {
   const groupedOrders = Object.values(grouped);
 
   return (
-    <SettingsLayout>
+    <SettingsLayout className={` ${modalState.type === "return-order" ?"":"bg-[#F9F9F9]"} `}>
       {modalState.type === "return-order" ? (
-        <ReturnOrderActionPage orders={orders} />
+        <>
+        {/* <ReturnOrderActionPage orders={orders} /> */}
+        <ReturnOrderActionPage orders={groupedOrders} />
+
+        </>
+        
       ) : (
         <div className="flex h-fit lg:flex-row min-h-[80dvh] gap-5 flex-col justify-between">
           <div className="flex flex-col sm:gap-4 gap-3 lg:w-[70%] w-full">

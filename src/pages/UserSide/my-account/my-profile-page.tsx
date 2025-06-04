@@ -31,11 +31,11 @@ export default function SettingsProfilePage() {
   };
 
   return (
-    <SettingsLayout>
+    <SettingsLayout className="bg-[#F9F9F9] xl:p-10 sm:p-5 p-1" >
       <div>
         <p className="text-sm text-muted-foreground">Personal Information.</p>
       </div>
-      <div className="space-y-5 flex flex-col justify-between   h-full lg:p-0 max-w-screen-xl">
+      <div className="space-y-5 flex flex-col justify-between   h-full lg:p-0 max-w-screen-xl ">
         {/* <Separator /> */}
         <div className="h- w-full flex  lg:flex-row flex-col-reverse justify-between gap-4 ">
           <div className="lg:w-1/2">

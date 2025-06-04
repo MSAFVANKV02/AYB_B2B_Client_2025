@@ -1,5 +1,6 @@
 import { SidebarNav } from "@/components/landings/manageProfile/SidbarNav";
 import AyButton from "@/components/myUi/AyButton";
+import { cn } from "@/lib/utils";
 import Cookies from "js-cookie";
 
 import { useEffect } from "react";
@@ -42,9 +43,10 @@ const sidebarNavItems = [
 
 interface SettingsLayoutProps {
   children: React.ReactNode;
+  className?:string
 }
 
-export default function SettingsLayout({ children }: SettingsLayoutProps) {
+export default function SettingsLayout({ children, className }: SettingsLayoutProps) {
   const navigate = useNavigate();
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -82,7 +84,7 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
               />
             </div>
           </aside>
-          <div className="flex-grow xl:col-span-10 lg:col-span-9 h-fit bg-[#F9F9F9] xl:p-10 sm:p-5 p-1">{children}</div>
+          <div className={cn("flex-grow xl:col-span-10 lg:col-span-9 h-fit xl:p-10 sm:p-5 p-1",className)}>{children}</div>
         </div>
       </div>
     </>
