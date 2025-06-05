@@ -83,7 +83,7 @@ const ReturnProductList = ({ orders, onSelect, totalQty }: Props) => {
   return (
     <div
       key={orders.product._id}
-      className=" p-2 rounded cursor-pointer hover:bg-gray-50 bg-white flex gap-3 w-full"
+      className=" p-2 rounded cursor-pointer  bg-white flex gap-3 w-full"
       onClick={() => {
         const variations = orders.product.variations.flatMap((variation) =>
           variation.details.map((detail) => ({
@@ -103,8 +103,8 @@ const ReturnProductList = ({ orders, onSelect, totalQty }: Props) => {
       <Image
         src={orders.product.gallery_image[0]}
         link={`/product/${orders.product.slug}`}
-        className="w-[69px] h-[69px]  shrink-0 bg-[#FCFCFCFC] "
-        classNameImg="w-full h-full object-contain"
+        className="w-[69px] h-[69px]  shrink-0 bg-[#FCFCFCFC] rounded-md shadow"
+        classNameImg="w-full h-full object-cover"
       />
       <div className="flex flex-col gap-1 w-full">
         <p className="font-semibold text-sm truncate overflow-hidden whitespace-nowrap w-1/2 ">

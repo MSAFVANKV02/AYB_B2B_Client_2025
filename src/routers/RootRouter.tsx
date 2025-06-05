@@ -52,6 +52,7 @@ import SellerRegisterForm from "@/pages/seller/seller_register_form";
 import AllKindProducts from "@/pages/UserSide/Prod_pages/all_pages/all-kind-products";
 import PurchasePage from "@/pages/UserSide/cart/checkout/page";
 import MyAccountPages from "@/pages/UserSide/my-account/my-account-pages";
+import NewNotes from "@/pages/notes/page";
 // import PreloaderPage from "@/preloader-page";
 
 // import withAuth from "@/middlewares/WithAuth";
@@ -214,6 +215,13 @@ const rootRouter = createBrowserRouter(
               {" "}
               <ConfirmOrder />
             </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/new-notes",
+          element: (
+     
+              <NewNotes />
           ),
         },
         {
