@@ -156,7 +156,7 @@ const FileUploadBox = ({
       title="Upload"
       classnameTitle="text-center"
       description=""
-      classname="sm:min-w-[600px]  min-h-[600px] flex flex-col justify-normal sm:rounded-sm"
+      classname="sm:min-w-[600px]   flex flex-col justify-normal sm:rounded-sm"
       trigger={
         <AyButton
           type="button"
@@ -181,8 +181,9 @@ const FileUploadBox = ({
           //  setFieldValue={(field, value) =>
           //   setFieldValue(`returns[${index}].file`, value)
           // }
+          values={values}
           setFieldValue={setFieldValue}
-          files={values.file || []}
+          files={values.file??[]}
         />
       </div>
     </Modal>

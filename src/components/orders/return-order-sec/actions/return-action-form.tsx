@@ -14,7 +14,7 @@ export type ReturnItemType = {
   orderedQty: number;
   returnQty: number;
   reason: string;
-  file: File | null;
+  file?: File[] ;
 };
 
 interface Props {
@@ -109,7 +109,7 @@ const ReturnActionForm: React.FC<Props> = ({ orders }) => {
                                     orderedQty: detail.quantity,
                                     returnQty: 0,
                                     reason: "",
-                                    file: null,
+                                    file: [],
                                   }))
                               )
                           );
