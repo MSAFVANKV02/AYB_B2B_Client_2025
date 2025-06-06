@@ -16,6 +16,10 @@ const sidebarNavItems = [
     href: "/my-account/my-orders",
   },
   {
+    title: "My Return / Replace",
+    href: "/my-account/return",
+  },
+  {
     title: "Wishlist",
     href: "/my-account/my-wishlist",
   },
@@ -23,10 +27,7 @@ const sidebarNavItems = [
     title: "Chat with us",
     href: "/my-account/chat",
   },
-  {
-    title: "Return or Replace",
-    href: "/my-account/return",
-  },
+
   {
     title: "Notifications",
     href: "/my-account/notifications",

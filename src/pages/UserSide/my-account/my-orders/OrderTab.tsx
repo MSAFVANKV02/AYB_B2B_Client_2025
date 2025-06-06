@@ -8,8 +8,7 @@ import { Link } from "react-router-dom";
 // import InvoicePdf from "@/components/global/invoice"
 
 import TrackInvoiceBtn from "@/components/orders/order-buttons/track-invoice-btn";
-import useNavigateClicks from "@/hooks/useClicks";
-import AyButton from "@/components/myUi/AyButton";
+
 import OrderStepperOne from "@/components/orders/orders-steppers/order_stepper_one";
 
 import OrderDateLabel from "@/components/orders/order-date-label";
@@ -39,7 +38,7 @@ export default function OrderTab({ filteredOrder }: Props) {
   //   }
   // };
 
-  const { handleClick } = useNavigateClicks();
+  // const { handleClick } = useNavigateClicks();
 
   const supports = [
     {
@@ -209,7 +208,13 @@ export default function OrderTab({ filteredOrder }: Props) {
                 </div>
 
                 <div className="flex justify-end">
-                  <AyButton
+                  <Link
+                    className="text-xs py-2 px-3 border rounded-md"
+                    to={`/my-account/my-orders/${encodeId(order.order_id)}/${encodeId(store.store_order_id)}`}
+                  >
+                    View Orders
+                  </Link>
+                  {/* <AyButton
                     variant="outlined"
                     outLineColor="gray"
                     sx={{
@@ -218,12 +223,12 @@ export default function OrderTab({ filteredOrder }: Props) {
                     }}
                     onClick={() => {
                       handleClick(
-                        `/my-account/my-orders/${encodeId(order.order_id)}/${encodeId(store.store_order_id)}`
+                        
                       );
                     }}
                   >
-                    View Orders
-                  </AyButton>
+                    
+                  </AyButton> */}
                 </div>
               </div>
             );

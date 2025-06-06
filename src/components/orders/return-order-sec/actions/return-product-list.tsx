@@ -92,9 +92,11 @@ const ReturnProductList = ({ orders, onSelect, totalQty }: Props) => {
             color: variation.colorName,
             size: detail.size,
             orderedQty: detail.quantity,
-            returnQty: 0,
+            returned_quantity: 0,
             reason: "",
             file: [],
+            product_order_id:orders.product_order_id,
+            store_order_id:orders.store.store_order_id,
           }))
         );
         onSelect(variations);

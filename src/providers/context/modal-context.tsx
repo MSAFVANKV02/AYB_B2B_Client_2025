@@ -59,7 +59,9 @@ type ModalType =
   | "offlinePay"
   | "order-tracker-one"
   | "cancel-order"
-  | "return-order";
+  | "return-order"
+  | "return-product-details";
+
 
 
 type ModalState = {

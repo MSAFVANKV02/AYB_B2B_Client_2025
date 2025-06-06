@@ -13,7 +13,7 @@ type Props = {
   store: IStoreOrder;
 };
 
-const SingleOrderActionBtn = ({  store }: Props) => {
+const SingleOrderActionBtn = ({ store }: Props) => {
   const { orderId, storeOrderId } = useParams();
   const decodedStoreOrderId = decodeId(storeOrderId ?? "");
   const queryKey = ["order-details", orderId, storeOrderId];
@@ -28,32 +28,37 @@ const SingleOrderActionBtn = ({  store }: Props) => {
   return (
     <div className="flex sm:gap-3">
       <div className="w-full sm:w-auto">
-        <AyButton
-          type="button"
-          variant="outlined"
-          outLineColor="#D0D5DD"
-          onClick={() => {
-            if (modalState.type === "return-order") {
-              dispatchModal({ type: "CLOSE_MODAL" });
-            } else {
-              dispatchModal({ type: "OPEN_MODAL", modalType: "return-order" });
-            }
-          }}
-          sx={{
-            fontSize: "12px",
-            height: "41px",
-            borderRadius: {
-              xs: 0,
-              sm: "6px",
-            },
-            color: "#000000",
-            width: "100%",
-          }}
-        >
-          {modalState.type === "return-order"
-            ? "Cancel Return Action"
-            : "Return / Replacement"}
-        </AyButton>
+        {!store.is_returned && (
+          <AyButton
+            type="button"
+            variant="outlined"
+            outLineColor="#D0D5DD"
+            onClick={() => {
+              if (modalState.type === "return-order") {
+                dispatchModal({ type: "CLOSE_MODAL" });
+              } else {
+                dispatchModal({
+                  type: "OPEN_MODAL",
+                  modalType: "return-order",
+                });
+              }
+            }}
+            sx={{
+              fontSize: "12px",
+              height: "41px",
+              borderRadius: {
+                xs: 0,
+                sm: "6px",
+              },
+              color: "#000000",
+              width: "100%",
+            }}
+          >
+            {modalState.type === "return-order"
+              ? "Cancel Return Action"
+              : "Return / Replacement"}
+          </AyButton>
+        )}
       </div>
       {store.order_status !== "cancelled" &&
         store.order_status !== "delivered" &&

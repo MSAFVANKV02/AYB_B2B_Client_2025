@@ -20,7 +20,7 @@ interface Props {
 
 const ReturnActionTable: React.FC<Props> = ({ setFieldValue, rows }) => {
   // useEffect(() => {
-  //   const validReturns = values.returns.filter((item) => item.returnQty > 0);
+  //   const validReturns = values.returns.filter((item) => item.returned_quantity > 0);
   //   setSelectedValues(validReturns);
   // }, []);
 
@@ -63,7 +63,7 @@ const ReturnActionTable: React.FC<Props> = ({ setFieldValue, rows }) => {
                 <td className="px-4 py-2">{item.orderedQty}</td>
                 <td className="px-4 py-2 hidden lg:table-cell">
                   <Field
-                    name={`returns[${globalIndex}].returnQty`}
+                    name={`returns[${globalIndex}].returned_quantity`}
                     type="number"
                     min={0}
                     max={item.orderedQty}
@@ -77,7 +77,7 @@ const ReturnActionTable: React.FC<Props> = ({ setFieldValue, rows }) => {
                             : value;
 
                       setFieldValue(
-                        `returns[${globalIndex}].returnQty`,
+                        `returns[${globalIndex}].returned_quantity`,
                         safeValue
                       );
                     }}
@@ -187,7 +187,7 @@ const ResponsiveActionBox = ({
         <div className="flex flex-col gap-2">
           <Label className="text-xs">Return Qty</Label>
           <Field
-            name={`returns[${index}].returnQty`}
+            name={`returns[${index}].returned_quantity`}
             type="number"
             min={0}
             max={values.orderedQty}
@@ -200,7 +200,7 @@ const ResponsiveActionBox = ({
                     ? values.orderedQty
                     : value;
 
-              setFieldValue(`returns[${index}].returnQty`, safeValue);
+              setFieldValue(`returns[${index}].returned_quantity`, safeValue);
             }}
             as={Input}
             className="border rounded px-2 py-1 w-full  "
@@ -313,6 +313,8 @@ const FileUploadBox = ({
             "image/png": [".png"],
             "image/webp": [".webp"],
             "video/mp4": [".mp4"],
+            "video/ogg": [".ogv"],
+            "video/quicktime": [".mov"],
           }}
           //  setFieldValue={(field, value) =>
           //   setFieldValue(`returns[${index}].file`, value)

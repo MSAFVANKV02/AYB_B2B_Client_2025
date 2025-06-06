@@ -34,7 +34,7 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
             key={item.href}
             to={item.href}
             className={classNames(
-              "px-4 py-3 rounded-lg text-sm font-medium",
+              "px-4 py-3 rounded-lg text-sm ",
               isActive
                 ? "bg-bgPrimaryVariant text-white hover:bg-bg"
                 : "hover:bg-transparent hover:underline lg:border-none border",

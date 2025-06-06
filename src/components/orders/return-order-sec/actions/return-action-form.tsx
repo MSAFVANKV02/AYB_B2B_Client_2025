@@ -10,6 +10,7 @@ import { useModal } from "@/providers/context/modal-context";
 import { useMutationData } from "@/hooks/useMutationData";
 import { returnOrdersAction } from "@/action/orders/odrerAction";
 import Loader from "@/components/global/loader";
+import { makeToastError } from "@/utils/toaster";
 
 export type ReturnItemType = {
   productId: string;
@@ -17,9 +18,11 @@ export type ReturnItemType = {
   color: string;
   size: string;
   orderedQty: number;
-  returnQty: number;
+  returned_quantity: number;
   reason: string;
   file?: File[];
+  product_order_id: string;
+  store_order_id: string;
 };
 
 interface Props {
@@ -57,25 +60,172 @@ const ReturnActionForm: React.FC<Props> = ({ orders }) => {
     <Formik
       enableReinitialize
       initialValues={{ returns: [] as ReturnItemType[] }}
+      // onSubmit={(values) => {
+      //   console.log("Submitted:", values);
+      //   const pushReturnItems = values.returns.filter(
+      //     (item) => item.returned_quantity > 0
+      //   );
+
+      //   try {
+      //     const formData = new FormData();
+
+      //     if (pushReturnItems.length === 0) return;
+
+      //     // Get store_order_id from any item (assuming all have the same)
+      //     const store_order_id = pushReturnItems[0].store_order_id;
+      //     formData.append("store_order_id", store_order_id);
+
+      //     const returnedItemsMap: Record<
+      //       string,
+      //       {
+      //         product_order_id: string;
+      //         returned_sizes: {
+      //           size: string;
+      //           returned_quantity: number;
+      //           reason: string;
+      //         }[];
+      //       }
+      //     > = {};
+
+      //     // Group returned items by product_order_id
+      //     pushReturnItems.forEach((item) => {
+      //       const fileKey = `${item.product_order_id}_${item.size}`;
+      //       if (item.file && item.file.length > 0) {
+      //         item.file.forEach((f) => {
+      //           formData.append(fileKey, f);
+      //         });
+      //       }
+
+      //       if (!returnedItemsMap[item.product_order_id]) {
+      //         returnedItemsMap[item.product_order_id] = {
+      //           product_order_id: item.product_order_id,
+      //           returned_sizes: [],
+      //         };
+      //       }
+
+      //       returnedItemsMap[item.product_order_id].returned_sizes.push({
+      //         size: item.size,
+      //         returned_quantity: item.returned_quantity,
+      //         reason: item.reason,
+      //       });
+      //     });
+
+      //     const returned_items = Object.values(returnedItemsMap);
+
+      //     formData.append("returned_items", JSON.stringify(returned_items));
+
+      //     //
+
+      //     // // Manually append each returned item with bracketed keys
+      //     // returned_items.forEach((item, i) => {
+      //     //   formData.append(
+      //     //     `returned_items[${i}][product_order_id]`,
+      //     //     item.product_order_id
+      //     //   );
+
+      //     //   item.returned_sizes.forEach((sizeItem, j) => {
+      //     //     formData.append(
+      //     //       `returned_items[${i}][returned_sizes][${j}][size]`,
+      //     //       sizeItem.size
+      //     //     );
+      //     //     formData.append(
+      //     //       `returned_items[${i}][returned_sizes][${j}][returned_quantity]`,
+      //     //       sizeItem.returned_quantity.toString()
+      //     //     );
+      //     //     formData.append(
+      //     //       `returned_items[${i}][returned_sizes][${j}][reason]`,
+      //     //       sizeItem.reason
+      //     //     );
+      //     //   });
+      //     // });
+
+      //     console.log("FormData contents:");
+      //     for (const [key, value] of formData.entries()) {
+      //       console.log(`${key}:`, value);
+      //     }
+
+      //     mutate(formData, {
+      //       onSuccess: () => {
+      //         dispatchModal({ type: "CLOSE_MODAL" });
+      //       },
+      //     });
+      //   } catch (error) {
+      //     console.log(error);
+      //   }
+      // }}
       onSubmit={(values) => {
-        console.log("Submitted:", values);
         const pushReturnItems = values.returns.filter(
-          (item) => item.returnQty > 0
+          (item) => item.returned_quantity > 0
         );
+
+        if (pushReturnItems.length === 0) return makeToastError("Please Submit A return Item") ;
+
         try {
-          const fromData = new FormData();
+          const formData = new FormData();
 
-          pushReturnItems.forEach((data) => {
-            fromData.append("color", data.color);
-          });
+          const store_order_id = pushReturnItems[0].store_order_id;
+          formData.append("store_order_id", store_order_id);
 
-          mutate(fromData, {
+          const returnedItemsMap: Record<
+            string,
+            {
+              product_order_id: string;
+              returned_sizes: {
+                size: string;
+                returned_quantity: number;
+                reason: string;
+              }[];
+            }
+          > = {};
+
+          for (const item of pushReturnItems) {
+            const fileKey = `${item.product_order_id}_${item.size}`;
+
+            // Append files
+            if (item.file && item.file.length > 0) {
+              for (const file of item.file) {
+                formData.append(fileKey, file);
+              }
+            }
+
+            // Group by product_order_id
+            if (!returnedItemsMap[item.product_order_id]) {
+              returnedItemsMap[item.product_order_id] = {
+                product_order_id: item.product_order_id,
+                returned_sizes: [],
+              };
+            }
+
+            returnedItemsMap[item.product_order_id].returned_sizes.push({
+              size: item.size,
+              returned_quantity: item.returned_quantity,
+              reason: item.reason,
+            });
+          }
+
+          const returned_items = Object.values(returnedItemsMap);
+
+          // Check if returned_items was successfully built
+          if (!returned_items || returned_items.length === 0) {
+            console.error("No valid return items found.");
+            return;
+          }
+
+          formData.append("returned_items", JSON.stringify(returned_items));
+
+          // Debug
+          console.log("FormData preview:");
+          for (const [key, val] of formData.entries()) {
+            console.log(key, val);
+          }
+
+          mutate(formData, {
             onSuccess: () => {
               dispatchModal({ type: "CLOSE_MODAL" });
             },
           });
-        } catch (error) {
-          console.log(error);
+        } catch (err) {
+          console.error("Submission Error:", err);
         }
       }}
     >
@@ -99,7 +249,7 @@ const ReturnActionForm: React.FC<Props> = ({ orders }) => {
           setFieldValue("returns", [...current, ...newItems]);
         };
 
-        // const pushReturnItems = values.returns.filter((item) => item.returnQty > 0);
+        // const pushReturnItems = values.returns.filter((item) => item.returned_quantity > 0);
         // setSelectedValues(pushReturnItems);
 
         const groupedReturns: Record<
@@ -141,14 +291,18 @@ const ReturnActionForm: React.FC<Props> = ({ orders }) => {
                               orderItem.product.variations.flatMap(
                                 (variation) =>
                                   variation.details.map((detail) => ({
+                                    store_order_id:
+                                      orderItem.store.store_order_id,
                                     productId: orderItem.product._id,
                                     productName: orderItem.product.product_name,
                                     color: variation.colorName,
                                     size: detail.size,
                                     orderedQty: detail.quantity,
-                                    returnQty: 0,
+                                    returned_quantity: 0,
                                     reason: "",
                                     file: [],
+                                    product_order_id:
+                                      orderItem.product_order_id, //PRD6DNQGC2ZN39
                                   }))
                               )
                           );
@@ -179,7 +333,7 @@ const ReturnActionForm: React.FC<Props> = ({ orders }) => {
                   </div>
 
                   {/* <pre className="text-xs">
-                    {JSON.stringify(selectedValues,null,4)}
+                    {JSON.stringify(orders,null,4)}
                   </pre> */}
 
                   {/* Show return table below if selected product matches */}
@@ -236,21 +390,22 @@ const ReturnActionForm: React.FC<Props> = ({ orders }) => {
                         },
                       }}
                       type="button"
-
-                      onClick={()=>{
-                        resetForm()
-                        setSelectedProductId("")
+                      onClick={() => {
+                        resetForm();
+                        setSelectedProductId("");
                       }}
                     >
                       Cancel
                     </AyButton>
                   </div>
                   <div className="xl:flex-1">
-                    <Loader state={isPending}>
-                      <AyButton disabled={isPending} type="submit">
+                   
+                      <AyButton disabled={isPending}  type="submit">
+                      <Loader classNameLoader="w-5 h-5" state={isPending}  >
                         Submit Request
+                        </Loader>   
                       </AyButton>
-                    </Loader>
+                   
                   </div>
                 </div>
               </div>
