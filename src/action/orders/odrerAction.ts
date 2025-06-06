@@ -2,6 +2,7 @@ import {
   cancelOrderApi,
   get_All_Order_Api,
   get_All_Return_Orders_Api,
+  returnOrderApi,
 } from "@/services/user_side_api/orders/route";
 import { IFilterOrders } from "@/types/orderTypes";
 import { AxiosError } from "axios";
@@ -59,6 +60,35 @@ export const getAllReturnedOrdersAction = async (
 export const cancelOrdersAction = async (store_order_id: string) => {
   try {
     const { data, status } = await cancelOrderApi(store_order_id);
+      console.log(data,'data');
+
+    if (status === 200 || status === 201) {
+      return {
+        data: data.data,
+        message: data.message,
+        status: status,
+      };
+    }
+  } catch (error) {
+    const err = error as AxiosError<{ message: string }>;
+    console.log(error,'err');
+    
+    return {
+      data: [],
+      status: 500,
+      message:
+        err.response?.data?.message || err.message || "Something went wrong",
+    };
+  }
+};
+
+
+
+
+
+export const returnOrdersAction = async (formData: FormData) => {
+  try {
+    const { data, status } = await returnOrderApi(formData);
       console.log(data,'data');
 
     if (status === 200 || status === 201) {

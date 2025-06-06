@@ -1,5 +1,6 @@
 import { DragDropFileSvgIcon } from "@/components/icons/glob-icon";
 import { ReturnItemType } from "@/components/orders/return-order-sec/actions/return-action-form";
+import { cn } from "@/lib/utils";
 import { makeToastError } from "@/utils/toaster";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import axios from "axios";
@@ -13,6 +14,8 @@ type Props = {
   children?: ReactNode;
   values: ReturnItemType;
   fileUploadLimit?: number;
+  addFileTypes?: Accept;
+  className?: string;
 };
 
 // type FileWithProgress = File & { progress?: number };
@@ -27,7 +30,9 @@ const DragAndDropFilesWidget = ({
   children,
   index,
   values,
-  fileUploadLimit = 3,
+  fileUploadLimit,
+  addFileTypes,
+  className,
 }: Props) => {
   const [uploadingFiles, setUploadingFiles] = useState<FileWithProgress[]>([]);
 
@@ -131,18 +136,18 @@ const DragAndDropFilesWidget = ({
   //   };
 
   const acceptedFileTypes: Accept = {
-    // "application/pdf": [".pdf"],
-    // "image/jpeg": [".jpg", ".jpeg"],
-    // "image/png": [".png"],
-    // "image/webp": [".webp"],
-    // "application/msword": [".doc"],
-    // "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
-    //   ".docx",
-    // ],
-    // "application/vnd.ms-excel": [".xls"],
-    // "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
-    //   ".xlsx",
-    // ],
+    "application/pdf": [".pdf"],
+    "image/jpeg": [".jpg", ".jpeg"],
+    "image/png": [".png"],
+    "image/webp": [".webp"],
+    "application/msword": [".doc"],
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+      ".docx",
+    ],
+    "application/vnd.ms-excel": [".xls"],
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
+      ".xlsx",
+    ],
     "video/mp4": [".mp4"],
     "video/webm": [".webm"],
     "video/ogg": [".ogv"],
@@ -273,7 +278,7 @@ const DragAndDropFilesWidget = ({
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: acceptedFileTypes, // Pass the readonly array to 'accept'
+    accept: addFileTypes ? addFileTypes : acceptedFileTypes, // Pass the readonly array to 'accept'
     multiple: true,
   });
 
@@ -281,11 +286,14 @@ const DragAndDropFilesWidget = ({
     <div className="flex flex-col gap-4">
       <div
         {...getRootProps()} // Applying root props to the dropzone div
-        className={`border-2 border-dashed cursor-pointer bg-[#F8F8FF]
+        className={cn(
+          `border-2 border-dashed cursor-pointer bg-[#F8F8FF]
            ${
-             (values.file ?? []).length === 0 ? "h-[350px]" : "h-[200px]"
+             (values.file ?? []).length === 0 ? "lg:h-[350px] " : "lg:h-[200px]"
            }   w-full  flex flex-col justify-center items-center mx-auto 
-              border-[#384EB74D]  p-8  text-center rounded-sm transition-colors`}
+              border-[#384EB74D]  p-8  text-center rounded-sm transition-colors`,
+          className
+        )}
       >
         <input {...getInputProps()} />{" "}
         {/* Applying input props to the file input */}

@@ -38,7 +38,7 @@ const ReturnOrderActionPage = ({ orders }: Props) => {
           }}
         >
           {modalState.type === "return-order"
-            ? "Cancel Return Action"
+            ? "Close Return Action"
             : "Return / Replacement"}
         </AyButton>
       </div>

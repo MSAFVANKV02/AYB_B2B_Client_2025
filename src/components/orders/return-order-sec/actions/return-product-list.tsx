@@ -83,7 +83,7 @@ const ReturnProductList = ({ orders, onSelect, totalQty }: Props) => {
   return (
     <div
       key={orders.product._id}
-      className=" p-2 rounded cursor-pointer  bg-white flex gap-3 w-full"
+      className=" p-2 rounded cursor-pointer  bg-white flex gap-3 w-full overflow-hidden"
       onClick={() => {
         const variations = orders.product.variations.flatMap((variation) =>
           variation.details.map((detail) => ({
@@ -94,7 +94,7 @@ const ReturnProductList = ({ orders, onSelect, totalQty }: Props) => {
             orderedQty: detail.quantity,
             returnQty: 0,
             reason: "",
-            file: null as File | null,
+            file: [],
           }))
         );
         onSelect(variations);

@@ -4,6 +4,7 @@ import {
   CANCEL_ORDERS_URL,
   GET_ALL_ORDERS_URL,
   GET_ALL_RETURN_ORDERS_URL,
+  RETURN_ORDERS_URL,
 } from "@/services/api/order-urlPath";
 
 export const get_All_Order_Api = async (
@@ -43,3 +44,6 @@ export const cancelOrderApi = (store_order_id: string) =>
     {},
     { withCredentials: true }
   );
+
+export const returnOrderApi = (formData: FormData) =>
+  API.post(`${RETURN_ORDERS_URL}`, { formData }, { withCredentials: true });

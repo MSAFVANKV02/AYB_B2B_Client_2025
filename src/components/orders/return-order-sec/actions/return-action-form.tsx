@@ -5,6 +5,11 @@ import ReturnActionTable from "./return-action-table";
 import ReturnProductList from "./return-product-list";
 import { Collapse } from "@mui/material";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import AyButton from "@/components/myUi/AyButton";
+import { useModal } from "@/providers/context/modal-context";
+import { useMutationData } from "@/hooks/useMutationData";
+import { returnOrdersAction } from "@/action/orders/odrerAction";
+import Loader from "@/components/global/loader";
 
 export type ReturnItemType = {
   productId: string;
@@ -14,7 +19,7 @@ export type ReturnItemType = {
   orderedQty: number;
   returnQty: number;
   reason: string;
-  file?: File[] ;
+  file?: File[];
 };
 
 interface Props {
@@ -23,24 +28,58 @@ interface Props {
 
 const ReturnActionForm: React.FC<Props> = ({ orders }) => {
   // const [selectedProductId, setSelectedProductId] = useState<ReturnItemType[]>([]);
+  const { dispatchModal } = useModal();
+  const queryKey = ["order-details"];
+
+  const { mutate, isPending } = useMutationData(
+    ["return-order"],
+    (data) => returnOrdersAction(data),
+    queryKey
+  );
   const [selectedProductId, setSelectedProductId] = useState<string | null>(
     null
   );
-  const [selectedValues, setSelectedValues] = useState<ReturnItemType[] | null>(
-    null
-  );
+  // const [selectedValues, setSelectedValues] = useState<ReturnItemType[] | null>(
+  //   null
+  // );
 
-  console.log(selectedValues, "selectedValues");
+  const Nots = [
+    "If the product is damaged or wrong, please upload clear photos of the issue.",
+    "Only return requests with valid reasons will be accepted.",
+    "Admin may contact you for clarification before approving the return.",
+    "If the reason is invalid or unclear, your return may be rejected.",
+    "only the return quantity grater than '0' is taken for return  ",
+  ];
+
+  // console.log(selectedValues, "selectedValues");
 
   return (
     <Formik
       enableReinitialize
       initialValues={{ returns: [] as ReturnItemType[] }}
       onSubmit={(values) => {
-        // console.log("Submitted:", values);
+        console.log("Submitted:", values);
+        const pushReturnItems = values.returns.filter(
+          (item) => item.returnQty > 0
+        );
+        try {
+          const fromData = new FormData();
+
+          pushReturnItems.forEach((data) => {
+            fromData.append("color", data.color);
+          });
+
+          mutate(fromData, {
+            onSuccess: () => {
+              dispatchModal({ type: "CLOSE_MODAL" });
+            },
+          });
+        } catch (error) {
+          console.log(error);
+        }
       }}
     >
-      {({ values, setFieldValue }) => {
+      {({ values, setFieldValue, resetForm }) => {
         const handleAddItems = (items: ReturnItemType[]) => {
           const current = values.returns;
           const newItems = items.filter(
@@ -93,7 +132,7 @@ const ReturnActionForm: React.FC<Props> = ({ orders }) => {
                         totalQty={totalQty}
                       />
                     ))} */}
-                    <div className="bg-[#FCFCFCFC] p-4 border rounded-md relative">
+                    <div className="bg-[#FCFCFCFC] p-4 border rounded-md relative w-full">
                       <ReturnProductList
                         orders={group[0]} // use the first item as display reference
                         onSelect={() => {
@@ -145,9 +184,9 @@ const ReturnActionForm: React.FC<Props> = ({ orders }) => {
 
                   {/* Show return table below if selected product matches */}
                   <Collapse in={selectedProductId === first.product_id}>
-                    <div className="mt-3">
+                    <div className="mt-3 overflow-x-auto">
                       <ReturnActionTable
-                        setSelectedValues={setSelectedValues}
+                        // setSelectedValues={setSelectedValues}
                         rows={groupedReturns[first.product_id] || []}
                         setFieldValue={setFieldValue}
                       />
@@ -172,6 +211,50 @@ const ReturnActionForm: React.FC<Props> = ({ orders }) => {
                 </div>
               );
             })}
+
+            <div className="flex lg:flex-row bg-white rounded-lg rounded-br-none overflow-hidden flex-col gap-3 mt-10 sticky bottom-0">
+              {/* notes started here ======== */}
+              <div className="bg-[#FAFAFA] p-5 rounded-lg  select-none lg:w-[70%] ">
+                <ul className="flex flex-col gap-2 px-6">
+                  {Nots.map((note, idx) => (
+                    <li className="text-sm capitalize list-disc " key={idx}>
+                      {note}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {/* submit buttons started here */}
+              <div className=" lg:w-[30%] w-full ">
+                <div className="flex xl:flex-row flex-col lg:w-full sm:w-[50%] ml-auto gap-3  h-full xl:items-end">
+                  <div className="xl:flex-1">
+                    <AyButton
+                      disabled={isPending}
+                      sx={{
+                        bgcolor: "#B3B3B3",
+                        "&:hover": {
+                          bgcolor: "#b9b5b5",
+                        },
+                      }}
+                      type="button"
+
+                      onClick={()=>{
+                        resetForm()
+                        setSelectedProductId("")
+                      }}
+                    >
+                      Cancel
+                    </AyButton>
+                  </div>
+                  <div className="xl:flex-1">
+                    <Loader state={isPending}>
+                      <AyButton disabled={isPending} type="submit">
+                        Submit Request
+                      </AyButton>
+                    </Loader>
+                  </div>
+                </div>
+              </div>
+            </div>
           </Form>
         );
       }}
