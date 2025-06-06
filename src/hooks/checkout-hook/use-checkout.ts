@@ -14,7 +14,7 @@ export const useSubmitOrder = () => {
   const { mutate, data, status } = useMutationData(
     ["submit-order"],
     ({ formData }: SubmitPayload) => checkoutOrderAction(formData),
-    "submit-order-toast",
+    ["submit-order-toast"],
     (res) => {
       console.log(res);
       

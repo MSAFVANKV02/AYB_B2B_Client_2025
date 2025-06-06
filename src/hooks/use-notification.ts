@@ -7,7 +7,7 @@ export const useUpdateNotificationStatus = () => {
   const { mutate } = useMutationData(
     ["read-notification"], // Ensure unique mutation key per product
     ({ id, userId }: { id: string; userId: string }) => readNotificationAction({id,userId}), // Pass newStatus
-    "notification-status",
+    ["notification-status"],
     (data) => {
       if (data.status === 200 || data.status === 201) {
         client.invalidateQueries({ queryKey: ["all-notifications"] });

@@ -1,1 +1,3 @@
 https://react-loading-indicators.netlify.app/
+
+ "json-server": "json-server --watch db.json --port 5173", in scripts

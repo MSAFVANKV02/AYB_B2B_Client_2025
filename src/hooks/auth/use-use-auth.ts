@@ -14,7 +14,7 @@ export const useLoginUser = () => {
     ["login-user"],
     (data: { otp: string; deviceToken: string; mobile: string }) =>
       loginUserAction(data),
-    "user-data",
+    ["user-data"],
     (data) => {
       // console.log(data, "useLoginUser");
       // console.log(data.data.user, "data.data.user");

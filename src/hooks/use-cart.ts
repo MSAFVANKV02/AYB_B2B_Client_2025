@@ -8,7 +8,7 @@ export const useAddNewCart = () => {
   const { mutate, data, status } = useMutationData(
     ["add-cart"], // Ensure unique mutation key per product
     ( items :any) => addToCartAction(items), // Pass newStatus
-    "cart-status",
+    ["cart-status"],
     (data) => {
       if (data.status === 200 || data.status === 201) {
         dispatch(getCartRedux());

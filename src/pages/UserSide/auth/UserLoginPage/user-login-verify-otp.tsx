@@ -27,7 +27,7 @@ const UserLoginVerifyOtp = ({  setShowOtpLogin }: Props) => {
   const { mutate, isPending: isResendPending  } = useMutationData(
     ["resend-otp"],
     () => handleResendOtpAction(auth as string),
-    "workspace-auth",
+    ["workspace-auth"],
     (data) => {
       //   makeToast("OTP resent successfully!");
       if (data.status === 200 || data.status === 201) {

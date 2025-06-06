@@ -45,9 +45,9 @@
 //     },
 //   },
 // });
-import path from "path"
-import react from "@vitejs/plugin-react"
-import { defineConfig } from "vite"
+import path from "path";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react()],
@@ -56,26 +56,40 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // build: {
+  //   rollupOptions: {
+  //     output: {
+  //       manualChunks: {
+  //         vendor: ['react', 'react-dom'],
+  //         mui: ['@mui/material', '@mui/icons-material'],
+  //         // pdfjs: ['pdfjs-dist/build/pdf.worker.min.js'],
+  //       },
+  //     },
+  //   },
+  // },
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          mui: ['@mui/material', '@mui/icons-material'],
-          // pdfjs: ['pdfjs-dist/build/pdf.worker.min.js'],
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            if (id.includes("firebase")) return "firebase";
+            if (id.includes("@mui")) return "mui";
+            if (id.includes("redux")) return "redux";
+            return "vendor";
+          }
         },
       },
     },
   },
   optimizeDeps: {
-    include: [
-      "@radix-ui/react-dialog",
-      "@radix-ui/react-*",
-    ],
+    include: ["@radix-ui/react-dialog", "@radix-ui/react-*"],
+  },
+  server: {
+    watch: {
+      ignored: ["**/node_modules/**", "**/dist/**"],
+    },
   },
 });
-
-
 
 // =================================================================
 // import path from "path";

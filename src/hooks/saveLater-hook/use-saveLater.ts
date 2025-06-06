@@ -14,7 +14,7 @@ export const useUpdateSaveLater = () => {
       stock_variant: string;
       preferred_size: string;
     }) => addSaveLaterAction(data), // Pass newStatus
-    "get-save-later",
+    ["get-save-later"],
     (data) => {
       // console.log(data);
       
